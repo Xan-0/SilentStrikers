@@ -1,0 +1,139 @@
+[gd_scene load_steps=11 format=3 uid="uid://drs5cxv35r63x"]
+
+[ext_resource type="Texture2D" uid="uid://d062d0heupd2h" path="res://Sprites/Ladron.png" id="1_83e7o"]
+[ext_resource type="Script" uid="uid://dib8nk5h42s3f" path="res://Escenas/animation_player.gd" id="2_wwpud"]
+
+[sub_resource type="GDScript" id="GDScript_xhfnw"]
+script/source = "extends CharacterBody2D
+# Velocidad de movimiento
+var speed = 200
+
+# Actualización del movimiento
+func _process(delta):
+	
+	velocity = Vector2()
+
+	if Input.is_action_pressed(\"ui_right\"):
+		velocity.x += 1
+	if Input.is_action_pressed(\"ui_left\"):
+		velocity.x -= 1
+
+	if Input.is_action_pressed(\"ui_down\"):
+		velocity.y += 1
+	if Input.is_action_pressed(\"ui_up\"):
+		velocity.y -= 1
+		
+	if velocity.length() > 0:
+		velocity = velocity.normalized() * speed
+
+	move_and_slide()
+"
+
+[sub_resource type="Animation" id="Animation_hhy33"]
+resource_name = "Abajo"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_c1rio"]
+resource_name = "Arriba"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+
+[sub_resource type="Animation" id="Animation_5hhfp"]
+resource_name = "Derecha"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_kwdw2"]
+resource_name = "Izquierda"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+
+[sub_resource type="Animation" id="Animation_j2dk4"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_urfe6"]
+_data = {
+&"Abajo": SubResource("Animation_hhy33"),
+&"Arriba": SubResource("Animation_c1rio"),
+&"Derecha": SubResource("Animation_5hhfp"),
+&"Izquierda": SubResource("Animation_kwdw2"),
+&"RESET": SubResource("Animation_j2dk4")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wwpud"]
+size = Vector2(108, 298)
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 3
+script = SubResource("GDScript_xhfnw")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = 6.28319
+texture = ExtResource("1_83e7o")
+hframes = 4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Sprite2D")
+libraries = {
+&"": SubResource("AnimationLibrary_urfe6")
+}
+script = ExtResource("2_wwpud")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(27, 18)
+shape = SubResource("RectangleShape2D_wwpud")
