@@ -1,19 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://b8g7loxvumdg0"]
-
-[ext_resource type="Script" uid="uid://dblv1s8tgx5y0" path="res://menu_background.gd" id="1_r1mpt"]
-[ext_resource type="Texture2D" uid="uid://c328v6fpq215f" path="res://backgroundmenu.png" id="2_06so8"]
-[ext_resource type="Shader" uid="uid://gfqffc631fr0" path="res://menu_background.gdshader" id="3_54u0p"]
-[ext_resource type="Script" uid="uid://dm1fp0ltr46lj" path="res://linterna_shader.shader.gd" id="4_rkoh2"]
-[ext_resource type="Texture2D" uid="uid://gi7mfquo8eq8" path="res://title_font.png" id="5_qu38j"]
+[gd_scene load_steps=8 format=3 uid="uid://b8g7loxvumdg0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8rvje"]
 resource_name = "light_sable"
-shader = ExtResource("3_54u0p")
-shader_parameter/light_position = Vector2(0, 0)
-shader_parameter/light_radius = 200.0
-shader_parameter/flicker_strength = 10.0
-shader_parameter/flicker_value = 0.0
-shader_parameter/softness = 0.5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mkaih"]
 
@@ -52,7 +40,6 @@ shadow_offset = Vector2(0, 3.41)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_da3st"]
 
 [node name="MenuBackground" type="CanvasLayer"]
-script = ExtResource("1_r1mpt")
 
 [node name="BackgroundImage" type="TextureRect" parent="."]
 anchors_preset = 15
@@ -60,7 +47,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_06so8")
 expand_mode = 1
 stretch_mode = 5
 
@@ -72,7 +58,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
-script = ExtResource("4_rkoh2")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchors_preset = -1
@@ -132,5 +117,4 @@ offset_left = 358.0
 offset_top = 118.0
 offset_right = 839.0
 offset_bottom = 304.0
-texture = ExtResource("5_qu38j")
 expand_mode = 1
