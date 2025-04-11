@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://drs5cxv35r63x"]
 
 [ext_resource type="Texture2D" uid="uid://d062d0heupd2h" path="res://Sprites/Ladron.png" id="1_83e7o"]
-[ext_resource type="Script" uid="uid://dib8nk5h42s3f" path="res://Escenas/animation_player.gd" id="2_wwpud"]
+[ext_resource type="Script" uid="uid://dib8nk5h42s3f" path="res://Codigos/animation_player.gd" id="2_wwpud"]
 
 [sub_resource type="GDScript" id="GDScript_xhfnw"]
 script/source = "extends CharacterBody2D
