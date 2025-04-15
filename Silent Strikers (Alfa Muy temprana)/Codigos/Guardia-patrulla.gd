@@ -8,6 +8,7 @@ extends CharacterBody2D
 #(las cuales están guardadas en la lista paths) y darvueltas() sólo aplica un
 #movimiento predeterminado para el guardia después de llegar a la habitación.
 #se agregó también una variable de estado del guardia (podrían cambiarse para que tenga mayor sentido)
+#se separaron las paredes del suelo de los TileMaplayer, 1 se puso afuera, y otro como hijo de un NavigationRegion2D
 
 ## --- Variables de Movimiento y Navegación ---
 @export var speed: float = 200.0
