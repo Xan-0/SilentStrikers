@@ -223,7 +223,6 @@ func patrullar(paths: Array):
 		patrulla = false
 		for i in range(0, paths.size()):
 			navigation_target = paths[i]
-			#print(distance)
 			await get_tree().create_timer(1).timeout
 			while not navigation_agent.is_navigation_finished():
 				await get_tree().create_timer(2).timeout
@@ -247,7 +246,6 @@ func darVueltas(i):
 	await get_tree().create_timer(3).timeout
 	speed = 200
 	dandolavuelta = false
-	#VER SI CAMBIAR ESTO PARA ARREGLAR MULTIPLES PRATULLAR()
 
 #=============================================================================
 # FUNCIÓN DE DIBUJO
