@@ -1,4 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://b8g7loxvumdg0"]
+[gd_scene load_steps=11 format=3 uid="uid://b8g7loxvumdg0"]
+
+[ext_resource type="Script" uid="uid://c344jf0v55850" path="res://Codigos/menu_background_oficial.gd" id="1_dllrj"]
+[ext_resource type="Texture2D" uid="uid://dxu2ok350gle4" path="res://Imagenes/backgroundmenu.png" id="1_kuakv"]
+[ext_resource type="Texture2D" uid="uid://c4roo0f0jm0xx" path="res://Imagenes/title_font.png" id="2_6loo4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8rvje"]
 resource_name = "light_sable"
@@ -40,6 +44,7 @@ shadow_offset = Vector2(0, 3.41)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_da3st"]
 
 [node name="MenuBackground" type="CanvasLayer"]
+script = ExtResource("1_dllrj")
 
 [node name="BackgroundImage" type="TextureRect" parent="."]
 anchors_preset = 15
@@ -47,6 +52,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("1_kuakv")
 expand_mode = 1
 stretch_mode = 5
 
@@ -117,4 +123,7 @@ offset_left = 358.0
 offset_top = 118.0
 offset_right = 839.0
 offset_bottom = 304.0
+texture = ExtResource("2_6loo4")
 expand_mode = 1
+
+[connection signal="pressed" from="VBoxContainer/StarButton" to="." method="_on_star_button_pressed"]

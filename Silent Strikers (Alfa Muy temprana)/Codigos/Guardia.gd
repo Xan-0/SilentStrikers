@@ -5,7 +5,7 @@ var speed = 300
 var acceleration = 7.0
 var forward
 @export var patrol_points: Array[NodePath] = []
-@export var player: CharacterBody2D 
+var player: CharacterBody2D 
 
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 
@@ -14,6 +14,7 @@ var vision_range = 300.0
 var vision_angle_degrees = 90.0
 var wall_collision_mask = 1
 @onready var vision_raycast: RayCast2D = $VisionRayCast
+@onready var vision_area: Area2D = $Vision
 
 ## --- Variables de Estado ---
 enum State { PATROLLING, CHASING, SEARCHING }
@@ -31,11 +32,16 @@ var search_timer = 0.0
 @export var vision_cone_color: Color = Color(1, 1, 0, 0.3)
 
 func _ready():
+	player = get_node("../Ladron")
 	vision_raycast.add_exception(self)
 	vision_raycast.collision_mask = wall_collision_mask | player.collision_layer
 
 	_set_next_patrol_point()
 
+func _process(delta: float) -> void:
+	vision_raycast.target_position = to_local(player.global_position)
+	vision_raycast.force_raycast_update()	
+	
 func _physics_process(delta):
 	forward = (navigation_agent.get_next_path_position() - global_position).normalized()
 	if forward == Vector2.ZERO:
@@ -81,14 +87,7 @@ func _process_chasing(delta):
 
 func _process_searching(delta):
 	search_timer -= delta
-	velocity = velocity.lerp(Vector2.ZERO, acceleration * delta) # Se queda quieto
-
-	# ROTACIÓN PARA BUSCAR AL JUGADOR
-	var angle_offset = sin(Time.get_ticks_msec() / 300.0) * deg_to_rad(60)
-	rotation = angle_offset
-
-	# REEMPLAZA el forward con esta dirección aunque no haya navegación
-	forward = Vector2.RIGHT.rotated(rotation)
+	velocity = velocity.lerp(Vector2.ZERO, acceleration * delta)
 
 	if search_timer <= 0.0:
 		current_state = State.PATROLLING
@@ -126,8 +125,6 @@ func check_vision(guard_forward_direction: Vector2):
 
 		if dot > limit_dot:
 			# ACTUALIZA SIEMPRE el raycast
-			vision_raycast.target_position = to_local(player.global_position)
-			vision_raycast.force_raycast_update()
 			if vision_raycast.is_colliding() and vision_raycast.get_collider() == player:
 				detected_now = true
 				last_known_player_position = player.global_position
@@ -137,8 +134,6 @@ func check_vision(guard_forward_direction: Vector2):
 		_on_player_detected()
 	elif not player_detected and was_detected:
 		_on_player_lost()
-
-
 
 func _on_player_detected():
 	print("¡Jugador DETECTADO!")

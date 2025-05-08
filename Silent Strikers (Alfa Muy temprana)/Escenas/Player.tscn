@@ -8,12 +8,16 @@ script/source = "extends CharacterBody2D
 # Velocidad de movimiento
 var puntaje
 var speed = 500
+var salud
 
 func _ready():
+	salud = 100
 	puntaje = 0
 
 # Actualización del movimiento
 func _process(delta):
+	if salud <= 0:
+		return
 	
 	velocity = Vector2()
 
@@ -32,10 +36,17 @@ func _process(delta):
 
 	move_and_slide()
 	
-
 func aumentar_puntaje(cantidad):
 	puntaje += cantidad
 	print(\"Puntaje actual: \", puntaje)
+
+func perder_salud(cantidad):
+	salud -= cantidad
+	print(\"Salud actual: \", salud)
+	
+func aumentar_velocidad(cantidad):
+	speed = speed * cantidad
+	print(\"Velocidad actyal: \", speed)
 "
 
 [sub_resource type="Animation" id="Animation_hhy33"]

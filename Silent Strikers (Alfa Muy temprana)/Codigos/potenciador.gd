@@ -1,0 +1,29 @@
+extends Area2D
+
+var player_in_range = false
+@export var potenciado = 1.5  # Cuántos puntos da este ítem
+
+
+func _ready():
+	body_entered.connect(_on_body_entered)
+	body_exited.connect(_on_body_exited)
+
+#Detecta si el Ladrón entro al rango
+func _on_body_entered(body):
+	if body.name == "Ladron":
+		player_in_range = true
+
+#Detecta si el Ladrón salió del rango
+func _on_body_exited(body):
+	if body.name == "Ladron":
+		player_in_range = false
+
+#Si el jugador esta en rango y presiona "interactuar", se recoge el item
+func _process(delta):
+	if player_in_range and Input.is_action_just_pressed("interactuar"):
+		potenciar()
+
+#Llama a la funcion aumentar puntaje del ladron
+func potenciar():
+	var jugador = get_node("../Ladron")
+	jugador.aumentar_velocidad(potenciado)

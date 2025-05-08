@@ -1,9 +1,9 @@
 [gd_scene load_steps=11 format=4 uid="uid://df8wgc7fxnvva"]
 
 [ext_resource type="PackedScene" uid="uid://drs5cxv35r63x" path="res://Escenas/Player.tscn" id="1_lbiw5"]
-[ext_resource type="Script" uid="uid://dchcu8rbqarsk" path="res://Codigos/mapa.gd" id="1_rj58i"]
 [ext_resource type="PackedScene" uid="uid://d1ouhuslclwme" path="res://Escenas/Guardia.tscn" id="2_qgw4m"]
 [ext_resource type="Texture2D" uid="uid://cuecitndoyo4b" path="res://Tiles mapas/Experimental.png" id="3_habko"]
+[ext_resource type="PackedScene" uid="uid://jyu2vbo07tku" path="res://Escenas/potenciador.tscn" id="5_1p004"]
 [ext_resource type="PackedScene" uid="uid://b2d1lacrstmpj" path="res://Escenas/item.tscn" id="5_rj58i"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_habko"]
@@ -59,7 +59,6 @@ navigation_layer_0/layers = 1
 sources/0 = SubResource("TileSetAtlasSource_habko")
 
 [node name="Mapa de Prueba" type="Node2D"]
-script = ExtResource("1_rj58i")
 
 [node name="Ladron" parent="." instance=ExtResource("1_lbiw5")]
 z_index = 1
@@ -75,15 +74,15 @@ tile_set = SubResource("TileSet_3db5g")
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(326, 1248)
 
-[node name="Guardia 2" parent="." node_paths=PackedStringArray("player") instance=ExtResource("2_qgw4m")]
+[node name="Guardia 2" parent="." instance=ExtResource("2_qgw4m")]
 z_index = 1
 position = Vector2(607, 702)
 rotation = 0.0106379
 patrol_points = Array[NodePath]([NodePath("../Marker2D"), NodePath("../Marker2D2"), NodePath("../Marker2D4"), NodePath("../Marker2D3")])
-player = NodePath("../Ladron")
 vision_cone_color = Color(0.640007, 0, 0.275743, 0.301961)
 
-[node name="Area2D" parent="." instance=ExtResource("5_rj58i")]
+[node name="Item" parent="." instance=ExtResource("5_rj58i")]
+scale = Vector2(0.39, 0.39)
 collision_layer = 3
 collision_mask = 3
 
@@ -95,3 +94,7 @@ position = Vector2(323, 98)
 
 [node name="Marker2D3" type="Marker2D" parent="."]
 position = Vector2(872, 1257)
+
+[node name="Area2D" parent="." instance=ExtResource("5_1p004")]
+position = Vector2(-81, 248)
+scale = Vector2(0.44, 0.44)
