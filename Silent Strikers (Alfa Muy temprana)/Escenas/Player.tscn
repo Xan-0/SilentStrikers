@@ -6,7 +6,11 @@
 [sub_resource type="GDScript" id="GDScript_xhfnw"]
 script/source = "extends CharacterBody2D
 # Velocidad de movimiento
-var speed = 200
+var puntaje
+var speed = 500
+
+func _ready():
+	puntaje = 0
 
 # Actualización del movimiento
 func _process(delta):
@@ -27,6 +31,11 @@ func _process(delta):
 		velocity = velocity.normalized() * speed
 
 	move_and_slide()
+	
+
+func aumentar_puntaje(cantidad):
+	puntaje += cantidad
+	print(\"Puntaje actual: \", puntaje)
 "
 
 [sub_resource type="Animation" id="Animation_hhy33"]
@@ -134,6 +143,7 @@ libraries = {
 script = ExtResource("2_wwpud")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
+light_mask = 5
+visibility_layer = 5
 position = Vector2(27, 18)
 shape = SubResource("RectangleShape2D_wwpud")
