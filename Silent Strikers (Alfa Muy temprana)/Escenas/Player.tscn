@@ -5,18 +5,21 @@
 
 [sub_resource type="GDScript" id="GDScript_xhfnw"]
 script/source = "extends CharacterBody2D
-# Velocidad de movimiento
-var puntaje
+var puntaje 
 var speed = 500
 var salud
+var muerto: bool = false # Para cambiar el salud <= 0
+var puntaje_win = 1000 # La cantidad de pts para ganar
+var game = false # Para ver si la partida termino o sigue
 
 func _ready():
 	salud = 100
 	puntaje = 0
+	muerto = false
 
 # Actualización del movimiento
 func _process(delta):
-	if salud <= 0:
+	if muerto:
 		return
 	
 	velocity = Vector2()
@@ -39,12 +42,23 @@ func _process(delta):
 func aumentar_puntaje(cantidad):
 	puntaje += cantidad
 	print(\"Puntaje actual: \", puntaje)
+	if puntaje >= puntaje_win:
+		game = true
+		print(\"Se banco\")
+		## HAY QUE CREAR LA ESCENA WIN O COMO LO VAMOS A HACER T.T
+		get_tree().change_scene_to_file(\"res://Escenas/win.tscn\")
 
 func perder_salud(cantidad):
 	salud -= cantidad
 	print(\"Salud actual: \", salud)
+	if salud <= 0:
+		muerto = true
+		print(\"gg.\")
+		## Podriamos repetir o hacer una escena para q repita el mapa o mande al menu
+		get_tree().change_scene_to_file(\"res://Escenas/loss.tscn\")
 	
 func aumentar_velocidad(cantidad):
+	if muerto: return
 	speed = speed * cantidad
 	print(\"Velocidad actyal: \", speed)
 "
