@@ -1,5 +1,10 @@
 extends CharacterBody2D
 
+#Se editó la func check_vision() para que, si está en estado SEARCHING, pueda detectar al jugador correctamente,
+#También ahora es más difícil perder al guardia por el chasing_timer, similar al searching_timer en el check_vision(),
+#Lo que hace es que, una vez se cambia a estado de persecución, seguirá actualizando constantemente la última posición
+#Del jugador mientras éste se encuentre en su campo de visión, además se cambia el tamaño del cono y ángulo de visión cuando se cambia de estado
+
 ## --- Variables de Movimiento y Navegación ---
 var speed = 300
 var acceleration = 7.0
@@ -24,8 +29,12 @@ var player_detected = false
 var last_known_player_position = Vector2.ZERO
 
 ## --- Tiempo de búsqueda ---
-var search_duration = 2.0 # Segundos que espera buscando
+var search_duration = 10.0 # Segundos que espera buscando
 var search_timer = 0.0
+
+## --- Tiempo de persecución ---
+var chase_duration = 8.0 # Segundos que dura el estado de persecución activado después de obtener la última posición del jugador
+var chasing_timer = 0.0
 
 ## --- Dibujo ---
 @export var draw_vision_cone: bool = true
@@ -50,10 +59,16 @@ func _physics_process(delta):
 	
 	match current_state:
 		State.PATROLLING:
+			vision_range = 300
+			vision_angle_degrees = 90
 			_process_patrolling(delta)
 		State.CHASING:
+			vision_range = 600
+			vision_angle_degrees = 120
 			_process_chasing(delta)
 		State.SEARCHING:
+			vision_range = 400
+			vision_angle_degrees = 90
 			_process_searching(delta)
 
 	# Rotación
@@ -75,6 +90,7 @@ func _process_patrolling(delta):
 
 
 func _process_chasing(delta):
+	chasing_timer -= delta
 	navigation_agent.target_position = last_known_player_position
 	if navigation_agent.is_navigation_finished():
 		# Si llegó a la última posición conocida y no ve al jugador, inicia búsqueda
@@ -88,7 +104,7 @@ func _process_chasing(delta):
 func _process_searching(delta):
 	search_timer -= delta
 	velocity = velocity.lerp(Vector2.ZERO, acceleration * delta)
-
+	
 	if search_timer <= 0.0:
 		current_state = State.PATROLLING
 		_set_next_patrol_point()
@@ -122,12 +138,20 @@ func check_vision(guard_forward_direction: Vector2):
 		var dir_norm = dir_to_player.normalized()
 		var dot = guard_forward_direction.dot(dir_norm)
 		var limit_dot = cos(deg_to_rad(vision_angle_degrees / 2.0))
-
-		if dot > limit_dot:
-			# ACTUALIZA SIEMPRE el raycast
-			if vision_raycast.is_colliding() and vision_raycast.get_collider() == player:
-				detected_now = true
-				last_known_player_position = player.global_position
+		
+		if current_state == State.SEARCHING:
+			if dot < vision_angle_degrees/360:
+				# ACTUALIZA SIEMPRE el raycast
+				if (vision_raycast.is_colliding() and vision_raycast.get_collider() == player):
+					detected_now = true
+					last_known_player_position = player.global_position
+		else:
+			if dot > limit_dot:
+				# ACTUALIZA SIEMPRE el raycast
+				if (vision_raycast.is_colliding() and vision_raycast.get_collider() == player) or chasing_timer > 0:
+					detected_now = true
+					last_known_player_position = player.global_position
+					current_state = State.CHASING
 
 	player_detected = detected_now
 	if player_detected and not was_detected:
@@ -138,7 +162,8 @@ func check_vision(guard_forward_direction: Vector2):
 func _on_player_detected():
 	print("¡Jugador DETECTADO!")
 	current_state = State.CHASING
-	search_timer = 0.0 
+	chasing_timer = chase_duration
+	search_timer = 0.0
 
 func _on_player_lost():
 	print("¡Jugador Perdido¡")
