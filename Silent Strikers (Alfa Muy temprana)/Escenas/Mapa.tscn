@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://b2d1lacrstmpj" path="res://Escenas/item.tscn" id="5_rj58i"]
 [ext_resource type="Script" uid="uid://cf38ppbm0nchk" path="res://Escenas/sub_viewport.gd" id="7_h5d8a"]
 [ext_resource type="Script" uid="uid://bmb10fy424788" path="res://Escenas/node_2d.gd" id="8_7njfp"]
-[ext_resource type="Texture2D" uid="uid://b648k32s5ky7s" path="res://icon.svg" id="9_bi4ho"]
+[ext_resource type="Texture2D" uid="uid://cq0m31wscfdjr" path="res://icon.svg" id="9_bi4ho"]
 [ext_resource type="Texture2D" uid="uid://bukx3iv34xhxd" path="res://Imagenes/item_robable_04.png" id="10_ian7j"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_habko"]
