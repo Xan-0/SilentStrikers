@@ -9,4 +9,3 @@ func _ready():
 func _on_body_entered(body):
 	if body.name == "Ladron":
 		body.perder_salud(5)
-		get

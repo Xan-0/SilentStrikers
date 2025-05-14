@@ -46,7 +46,7 @@ func aumentar_puntaje(cantidad):
 		game = true
 		print(\"Se banco\")
 		## HAY QUE CREAR LA ESCENA WIN O COMO LO VAMOS A HACER T.T
-		get_tree().change_scene_to_file(\"res://Escenas/win.tscn\")
+		get_tree().change_scene_to_file(\"res://Escenas/victory_screen.tscn\")
 
 func perder_salud(cantidad):
 	salud -= cantidad
@@ -55,7 +55,7 @@ func perder_salud(cantidad):
 		muerto = true
 		print(\"gg.\")
 		## Podriamos repetir o hacer una escena para q repita el mapa o mande al menu
-		get_tree().change_scene_to_file(\"res://Escenas/loss.tscn\")
+		get_tree().change_scene_to_file(\"res://Escenas/defeat_screen.tscn\")
 	
 func aumentar_velocidad(cantidad):
 	if muerto: return
