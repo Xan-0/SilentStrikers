@@ -1,10 +1,15 @@
-[gd_scene load_steps=11 format=4 uid="uid://df8wgc7fxnvva"]
+[gd_scene load_steps=16 format=4 uid="uid://df8wgc7fxnvva"]
 
 [ext_resource type="PackedScene" uid="uid://drs5cxv35r63x" path="res://Escenas/Player.tscn" id="1_lbiw5"]
 [ext_resource type="PackedScene" uid="uid://d1ouhuslclwme" path="res://Escenas/Guardia.tscn" id="2_qgw4m"]
+[ext_resource type="Script" uid="uid://deyufbfcfeppo" path="res://Escenas/canvas_layer.gd" id="3_1p004"]
 [ext_resource type="Texture2D" uid="uid://cuecitndoyo4b" path="res://Tiles mapas/Experimental.png" id="3_habko"]
 [ext_resource type="PackedScene" uid="uid://jyu2vbo07tku" path="res://Escenas/potenciador.tscn" id="5_1p004"]
 [ext_resource type="PackedScene" uid="uid://b2d1lacrstmpj" path="res://Escenas/item.tscn" id="5_rj58i"]
+[ext_resource type="Script" uid="uid://cf38ppbm0nchk" path="res://Escenas/sub_viewport.gd" id="7_h5d8a"]
+[ext_resource type="Script" uid="uid://bmb10fy424788" path="res://Escenas/node_2d.gd" id="8_7njfp"]
+[ext_resource type="Texture2D" uid="uid://b648k32s5ky7s" path="res://icon.svg" id="9_bi4ho"]
+[ext_resource type="Texture2D" uid="uid://bukx3iv34xhxd" path="res://Imagenes/item_robable_04.png" id="10_ian7j"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_habko"]
 vertices = PackedVector2Array(25, 25, -25, 25, -25, -25, 25, -25)
@@ -98,3 +103,58 @@ position = Vector2(872, 1257)
 [node name="Area2D" parent="." instance=ExtResource("5_1p004")]
 position = Vector2(-81, 248)
 scale = Vector2(0.44, 0.44)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+script = ExtResource("3_1p004")
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_right = 0.193
+anchor_bottom = 0.182
+offset_left = 51.0
+offset_top = 38.0
+offset_right = -131.336
+offset_bottom = -56.936
+
+[node name="LifeLabel" type="Label" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_right = 0.249
+anchor_bottom = 0.157
+offset_left = 883.0
+offset_top = 19.0
+offset_right = 636.152
+offset_bottom = -59.736
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer"]
+top_level = true
+anchors_preset = -1
+anchor_left = 0.047
+anchor_top = 0.5
+anchor_right = 0.047
+anchor_bottom = 0.5
+offset_left = 809.856
+offset_top = 24.0
+offset_right = 1321.86
+offset_bottom = 536.0
+
+[node name="SubViewport" type="SubViewport" parent="CanvasLayer/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(300, 300)
+render_target_update_mode = 4
+script = ExtResource("7_h5d8a")
+
+[node name="Camera2D" type="Camera2D" parent="CanvasLayer/SubViewportContainer/SubViewport"]
+zoom = Vector2(0.1, 0.1)
+
+[node name="Node2D" type="Node2D" parent="CanvasLayer/SubViewportContainer/SubViewport"]
+script = ExtResource("8_7njfp")
+
+[node name="jugador_icono" type="Sprite2D" parent="CanvasLayer/SubViewportContainer/SubViewport/Node2D"]
+texture = ExtResource("9_bi4ho")
+
+[node name="guardia_icono" type="Sprite2D" parent="CanvasLayer/SubViewportContainer/SubViewport/Node2D"]
+texture = ExtResource("10_ian7j")
