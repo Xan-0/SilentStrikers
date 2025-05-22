@@ -13,7 +13,7 @@ var puntaje_win = 1000 # La cantidad de pts para ganar
 var game = false # Para ver si la partida termino o sigue
 
 func _ready():
-	salud = 100
+	salud = 3
 	puntaje = 0
 	muerto = false
 
