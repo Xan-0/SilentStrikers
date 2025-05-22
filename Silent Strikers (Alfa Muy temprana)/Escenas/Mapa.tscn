@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://df8wgc7fxnvva"]
+[gd_scene load_steps=21 format=4 uid="uid://df8wgc7fxnvva"]
 
 [ext_resource type="PackedScene" uid="uid://drs5cxv35r63x" path="res://Escenas/Player.tscn" id="1_lbiw5"]
 [ext_resource type="PackedScene" uid="uid://d1ouhuslclwme" path="res://Escenas/Guardia.tscn" id="2_qgw4m"]
@@ -8,8 +8,13 @@
 [ext_resource type="PackedScene" uid="uid://b2d1lacrstmpj" path="res://Escenas/item.tscn" id="5_rj58i"]
 [ext_resource type="Script" uid="uid://cf38ppbm0nchk" path="res://Escenas/sub_viewport.gd" id="7_h5d8a"]
 [ext_resource type="Script" uid="uid://bmb10fy424788" path="res://Escenas/node_2d.gd" id="8_7njfp"]
-[ext_resource type="Texture2D" uid="uid://b648k32s5ky7s" path="res://icon.svg" id="9_bi4ho"]
+[ext_resource type="Texture2D" uid="uid://cq0m31wscfdjr" path="res://icon.svg" id="9_bi4ho"]
 [ext_resource type="Texture2D" uid="uid://bukx3iv34xhxd" path="res://Imagenes/item_robable_04.png" id="10_ian7j"]
+[ext_resource type="Texture2D" uid="uid://ix61llfpdhxk" path="res://Sprites/sprits de prueba/New Piskel (14).png" id="11_h0jna"]
+[ext_resource type="Texture2D" uid="uid://b1rlteqk18guf" path="res://Sprites/sprits de prueba/New Piskel (11).png" id="12_lpesb"]
+[ext_resource type="Texture2D" uid="uid://xo0sm7rqhs87" path="res://Sprites/sprits de prueba/New Piskel (13).png" id="12_yex7o"]
+[ext_resource type="Texture2D" uid="uid://nlpgntvqo06s" path="res://Sprites/sprits de prueba/New Piskel (9).png" id="13_h0jna"]
+[ext_resource type="Texture2D" uid="uid://c1d04k1ykdmrx" path="res://Sprites/sprits de prueba/New Piskel (10).png" id="14_yex7o"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_habko"]
 vertices = PackedVector2Array(25, 25, -25, 25, -25, -25, 25, -25)
@@ -150,11 +155,83 @@ script = ExtResource("7_h5d8a")
 [node name="Camera2D" type="Camera2D" parent="CanvasLayer/SubViewportContainer/SubViewport"]
 zoom = Vector2(0.1, 0.1)
 
-[node name="Node2D" type="Node2D" parent="CanvasLayer/SubViewportContainer/SubViewport"]
+[node name="Node2D" type="Node2D" parent="CanvasLayer/SubViewportContainer/SubViewport/Camera2D"]
 script = ExtResource("8_7njfp")
 
-[node name="jugador_icono" type="Sprite2D" parent="CanvasLayer/SubViewportContainer/SubViewport/Node2D"]
+[node name="jugador_icono" type="Sprite2D" parent="CanvasLayer/SubViewportContainer/SubViewport/Camera2D/Node2D"]
 texture = ExtResource("9_bi4ho")
 
-[node name="guardia_icono" type="Sprite2D" parent="CanvasLayer/SubViewportContainer/SubViewport/Node2D"]
+[node name="guardia_icono" type="Sprite2D" parent="CanvasLayer/SubViewportContainer/SubViewport/Camera2D/Node2D"]
 texture = ExtResource("10_ian7j")
+
+[node name="oportunidad_1" type="TextureProgressBar" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_right = 0.747
+anchor_bottom = 0.564
+offset_left = 43.0
+offset_top = 49.0
+offset_right = -753.544
+offset_bottom = -252.472
+max_value = 1.0
+nine_patch_stretch = true
+texture_under = ExtResource("11_h0jna")
+texture_progress = ExtResource("12_yex7o")
+
+[node name="oportunidad_2" type="TextureProgressBar" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_right = 0.747
+anchor_bottom = 0.564
+offset_left = 118.0
+offset_top = 50.0
+offset_right = -678.544
+offset_bottom = -251.472
+max_value = 1.0
+nine_patch_stretch = true
+texture_under = ExtResource("11_h0jna")
+texture_progress = ExtResource("12_yex7o")
+
+[node name="oportunidad_3" type="TextureProgressBar" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_right = 0.747
+anchor_bottom = 0.564
+offset_left = 191.0
+offset_top = 51.0
+offset_right = -605.544
+offset_bottom = -250.472
+max_value = 1.0
+nine_patch_stretch = true
+texture_under = ExtResource("11_h0jna")
+texture_progress = ExtResource("12_yex7o")
+
+[node name="barra_de_puntaje_1" type="TextureProgressBar" parent="CanvasLayer"]
+offset_left = 30.0
+offset_top = 550.0
+offset_right = 120.0
+offset_bottom = 640.0
+max_value = 150.0
+texture_under = ExtResource("12_lpesb")
+texture_over = ExtResource("13_h0jna")
+texture_progress = ExtResource("14_yex7o")
+
+[node name="barra_de_puntaje_2" type="TextureProgressBar" parent="CanvasLayer"]
+offset_left = 130.0
+offset_top = 550.0
+offset_right = 220.0
+offset_bottom = 640.0
+scale = Vector2(2, 1)
+max_value = 300.0
+texture_under = ExtResource("12_lpesb")
+texture_over = ExtResource("13_h0jna")
+texture_progress = ExtResource("14_yex7o")
+texture_progress_offset = Vector2(1, 0)
+
+[node name="barra_de_puntaje_3" type="TextureProgressBar" parent="CanvasLayer"]
+offset_left = 320.0
+offset_top = 550.0
+offset_right = 410.0
+offset_bottom = 640.0
+scale = Vector2(3.667, 1)
+max_value = 550.0
+texture_under = ExtResource("12_lpesb")
+texture_over = ExtResource("13_h0jna")
+texture_progress = ExtResource("14_yex7o")
