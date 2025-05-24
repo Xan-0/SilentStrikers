@@ -14,6 +14,7 @@ var salud: int
 
 func _ready():
 	player = get_node("../Ladron")  # Ajusta la ruta al nodo del jugador
+	
 	# Verificar si la referencia al jugador es válida
 	if player == null:
 		print("Error: El nodo 'Ladron' no se encuentra.")

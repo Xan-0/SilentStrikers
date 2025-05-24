@@ -1,7 +1,7 @@
 extends Area2D
 
 var player_in_range = false
-@export var puntos = 100  # Cuántos puntos da este ítem
+@export var puntos = 200  # Cuántos puntos da este ítem
 
 func _ready():
 	body_entered.connect(_on_body_entered)
@@ -11,6 +11,7 @@ func _ready():
 func _on_body_entered(body):
 	if body.name == "Ladron":
 		player_in_range = true
+		body.aumentar_puntaje(puntos)
 
 #Detecta si el Ladrón salió del rango
 func _on_body_exited(body):
