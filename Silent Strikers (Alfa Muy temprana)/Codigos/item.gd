@@ -1,7 +1,7 @@
 extends Area2D
 
 var player_in_range = false
-@export var puntos = 800  # Cuántos puntos da este ítem
+@export var puntos = 200  # Cuántos puntos da este ítem
 
 func _ready():
 	body_entered.connect(_on_body_entered)
