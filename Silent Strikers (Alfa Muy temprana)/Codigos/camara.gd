@@ -38,7 +38,7 @@ func check_vision():
 	var angle_to_player = Vector2.RIGHT.rotated(rotation2).angle_to(dir_norm)
 	var limit_angle = deg_to_rad(vision_angle_degrees / 2.0)
 
-	if abs(angle_to_player) <= limit_angle:
+	if abs(angle_to_player) <= limit_angle + deg_to_rad(20):
 		raycast.target_position = to_local(player.global_position)
 		raycast.force_raycast_update()
 		if raycast.is_colliding() and raycast.get_collider() == player:
@@ -83,7 +83,7 @@ func _draw():
 
 	for i in range(segments + 1):
 		var angle = -half_angle + (i / float(segments)) * (2 * half_angle)
-		points.append(Vector2.RIGHT.rotated(angle + rotation2) * vision_range)
+		points.append(Vector2.RIGHT.rotated(angle + rotation2) * vision_range * 2)
 
 	if points.size() > 0:
 		draw_line(Vector2.ZERO, points[0], vision_cone_color, 1.0)
