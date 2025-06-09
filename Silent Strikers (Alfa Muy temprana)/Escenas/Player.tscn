@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://drs5cxv35r63x"]
+[gd_scene load_steps=12 format=3 uid="uid://drs5cxv35r63x"]
 
 [ext_resource type="Script" uid="uid://c0re5k1bmymb" path="res://Codigos/player.gd" id="1_c1rio"]
 [ext_resource type="Texture2D" uid="uid://bem6gwqtit7bv" path="res://Sprites/spritesheetsimetrico2.png" id="1_wwpud"]
 [ext_resource type="Script" uid="uid://dib8nk5h42s3f" path="res://Escenas/animation_player.gd" id="2_wwpud"]
+[ext_resource type="Script" uid="uid://max1egsg5dfi" path="res://Escenas/noise_emitter.gd" id="4_hhy33"]
 
 [sub_resource type="Animation" id="Animation_hhy33"]
 resource_name = "Abajo"
@@ -115,3 +116,6 @@ light_mask = 5
 visibility_layer = 5
 position = Vector2(0, 4)
 shape = SubResource("RectangleShape2D_wwpud")
+
+[node name="NoiseEmitter" type="Node" parent="."]
+script = ExtResource("4_hhy33")

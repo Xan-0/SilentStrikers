@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://d1ouhuslclwme"]
+[gd_scene load_steps=14 format=3 uid="uid://d1ouhuslclwme"]
 
 [ext_resource type="Script" uid="uid://bl7xsghjndym2" path="res://Codigos/Guardia.gd" id="1_gxl0b"]
 [ext_resource type="Texture2D" uid="uid://cud6v0l3syc43" path="res://Sprites/Guardia comun.png" id="2_1uryg"]
-[ext_resource type="Script" uid="uid://b7b4ernwbles7" path="res://Codigos/animation_guardia.gd" id="3_g5ju6"]
+[ext_resource type="Script" uid="uid://b7b4ernwbles7" path="res://Escenas/animation_guardia.gd" id="3_g5ju6"]
 [ext_resource type="Script" uid="uid://bg7tpbudvl3k3" path="res://Codigos/Ataque.gd" id="4_1uryg"]
 [ext_resource type="Script" uid="uid://ctuuiip4c0u0s" path="res://Codigos/vision.gd" id="5_g5ju6"]
+[ext_resource type="Script" uid="uid://7owskyap5u4d" path="res://Codigos/Noiselistener.gd" id="6_r4su0"]
 
 [sub_resource type="Animation" id="Animation_pjdr2"]
 resource_name = "Abajo"
@@ -134,3 +135,7 @@ script = ExtResource("5_g5ju6")
 polygon = PackedVector2Array(1, -2, 460, -165, 460, 165)
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
+
+[node name="Node" type="Node" parent="." node_paths=PackedStringArray("guard")]
+script = ExtResource("6_r4su0")
+guard = NodePath("..")

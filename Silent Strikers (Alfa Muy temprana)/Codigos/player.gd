@@ -1,4 +1,5 @@
 extends CharacterBody2D
+@onready var noise_emitter = $NoiseEmitter
 var puntaje 
 var speed = 500
 var initial_speed = 500
@@ -47,8 +48,8 @@ func _process(delta):
 		_set_next_spawn_point()
 		invisibilidad_usada = false
 		
-
-
+		
+		
 	if Input.is_action_pressed("ui_right"):
 		velocity.x += 1
 	if Input.is_action_pressed("ui_left"):
@@ -64,6 +65,15 @@ func _process(delta):
 
 	move_and_slide()
 	
+	
+func _unhandled_input(event):
+	# Comprobamos si la acción "ui_accept" (generalmente la barra Espaciadora o Enter) se acaba de presionar.
+	if event.is_action_pressed("ui_accept"):
+		print("¡Tecla de prueba de ruido presionada!")
+		# Le decimos a nuestro emisor que emita su ruido por defecto.
+		noise_emitter.emit_noise()
+
+
 func aumentar_puntaje(cantidad):
 	puntaje += cantidad
 	print("Puntaje actual: ", puntaje)
