@@ -1,216 +1,278 @@
 extends CharacterBody2D
 
-## --- Variables de Movimiento y Navegación ---
-var speed = 300
-var acceleration = 7.0
-var forward
-@export var patrol_points: Array[NodePath] = []
-var player: CharacterBody2D
-var rotation2 = rotation #rotación usada para la vision, No es la rotación del guardia
+# ===================================================================
+# SCRIPT DE GUARDIA - VERSIÓN FINAL, COMPLETA Y FUNCIONAL
+# ===================================================================
 
+# --- ESTADOS DE LA IA ---
+enum State { PATROLLING, CHASING, SEARCHING }
+
+# --- VARIABLES CONFIGURABLES EN EL EDITOR ---
+@export_group("Patrullaje Dinámico")
+@export var patrol_area_node: NodePath # Para asignar nuestra ZonaDePatrulla
+@export var patrol_idle_duration = 3.0 # Segundos que espera antes de buscar otro punto
+@export_group("Stats Base")
+@export var patrol_speed = 150.0
+@export var chase_speed = 300.0
+@export var acceleration = 8.0
+
+@export_group("Vision")
+@export var patrol_vision_range = 350.0
+@export var patrol_vision_angle = 90.0
+@export_group("Tiempos")
+@export var chase_duration = 8.0  # Tiempo que persigue tras perderte de vista
+@export var search_duration = 5.0 # Tiempo que se queda buscando
+
+# --- NODOS HIJOS REQUERIDOS ---
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
-@onready var vision_polygon := $Polygon2D
+@onready var vision_raycast: RayCast2D = $VisionRayCast
+@onready var animations: AnimationPlayer = $AnimationPlayer
+@onready var vision_polygon: Polygon2D = $VisionPolygon
+@onready var debug_label: Label = $DebugLabel
+
+# --- VARIABLES INTERNAS ---
+var player: CharacterBody2D
+var current_state = State.PATROLLING
+var last_known_player_position = Vector2.ZERO
+var facing_direction = Vector2.DOWN # Dirección persistente para la visión
+var chasing_timer = 0.0
+var search_timer = 0.0
+var patrol_area: Area2D
+var patrol_idle_timer = 0.0
 
 ## --- Variables de Visión y Detección ---
 var vision_range = 300.0
 var vision_angle_degrees = 90.0
+
+# --- AÑADE ESTAS CUATRO LÍNEAS AQUÍ ---
+var chase_vision_range = 500.0
+var chase_vision_angle = 120.0
+# -----------------------------------------
+
 var wall_collision_mask = 1
-@onready var vision_raycast: RayCast2D = $VisionRayCast
 @onready var vision_area: Area2D = $Vision
 
-## --- Variables de Estado ---
-enum State { PATROLLING, CHASING, SEARCHING }
-var current_state = State.PATROLLING
-var patrol_index = 0
-var player_detected = false
-var last_known_player_position = Vector2.ZERO
 
-## --- Tiempo de búsqueda ---
-var search_duration = 10.0 # Segundos que espera buscando
-var search_timer = 0.0
-
-## --- Tiempo de persecución ---
-var chase_duration = 8.0 # Segundos que dura el estado de persecución activado después de obtener la última posición del jugador
-var chasing_timer = 0.0
-
-## --- Dibujo y Animación ---
-@export var draw_vision_cone: bool = true
-@export var vision_cone_color: Color = Color(1, 1, 0, 0.3)
-@onready var animations: AnimationPlayer = get_node("AnimationPlayer")
-
+# ===================================================================
+# FUNCIONES PRINCIPALES DE GODOT
+# ===================================================================
 func _ready():
-	player = get_node("../Ladron")
+	player = get_node_or_null("../Ladron")
+	if patrol_area_node:
+		patrol_area = get_node_or_null(patrol_area_node)
+	if not patrol_area:
+		print_rich("[color=yellow]ADVERTENCIA: No se asignó un área de patrullaje. El guardia se quedará quieto.[/color]")
+	if not player:
+		print_rich("[color=red]ERROR CRÍTICO: No se encontró el nodo del Ladrón. La IA se desactivará.[/color]")
+		set_physics_process(false)
+		return
+	
 	add_to_group("Guardias")
 	vision_raycast.add_exception(self)
-	vision_raycast.collision_mask = wall_collision_mask | player.collision_layer
+	# Asume que las paredes están en la capa 1 y el jugador en la capa 2.
+	vision_raycast.collision_mask = 1 | 2
+	_enter_patrol_state()
 
-	_set_next_patrol_point()
-
-func _process(delta: float) -> void:
-	vision_raycast.target_position = to_local(player.global_position)
-	vision_raycast.force_raycast_update()	
+func _physics_process(delta: float):
+	# El ciclo de la IA es: PERCIBIR -> DECIDIR -> ACTUAR
+	var can_see_player_now = _check_vision()
+	_update_debug_info()
 	
-func _physics_process(delta):
-	
-	_update_vision_cone()
-
-	
-	if player.invisible():
-		current_state = State.PATROLLING
-	forward = (navigation_agent.get_next_path_position() - global_position).normalized()
-	if forward == Vector2.ZERO:
-		forward = Vector2.RIGHT.rotated(rotation) # fallback si no hay camino
-	check_vision(forward)
-	
+	# --- FASE DE DECISIÓN ---
 	match current_state:
 		State.PATROLLING:
-			vision_range = 300
-			vision_angle_degrees = 90
-			speed = 200
-			_process_patrolling(delta)
+			if can_see_player_now:
+				_enter_chase_state()
 		State.CHASING:
-			vision_range = 600
-			vision_angle_degrees = 120
-			speed = 300
-			_process_chasing(delta)
+			if can_see_player_now:
+				last_known_player_position = player.global_position
+				chasing_timer = chase_duration
+			else:
+				chasing_timer -= delta
+			
+			if chasing_timer <= 0 or (navigation_agent.is_navigation_finished() and not can_see_player_now):
+				_enter_search_state()
 		State.SEARCHING:
-			vision_range = 400
-			vision_angle_degrees = 90
-			speed = 200
-			_process_searching(delta)
+			search_timer -= delta
+			if can_see_player_now:
+				_enter_chase_state()
+			elif search_timer <= 0:
+				_enter_patrol_state()
 
-	# Rotación
-	var move_dir = velocity.normalized()
-	if move_dir != Vector2.ZERO:
-		var horizontal = false
-		if move_dir.x > 0 and (move_dir.y > -0.3 and move_dir.y < 0.3):
-			animations.play("Derecha")
-			horizontal = true
-		elif move_dir.x < 0 and (move_dir.y > -0.3 and move_dir.y < 0.3):
-			animations.play("Izquierda")
-			horizontal = true
-		if not horizontal:
-			if move_dir.y > 0  or (move_dir.y > 0 and move_dir.x < 0) or (move_dir.y > 0 and move_dir.x > 0):
-				animations.play("Abajo")
-			elif move_dir.y < 0 or (move_dir.y < 0 and move_dir.x < 0) or (move_dir.y < 0 and move_dir.x > 0):
-				animations.play("Arriba")
-		rotation2 = move_dir.angle()
+	# --- FASE DE ACCIÓN ---
+	match current_state:
+		State.PATROLLING:
+			_act_patrolling(delta)
+		State.CHASING:
+			_act_chasing(delta)
+		State.SEARCHING:
+			_act_searching(delta)
 	
-	move_and_slide()
-	
-	if draw_vision_cone:
-		queue_redraw()
+	_update_animations_and_facing_direction()
+	_update_vision_cone_visuals()
 
+# ===================================================================
+# LÓGICA DE CADA ESTADO
+# ===================================================================
+func _enter_patrol_state():
+	current_state = State.PATROLLING
+	# Forzamos a que busque un destino la primera vez, sin esperar.
+	_set_new_random_destination() 
+	print("Entrando en estado: PATRULLA DINÁMICA")
 
-func _process_patrolling(delta):
-	# Patrulla normal
-	if navigation_agent.is_navigation_finished():
-		_set_next_patrol_point()
-	_update_navigation_velocity(delta)
-
-
-func _process_chasing(delta):
-	chasing_timer -= delta
-	navigation_agent.target_position = last_known_player_position
-	if navigation_agent.is_navigation_finished():
-		# Si llegó a la última posición conocida y no ve al jugador, inicia búsqueda
-		if not player_detected:
-			current_state = State.SEARCHING
-			search_timer = search_duration
-
-	_update_navigation_velocity(delta)
-
-
-func _process_searching(delta):
-	search_timer -= delta
-	velocity = velocity.lerp(Vector2.ZERO, acceleration * delta)
-	
-	if search_timer <= 0.0:
-		current_state = State.PATROLLING
-		_set_next_patrol_point()
-
-func _update_navigation_velocity(delta):
-	if not navigation_agent.is_navigation_finished():
-		var next_pos = navigation_agent.get_next_path_position()
-		var dir = (next_pos - global_position).normalized()
-		velocity = velocity.lerp(dir * speed, acceleration * delta)
-	else:
-		velocity = velocity.lerp(Vector2.ZERO, acceleration * delta)
-
-
-func _set_next_patrol_point():
-	if patrol_points.size() == 0:
-		return
-	var patrol_node = get_node_or_null(patrol_points[patrol_index])
-	if patrol_node:
-		navigation_agent.target_position = patrol_node.global_position
-	patrol_index = (patrol_index + 1) % patrol_points.size()
-
-
-func check_vision(guard_forward_direction: Vector2):
-	var was_detected = player_detected
-	var detected_now = false
-
-	var dir_to_player = player.global_position - global_position
-	var dist = dir_to_player.length()
-
-	if dist <= vision_range:
-		var dir_norm = dir_to_player.normalized()
-		var dot = guard_forward_direction.dot(dir_norm)
-		var limit_dot = cos(deg_to_rad(vision_angle_degrees / 2.0))
-		
-		if current_state == State.SEARCHING:
-			if dot < vision_angle_degrees/360:
-				# ACTUALIZA SIEMPRE el raycast
-				if (vision_raycast.is_colliding() and vision_raycast.get_collider() == player):
-					detected_now = true
-					last_known_player_position = player.global_position
-		else:
-			if dot > limit_dot:
-				# ACTUALIZA SIEMPRE el raycast
-				if (vision_raycast.is_colliding() and vision_raycast.get_collider() == player) or (chasing_timer > 0 and not player.invisible()):
-					detected_now = true
-					last_known_player_position = player.global_position
-					current_state = State.CHASING
-
-	player_detected = detected_now
-	if player_detected and not was_detected:
-		_on_player_detected()
-	elif not player_detected and was_detected:
-		_on_player_lost()
-
-func _on_player_detected():
-	print("¡Jugador DETECTADO!")
+func _enter_chase_state():
 	current_state = State.CHASING
 	chasing_timer = chase_duration
-	search_timer = 0.0
+	if player and _check_vision(): # Solo actualiza si lo ve en este instante
+		last_known_player_position = player.global_position
 
-func _on_player_lost():
-	print("¡Jugador Perdido¡")
+func _enter_search_state():
+	current_state = State.SEARCHING
+	search_timer = search_duration
+	navigation_agent.target_position = last_known_player_position
 
-func _draw():
-	var half_angle = deg_to_rad(vision_angle_degrees / 2.0)
-	var segments = 20
-	var points = PackedVector2Array()
-
-	for i in range(segments + 1):
-		var angle = -half_angle + ((half_angle) * 2.0 * i / segments)
-		points.append(Vector2.RIGHT.rotated(angle+rotation2) * vision_range)
-
-	if points.size() > 0:
-		draw_line(Vector2.ZERO, points[0], vision_cone_color, 1.0)
-		draw_polyline(points, vision_cone_color, 1.0)
-		draw_line(Vector2.ZERO, points[-1], vision_cone_color, 1.0)
+func _act_patrolling(delta):
+	# Si hemos llegado a nuestro destino...
+	if navigation_agent.is_navigation_finished():
+		# ...detenemos al guardia y activamos el timer de descanso.
+		velocity = velocity.lerp(Vector2.ZERO, acceleration * delta)
+		patrol_idle_timer -= delta
 		
-func _update_vision_cone():
-	var half_angle = deg_to_rad(vision_angle_degrees / 2.0)
+		# Cuando el timer de descanso llega a cero, busca un nuevo destino.
+		if patrol_idle_timer <= 0:
+			_set_new_random_destination()
+	else:
+		# Si todavía no hemos llegado, nos seguimos moviendo.
+		_move_towards_target(patrol_speed, delta)
+
+
+
+func _act_chasing(delta):
+	navigation_agent.target_position = last_known_player_position
+	_move_towards_target(chase_speed, delta)
+
+func _act_searching(delta):
+	if navigation_agent.is_navigation_finished():
+		velocity = velocity.lerp(Vector2.ZERO, acceleration * delta)
+	else:
+		_move_towards_target(patrol_speed, delta)
+
+# ===================================================================
+# FUNCIONES DE APOYO (MOVIMIENTO, VISIÓN, ETC.)
+# ===================================================================
+func _move_towards_target(current_speed, delta):
+	if navigation_agent.is_target_reachable():
+		var direction = global_position.direction_to(navigation_agent.get_next_path_position())
+		velocity = velocity.lerp(direction * current_speed, acceleration * delta)
+	else:
+		velocity = velocity.lerp(Vector2.ZERO, acceleration * delta)
+	move_and_slide()
+
+func _set_new_random_destination():
+	print("--- Buscando nuevo destino de patrulla... ---")
+	if not patrol_area: 
+		print_rich("[color=red]ERROR: 'patrol_area' no está asignada. El guardia no se puede mover.[/color]")
+		return
+
+	# 1. Obtenemos los límites del área de patrullaje
+	var patrol_shape = patrol_area.get_node_or_null("CollisionShape2D")
+	if not patrol_shape:
+		print_rich("[color=red]ERROR: No se encontró 'CollisionShape2D' dentro del área de patrulla.[/color]")
+		return
+		
+	var bounds = patrol_shape.shape.get_rect()
+	
+	# 2. Elegimos un punto X e Y aleatorio
+	var random_point = Vector2(
+		randf_range(bounds.position.x, bounds.end.x),
+		randf_range(bounds.position.y, bounds.end.y)
+	)
+	var global_random_point = patrol_area.to_global(random_point)
+	print("Punto aleatorio generado: ", global_random_point)
+	
+	# 3. Ajustamos el punto a la zona caminable más cercana
+	var map = get_world_2d().navigation_map
+	var safe_point = NavigationServer2D.map_get_closest_point(map, global_random_point)
+	print("Punto seguro en navmesh: ", safe_point)
+	
+	# 4. Asignamos el nuevo destino y reseteamos el timer
+	navigation_agent.target_position = safe_point
+	patrol_idle_timer = patrol_idle_duration
+	print("--- Nuevo objetivo asignado. ---")
+
+
+
+func _check_vision() -> bool:
+	if not player: return false
+	
+	var vision_range_current = patrol_vision_range
+	if current_state == State.CHASING:
+		vision_range_current = chase_vision_range
+		
+	var vector_to_player = player.global_position - global_position
+	if vector_to_player.length() > vision_range_current: return false
+	
+	vision_raycast.target_position = vector_to_player
+	vision_raycast.force_raycast_update()
+
+	var vision_angle_current = patrol_vision_angle
+	if current_state == State.CHASING:
+		vision_angle_current = chase_vision_angle
+
+	if facing_direction.dot(vector_to_player.normalized()) < cos(deg_to_rad(vision_angle_current / 2.0)):
+		return false
+	
+	if not vision_raycast.is_colliding() or vision_raycast.get_collider() != player:
+		return false
+	
+	return true
+
+func _update_animations_and_facing_direction():
+	if velocity.length() > 10:
+		facing_direction = velocity.normalized()
+		var angle_deg = rad_to_deg(facing_direction.angle())
+		if angle_deg > -45 and angle_deg <= 45: animations.play("Derecha")
+		elif angle_deg > 45 and angle_deg <= 135: animations.play("Abajo")
+		elif angle_deg > 135 or angle_deg <= -135: animations.play("Izquierda")
+		else: animations.play("Arriba")
+	else:
+		animations.stop()
+
+func _update_vision_cone_visuals():
+	var vision_range = patrol_vision_range
+	if current_state == State.CHASING:
+		vision_range = chase_vision_range
+	var vision_angle = patrol_vision_angle
+	if current_state == State.CHASING:
+		vision_angle = chase_vision_angle
+	
+	var points = PackedVector2Array([Vector2.ZERO])
 	var segments = 20
-	var points = PackedVector2Array()
-	points.append(Vector2.ZERO) # Centro del cono
-
+	var half_angle_rad = deg_to_rad(vision_angle / 2.0)
+	
 	for i in range(segments + 1):
-		var angle = -half_angle + ((half_angle) * 2.0 * i / segments)
-		points.append(Vector2.RIGHT.rotated(angle + rotation2) * vision_range)
-
+		var angle = facing_direction.angle() - half_angle_rad + (half_angle_rad * 2 * i / segments)
+		points.append(Vector2.RIGHT.rotated(angle) * vision_range)
+		
 	vision_polygon.polygon = points
-	vision_polygon.color = Color(1, 1, 0.5, 0.4) # Amarillo claro translúcido
+	vision_polygon.color = Color(1, 1, 0, 0.2)
+
+# ===================================================================
+# FUNCIÓN PÚBLICA PARA REACCIONAR AL RUIDO
+# ===================================================================
+func hear_noise(noise_position: Vector2):
+	if current_state == State.PATROLLING:
+		var map = get_world_2d().navigation_map
+		var closest_valid_point = NavigationServer2D.map_get_closest_point(map, noise_position)
+		last_known_player_position = closest_valid_point
+		_enter_chase_state()
+		
+func _update_debug_info():
+	# Formateamos el texto que queremos mostrar.
+	# El \n crea un salto de línea. 
+	var state_text = "ESTADO: %s" % State.keys()[current_state]
+	var chase_timer_text = "Chase Timer: %.1f" % chasing_timer
+	var search_timer_text = "Search Timer: %.1f" % search_timer
+
+	# Unimos todo en un solo string y lo asignamos al texto de la etiqueta.
+	debug_label.text = "%s\n%s\n%s" % [state_text, chase_timer_text, search_timer_text]

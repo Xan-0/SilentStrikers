@@ -91,7 +91,7 @@ _data = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wwpud"]
-size = Vector2(106, 274)
+size = Vector2(134, 277)
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 collision_layer = 2
@@ -114,7 +114,7 @@ script = ExtResource("2_wwpud")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 light_mask = 5
 visibility_layer = 5
-position = Vector2(0, 4)
+position = Vector2(3, 2.5)
 shape = SubResource("RectangleShape2D_wwpud")
 
 [node name="NoiseEmitter" type="Node" parent="."]

@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="adaf6c4b-960b-46aa-85e6-faef4c935d4d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Silent Strikers (Alfa Muy temprana)/Codigos/Guardia.gd" beforeDir="false" afterPath="$PROJECT_DIR$/Silent Strikers (Alfa Muy temprana)/Codigos/Guardia.gd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Silent Strikers (Alfa Muy temprana)/Codigos/NoiseEmitter.gd" beforeDir="false" afterPath="$PROJECT_DIR$/Silent Strikers (Alfa Muy temprana)/Codigos/NoiseEmitter.gd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Silent Strikers (Alfa Muy temprana)/Escenas/Guardia.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/Silent Strikers (Alfa Muy temprana)/Escenas/Guardia.tscn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Silent Strikers (Alfa Muy temprana)/Escenas/Mapa.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/Silent Strikers (Alfa Muy temprana)/Escenas/Mapa.tscn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Silent Strikers (Alfa Muy temprana)/project.godot" beforeDir="false" afterPath="$PROJECT_DIR$/Silent Strikers (Alfa Muy temprana)/project.godot" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,7 +34,8 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "gdscript.promo.shown": "true",
-    "git-widget-placeholder": "dazztyn-patch-1",
+    "git-widget-placeholder": "nicowo",
+    "last_opened_file_path": "C:/Users/nicol/Documents/GitHub/SilentStrikers",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -65,6 +69,7 @@
       <workItem from="1747944842379" duration="188000" />
       <workItem from="1747945048923" duration="241000" />
       <workItem from="1747945306421" duration="594000" />
+      <workItem from="1749506231451" duration="1292000" />
     </task>
     <servers />
   </component>
