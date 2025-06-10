@@ -66,14 +66,6 @@ func _process(delta):
 	move_and_slide()
 	
 	
-func _unhandled_input(event):
-	# Comprobamos si la acción "ui_accept" (generalmente la barra Espaciadora o Enter) se acaba de presionar.
-	if event.is_action_pressed("ui_accept"):
-		print("¡Tecla de prueba de ruido presionada!")
-		# Le decimos a nuestro emisor que emita su ruido por defecto.
-		noise_emitter.emit_noise()
-
-
 func aumentar_puntaje(cantidad):
 	puntaje += cantidad
 	print("Puntaje actual: ", puntaje)

@@ -125,6 +125,8 @@ func _enter_chase_state():
 	chasing_timer = chase_duration
 	if player and _check_vision(): # Solo actualiza si lo ve en este instante
 		last_known_player_position = player.global_position
+	print_rich("[color=orange]Estado: PERSECUCIÓN (investigando estímulo)[/color]")
+
 
 func _enter_search_state():
 	current_state = State.SEARCHING
@@ -256,16 +258,7 @@ func _update_vision_cone_visuals():
 	vision_polygon.polygon = points
 	vision_polygon.color = Color(1, 1, 0, 0.2)
 
-# ===================================================================
-# FUNCIÓN PÚBLICA PARA REACCIONAR AL RUIDO
-# ===================================================================
-func hear_noise(noise_position: Vector2):
-	if current_state == State.PATROLLING:
-		var map = get_world_2d().navigation_map
-		var closest_valid_point = NavigationServer2D.map_get_closest_point(map, noise_position)
-		last_known_player_position = closest_valid_point
-		_enter_chase_state()
-		
+
 func _update_debug_info():
 	# Formateamos el texto que queremos mostrar.
 	# El \n crea un salto de línea. 
