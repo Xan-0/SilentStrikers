@@ -169,36 +169,35 @@ func _move_towards_target(current_speed, delta):
 	move_and_slide()
 
 func _set_new_random_destination():
-	print("--- Buscando nuevo destino de patrulla... ---")
-	if not patrol_area: 
-		print_rich("[color=red]ERROR: 'patrol_area' no está asignada. El guardia no se puede mover.[/color]")
-		return
+	if not patrol_area: return
 
-	# 1. Obtenemos los límites del área de patrullaje
-	var patrol_shape = patrol_area.get_node_or_null("CollisionShape2D")
-	if not patrol_shape:
-		print_rich("[color=red]ERROR: No se encontró 'CollisionShape2D' dentro del área de patrulla.[/color]")
+	# 1. Obtenemos el CollisionShape2D del área de patrulla
+	var patrol_shape_node = patrol_area.get_node_or_null("CollisionShape2D")
+	if not patrol_shape_node:
+		print_rich("[color=red]ERROR: No se encontró 'CollisionShape2D' dentro de ZonaDePatrulla.[/color]")
 		return
-		
-	var bounds = patrol_shape.shape.get_rect()
 	
-	# 2. Elegimos un punto X e Y aleatorio
-	var random_point = Vector2(
-		randf_range(bounds.position.x, bounds.end.x),
-		randf_range(bounds.position.y, bounds.end.y)
+	# --- INICIO DE LA CORRECCIÓN ---
+
+	# 2. Obtenemos el rectángulo del área en coordenadas GLOBALES
+	var global_bounds = patrol_shape_node.global_transform * patrol_shape_node.shape.get_rect()
+	
+	# 3. Elegimos un punto X e Y aleatorio dentro de esos límites GLOBALES
+	var global_random_point = Vector2(
+		randf_range(global_bounds.position.x, global_bounds.end.x),
+		randf_range(global_bounds.position.y, global_bounds.end.y)
 	)
-	var global_random_point = patrol_area.to_global(random_point)
-	print("Punto aleatorio generado: ", global_random_point)
 	
-	# 3. Ajustamos el punto a la zona caminable más cercana
+	# --- FIN DE LA CORRECCIÓN ---
+
+	# 4. Ajustamos el punto aleatorio al punto "caminable" más cercano en el mapa de navegación.
+	# (Esta parte de seguridad se mantiene igual)
 	var map = get_world_2d().navigation_map
 	var safe_point = NavigationServer2D.map_get_closest_point(map, global_random_point)
-	print("Punto seguro en navmesh: ", safe_point)
 	
-	# 4. Asignamos el nuevo destino y reseteamos el timer
+	# 5. Asignamos el nuevo destino seguro
 	navigation_agent.target_position = safe_point
-	patrol_idle_timer = patrol_idle_duration
-	print("--- Nuevo objetivo asignado. ---")
+	patrol_idle_timer = patrol_idle_duration # Reseteamos el timer de descanso
 
 
 

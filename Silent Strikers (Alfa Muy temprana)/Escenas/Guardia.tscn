@@ -129,6 +129,7 @@ scale = Vector2(0.333333, 0.166667)
 shape = SubResource("RectangleShape2D_g5ju6")
 
 [node name="Vision" type="Area2D" parent="."]
+visible = false
 script = ExtResource("5_g5ju6")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Vision"]
