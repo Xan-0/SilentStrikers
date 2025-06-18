@@ -11,7 +11,6 @@ func _ready():
 func _on_body_entered(body):
 	if body.name == "Ladron":
 		player_in_range = true
-		body.aumentar_puntaje(puntos)
 
 #Detecta si el Ladrón salió del rango
 func _on_body_exited(body):
@@ -27,3 +26,5 @@ func _process(delta):
 func recoger():
 	var jugador = get_node("../Ladron")
 	jugador.aumentar_puntaje(puntos)
+	# Opcional: Destruir el ítem una vez recogido
+	# queue_free()

@@ -1,5 +1,4 @@
 [gd_scene load_steps=25 format=4 uid="uid://df8wgc7fxnvva"]
-
 [ext_resource type="Script" uid="uid://5odu651p2cuh" path="res://Codigos/mapa.gd" id="1_7syr3"]
 [ext_resource type="PackedScene" uid="uid://drs5cxv35r63x" path="res://Escenas/Player.tscn" id="1_lbiw5"]
 [ext_resource type="PackedScene" uid="uid://d1ouhuslclwme" path="res://Escenas/Guardia.tscn" id="2_qgw4m"]
@@ -8,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://jyu2vbo07tku" path="res://Escenas/potenciador.tscn" id="5_1p004"]
 [ext_resource type="PackedScene" uid="uid://b2d1lacrstmpj" path="res://Escenas/item.tscn" id="5_rj58i"]
 [ext_resource type="PackedScene" uid="uid://cwbr2i4lpl8yd" path="res://Escenas/camara.tscn" id="7_aesrc"]
+
 [ext_resource type="Script" uid="uid://cf38ppbm0nchk" path="res://Escenas/sub_viewport.gd" id="7_h5d8a"]
 [ext_resource type="Script" uid="uid://bmb10fy424788" path="res://Escenas/node_2d.gd" id="8_7njfp"]
 [ext_resource type="Texture2D" uid="uid://cq0m31wscfdjr" path="res://icon.svg" id="9_bi4ho"]
@@ -98,6 +98,7 @@ zoom = Vector2(0.4, 0.4)
 
 [node name="Guardia 2" parent="." instance=ExtResource("2_qgw4m")]
 z_index = 1
+
 position = Vector2(607, 702)
 rotation = 0.0106379
 patrol_area_node = NodePath("../ZonaDePatrulla")
