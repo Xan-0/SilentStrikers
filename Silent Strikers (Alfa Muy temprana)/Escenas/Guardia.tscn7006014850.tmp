@@ -1,0 +1,157 @@
+[gd_scene load_steps=14 format=3 uid="uid://d1ouhuslclwme"]
+
+[ext_resource type="Script" uid="uid://bl7xsghjndym2" path="res://Codigos/Guardia.gd" id="1_gxl0b"]
+[ext_resource type="Texture2D" uid="uid://cud6v0l3syc43" path="res://Sprites/Guardia comun.png" id="2_1uryg"]
+[ext_resource type="Script" uid="uid://b7b4ernwbles7" path="res://Escenas/animation_guardia.gd" id="3_g5ju6"]
+[ext_resource type="Script" uid="uid://bg7tpbudvl3k3" path="res://Codigos/Ataque.gd" id="4_1uryg"]
+[ext_resource type="Script" uid="uid://ctuuiip4c0u0s" path="res://Codigos/vision.gd" id="5_g5ju6"]
+[ext_resource type="Script" uid="uid://7owskyap5u4d" path="res://Codigos/Noiselistener.gd" id="6_r4su0"]
+
+[sub_resource type="Animation" id="Animation_pjdr2"]
+resource_name = "Abajo"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_3ilqb"]
+resource_name = "Arriba"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+
+[sub_resource type="Animation" id="Animation_whrgq"]
+resource_name = "Derecha"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_xnc60"]
+resource_name = "Izquierda"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rlrai"]
+_data = {
+&"Abajo": SubResource("Animation_pjdr2"),
+&"Arriba": SubResource("Animation_3ilqb"),
+&"Derecha": SubResource("Animation_whrgq"),
+&"Izquierda": SubResource("Animation_xnc60")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0277c"]
+radius = 6.18502
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g5ju6"]
+size = Vector2(153, 312)
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 3
+motion_mode = 1
+slide_on_ceiling = false
+script = ExtResource("1_gxl0b")
+patrol_points = null
+patrol_speed = null
+chase_speed = null
+acceleration = null
+patrol_vision_range = null
+patrol_vision_angle = null
+chase_vision_range = null
+chase_vision_angle = null
+chase_duration = null
+search_duration = null
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-7, -1)
+texture = ExtResource("2_1uryg")
+hframes = 4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Sprite2D")
+libraries = {
+&"": SubResource("AnimationLibrary_rlrai")
+}
+script = ExtResource("3_g5ju6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-2, -2)
+scale = Vector2(10.34, 10.34)
+shape = SubResource("CircleShape2D_0277c")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 112.1
+navigation_layers = 3
+avoidance_layers = 3
+avoidance_mask = 3
+debug_enabled = true
+
+[node name="VisionRayCast" type="RayCast2D" parent="."]
+scale = Vector2(3, 6)
+collision_mask = 5
+collide_with_areas = true
+
+[node name="Area2D" type="Area2D" parent="."]
+visible = false
+scale = Vector2(3, 6)
+script = ExtResource("4_1uryg")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-0.5, 3)
+scale = Vector2(0.333333, 0.166667)
+shape = SubResource("RectangleShape2D_g5ju6")
+
+[node name="Vision" type="Area2D" parent="."]
+visible = false
+script = ExtResource("5_g5ju6")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Vision"]
+polygon = PackedVector2Array(1, -2, 460, -165, 460, 165)
+
+[node name="VisionPolygon" type="Polygon2D" parent="."]
+
+[node name="Node" type="Node" parent="." node_paths=PackedStringArray("guard")]
+script = ExtResource("6_r4su0")
+guard = NodePath("..")
+
+[node name="DebugLabel" type="Label" parent="."]
+offset_left = -20.0
+offset_top = -174.0
+offset_right = 20.0
+offset_bottom = -151.0

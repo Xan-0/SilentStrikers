@@ -26,3 +26,5 @@ func _process(delta):
 func recoger():
 	var jugador = get_node("../Ladron")
 	jugador.aumentar_puntaje(puntos)
+	# Opcional: Destruir el ítem una vez recogido
+	# queue_free()
