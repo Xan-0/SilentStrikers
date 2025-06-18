@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=4 uid="uid://bj4uwxkcoduja"]
 
 [ext_resource type="Texture2D" uid="uid://brmwx5ulu8t76" path="res://Tiles mapas/tileset-mapa1-brillo.png" id="1_mfn2t"]
-[ext_resource type="Texture2D" uid="uid://cuecitndoyo4b" path="res://Experimental.png" id="2_bbkxa"]
+[ext_resource type="Texture2D" uid="uid://cuecitndoyo4b" path="res://Tiles mapas/Experimental.png" id="2_bbkxa"]
 [ext_resource type="PackedScene" uid="uid://drs5cxv35r63x" path="res://Escenas/Player.tscn" id="3_aocxc"]
 [ext_resource type="Texture2D" uid="uid://bd32yf8lfvp0e" path="res://Tiles mapas/Interiors_free_48x48.png" id="3_bbkxa"]
 

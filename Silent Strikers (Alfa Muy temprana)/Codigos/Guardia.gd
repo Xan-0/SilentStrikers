@@ -35,7 +35,7 @@ var chasing_timer = 0.0
 ## --- Dibujo y Animación ---
 @export var draw_vision_cone: bool = true
 @export var vision_cone_color: Color = Color(1, 1, 0, 0.3)
-@onready var animations: AnimationPlayer = get_node("AnimationPlayer")
+@onready var animations: AnimatedSprite2D = get_node("AnimatedSprite2D")
 
 func _ready():
 	player = get_node("../Ladron")
