@@ -4,10 +4,13 @@ extends CharacterBody2D
 var speed = 300
 var acceleration = 7.0
 var forward
-@export var patrol_points: Array[NodePath] = []
 var player: CharacterBody2D
 var rotation2 = rotation #rotación usada para la vision, No es la rotación del guardia
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
+@export var patrol_area_node: NodePath # Para asignar la ZonaDePatrulla desde el editor
+@export var patrol_idle_duration = 3.0 # Segundos que espera al llegar a un punto
+var patrol_area: Area2D
+var patrol_idle_timer = 0.0
 
 ## --- Variables de Visión y Detección ---
 var vision_range = 300.0
@@ -41,8 +44,14 @@ func _ready():
 	add_to_group("Guardias")
 	vision_raycast.add_exception(self)
 	vision_raycast.collision_mask = wall_collision_mask | player.collision_layer
-
-	_set_next_patrol_point()
+	if patrol_area_node:
+		patrol_area = get_node_or_null(patrol_area_node)
+	if not patrol_area:
+		print("No se asignó área de patrullaje. Usando puntos fijos.")
+		_set_next_patrol_point()
+	else:
+		print("Usando área de patrullaje dinámica.")
+		_set_new_random_destination()
 
 func _process(delta: float) -> void:
 	vision_raycast.target_position = to_local(player.global_position)
@@ -97,11 +106,15 @@ func _physics_process(delta):
 
 
 func _process_patrolling(delta):
-	# Patrulla normal
-	if navigation_agent.is_navigation_finished():
-		_set_next_patrol_point()
-	_update_navigation_velocity(delta)
-
+	if patrol_area:
+		if navigation_agent.is_navigation_finished():
+			velocity = velocity.lerp(Vector2.ZERO, acceleration * delta)
+			patrol_idle_timer -= delta
+			
+			if patrol_idle_timer <= 0:
+				_set_new_random_destination()
+		else:
+			_update_navigation_velocity(delta)
 
 func _process_chasing(delta):
 	chasing_timer -= delta
@@ -132,13 +145,26 @@ func _update_navigation_velocity(delta):
 		velocity = velocity.lerp(Vector2.ZERO, acceleration * delta)
 
 
-func _set_next_patrol_point():
-	if patrol_points.size() == 0:
-		return
-	var patrol_node = get_node_or_null(patrol_points[patrol_index])
-	if patrol_node:
-		navigation_agent.target_position = patrol_node.global_position
-	patrol_index = (patrol_index + 1) % patrol_points.size()
+func _set_new_random_destination():
+	if not patrol_area: return
+
+	# Obtenemos los límites del área de patrullaje en coordenadas globales
+	var patrol_shape_node = patrol_area.get_node_or_null("CollisionShape2D")
+	if not patrol_shape_node: return
+	
+	var global_bounds = patrol_shape_node.global_transform * patrol_shape_node.shape.get_rect()
+	
+	var global_random_point = Vector2(
+		randf_range(global_bounds.position.x, global_bounds.end.x),
+		randf_range(global_bounds.position.y, global_bounds.end.y)
+	)
+	
+	# La ajustamos al punto caminable más cercano para evitar errores
+	var map = get_world_2d().navigation_map
+	var safe_point = NavigationServer2D.map_get_closest_point(map, global_random_point)
+	
+	navigation_agent.target_position = safe_point
+	patrol_idle_timer = patrol_idle_duration
 
 
 func check_vision(guard_forward_direction: Vector2):

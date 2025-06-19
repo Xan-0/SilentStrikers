@@ -9,7 +9,6 @@ var muerto: bool = false # Para cambiar el salud <= 0
 var puntaje_win = 1000 # La cantidad de pts para ganar
 var game = false # Para ver si la partida termino o sigue
 var invisibility_time = 5
-
 var jugador: CharacterBody2D
 var potenciador: Area2D
 var potenciador_duplicado: Area2D #instancia duplicada del potenciador

@@ -152,6 +152,11 @@ collision_mask = 3
 motion_mode = 1
 slide_on_ceiling = false
 script = ExtResource("1_gxl0b")
+patrol_points = null
+patrol_area_node = null
+patrol_idle_duration = null
+draw_vision_cone = null
+vision_cone_color = null
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_mkqbs")

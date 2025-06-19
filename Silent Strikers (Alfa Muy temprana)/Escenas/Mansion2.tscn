@@ -1352,3 +1352,4 @@ tile_map_data = PackedByteArray("AAAXAAYABAADACoAAAAXAAcABAADACsAAAAYAAYABAAEACo
 tile_set = SubResource("TileSet_e1o2t")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+visible = false
