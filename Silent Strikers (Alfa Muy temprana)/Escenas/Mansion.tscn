@@ -1,9 +1,9 @@
 [gd_scene load_steps=12 format=4 uid="uid://bj4uwxkcoduja"]
 
-[ext_resource type="Texture2D" uid="uid://brmwx5ulu8t76" path="res://Tiles mapas/tileset-mapa1-brillo.png" id="1_mfn2t"]
-[ext_resource type="Texture2D" uid="uid://cuecitndoyo4b" path="res://Tiles mapas/Experimental.png" id="2_bbkxa"]
-[ext_resource type="PackedScene" uid="uid://drs5cxv35r63x" path="res://Escenas/Player.tscn" id="3_aocxc"]
-[ext_resource type="Texture2D" uid="uid://bd32yf8lfvp0e" path="res://Tiles mapas/Interiors_free_48x48.png" id="3_bbkxa"]
+[ext_resource type="Texture2D" uid="uid://brmwx5ulu8t76" path="res://Tiles mapas/tileset-mapa1-brillo.png" id="1_vqv8r"]
+[ext_resource type="Texture2D" uid="uid://cuecitndoyo4b" path="res://Tiles mapas/Experimental.png" id="2_cn7dx"]
+[ext_resource type="Texture2D" uid="uid://bd32yf8lfvp0e" path="res://Tiles mapas/Interiors_free_48x48.png" id="3_11dg0"]
+[ext_resource type="PackedScene" uid="uid://drs5cxv35r63x" path="res://Escenas/Player.tscn" id="4_mhhoc"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_bbkxa"]
 
@@ -14,7 +14,7 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(-23, -23, 23, -23, 23, 
 agent_radius = 0.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bbkxa"]
-texture = ExtResource("1_mfn2t")
+texture = ExtResource("1_vqv8r")
 texture_region_size = Vector2i(46, 46)
 1:0/0 = 0
 1:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_aocxc")
@@ -46,7 +46,7 @@ texture_region_size = Vector2i(46, 46)
 6:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-23, -23, 23, -23, 23, 23, -23, 23)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_aocxc"]
-texture = ExtResource("2_bbkxa")
+texture = ExtResource("2_cn7dx")
 texture_region_size = Vector2i(46, 46)
 0:0/0 = 0
 1:0/0 = 0
@@ -73,7 +73,7 @@ texture_region_size = Vector2i(46, 46)
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_hxxna"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hxxna"]
-texture = ExtResource("3_bbkxa")
+texture = ExtResource("3_11dg0")
 texture_region_size = Vector2i(48, 48)
 1:0/0 = 0
 2:0/0 = 0
@@ -1363,5 +1363,5 @@ tile_set = SubResource("TileSet_nurg1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("3_aocxc")]
+[node name="CharacterBody2D" parent="." instance=ExtResource("4_mhhoc")]
 position = Vector2(85, 126)

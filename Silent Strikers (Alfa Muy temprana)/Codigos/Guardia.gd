@@ -7,7 +7,6 @@ var forward
 @export var patrol_points: Array[NodePath] = []
 var player: CharacterBody2D
 var rotation2 = rotation #rotación usada para la vision, No es la rotación del guardia
-
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 
 ## --- Variables de Visión y Detección ---

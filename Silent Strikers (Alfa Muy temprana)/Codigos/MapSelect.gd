@@ -12,5 +12,5 @@ func _process(delta):
 
 
 func _on_map_1_button_2_pressed() -> void:
-	var mapa_scene = load("res://Escenas/Mapa.tscn")
+	var mapa_scene = load("res://Escenas/Mansion.tscn")
 	get_tree().change_scene_to_packed(mapa_scene)
