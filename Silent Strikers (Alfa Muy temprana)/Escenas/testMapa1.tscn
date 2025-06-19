@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://cb8jowfynh3wd"]
+[gd_scene load_steps=17 format=4 uid="uid://cb8jowfynh3wd"]
 
 [ext_resource type="Script" uid="uid://5odu651p2cuh" path="res://Codigos/mapa.gd" id="1_hxxna"]
 [ext_resource type="Texture2D" uid="uid://brmwx5ulu8t76" path="res://Tiles mapas/tileset-mapa1-brillo.png" id="1_mfn2t"]
@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://drs5cxv35r63x" path="res://Escenas/Player.tscn" id="3_aocxc"]
 [ext_resource type="Texture2D" uid="uid://bd32yf8lfvp0e" path="res://Tiles mapas/Interiors_free_48x48.png" id="3_bbkxa"]
 [ext_resource type="PackedScene" uid="uid://jyu2vbo07tku" path="res://Escenas/potenciador.tscn" id="5_aocxc"]
+[ext_resource type="PackedScene" uid="uid://cge2pkungjy7t" path="res://Escenas/testMapa1piso2.tscn" id="7_nurg1"]
+[ext_resource type="Script" uid="uid://dsaharksyr25d" path="res://Escenas/tp.gd" id="8_eo8ab"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_bbkxa"]
 
@@ -1420,8 +1422,11 @@ sources/1 = SubResource("TileSetAtlasSource_bbkxa")
 sources/2 = SubResource("TileSetAtlasSource_aocxc")
 sources/4 = SubResource("TileSetAtlasSource_hxxna")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p1cyg"]
+size = Vector2(128, 48)
+
 [node name="TestMapa1" type="Node2D"]
-position = Vector2(1039, 152)
+position = Vector2(484, 604)
 script = ExtResource("1_hxxna")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
@@ -1450,3 +1455,14 @@ zoom = Vector2(2.02, 2.02)
 [node name="Area2D" parent="." instance=ExtResource("5_aocxc")]
 position = Vector2(-1099, 239)
 scale = Vector2(0.44, 0.44)
+
+[node name="Mapa1Piso2" parent="." instance=ExtResource("7_nurg1")]
+position = Vector2(192, 2331)
+
+[node name="TP1" type="Area2D" parent="."]
+position = Vector2(1920, -376)
+script = ExtResource("8_eo8ab")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TP1"]
+position = Vector2(-8, -2)
+shape = SubResource("RectangleShape2D_p1cyg")
