@@ -1,5 +1,6 @@
 extends CharacterBody2D
-var puntaje 
+
+var puntaje
 var speed = 500
 var initial_speed = 500
 @export var velMax = 750
@@ -16,6 +17,7 @@ var mapa: Node2D
 @export var spawn_points: Array[NodePath] = []
 var spawn_index = 0
 var invisibilidad_usada = false #para que el cooldown empiece a correr sólo cuando se usó
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready():
 	salud = 3
@@ -23,31 +25,29 @@ func _ready():
 	mapa = get_node("..")
 	potenciador = get_node("../Area2D")
 	potenciador_duplicado = preload("res://Escenas/potenciador.tscn").instantiate()
-	mapa.agregar(potenciador_duplicado)
-	potenciador_duplicado.scale = Vector2(0.39,0.39)
-	potenciador_duplicado.position = Vector2(-81.0,248.0)
+	mapa.add_child(potenciador_duplicado)
+	potenciador_duplicado.scale = Vector2(0.39, 0.39)
+	potenciador_duplicado.position = Vector2(-81.0, 248.0)
 	puntaje = 0
 	muerto = false
 
-# Actualización del movimiento
+# Actualización del movimiento y las animaciones
 func _process(delta):
 	if muerto:
 		return
 	
 	velocity = Vector2()
 	if invisibilidad_usada:
-		invisibility_time-=delta
+		invisibility_time -= delta
 	if invisibility_time <= 0:
 		invisibility_time = 5
 		jugador.collision_layer = 1|2|3
 		modulate.a = 1
 		potenciador_duplicado = preload("res://Escenas/potenciador.tscn").instantiate()
-		mapa.agregar(potenciador_duplicado)
-		potenciador_duplicado.scale = Vector2(0.39,0.39)
+		mapa.add_child(potenciador_duplicado)
+		potenciador_duplicado.scale = Vector2(0.39, 0.39)
 		_set_next_spawn_point()
 		invisibilidad_usada = false
-		
-
 
 	if Input.is_action_pressed("ui_right"):
 		velocity.x += 1
@@ -61,16 +61,32 @@ func _process(delta):
 		
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * speed
+	
+	update_animation()
+
 
 	move_and_slide()
-	
+
+func update_animation():
+	if velocity.length() > 0:
+		animated_sprite.play()
+		if velocity.x != 0:
+			animated_sprite.animation = "Derecha" 
+			animated_sprite.flip_h = velocity.x < 0
+		elif velocity.y != 0:
+			if velocity.y > 0:
+				animated_sprite.animation = "Abajo"
+			else:
+				animated_sprite.animation = "Arriba"
+	else:
+		animated_sprite.stop()
+
 func aumentar_puntaje(cantidad):
 	puntaje += cantidad
 	print("Puntaje actual: ", puntaje)
 	if puntaje >= puntaje_win:
 		game = true
 		print("Se banco")
-		## HAY QUE CREAR LA ESCENA WIN O COMO LO VAMOS A HACER T.T
 		get_tree().change_scene_to_file("res://Escenas/victory_screen.tscn")
 
 func perder_salud(cantidad):
@@ -79,15 +95,15 @@ func perder_salud(cantidad):
 	if salud <= 0:
 		muerto = true
 		print("gg.")
-		## Podriamos repetir o hacer una escena para q repita el mapa o mande al menu
 		get_tree().change_scene_to_file("res://Escenas/defeat_screen.tscn")
 	
 func aumentar_velocidad(cantidad):
-	if muerto or speed >= velMax: 
+	if muerto or speed >= velMax:
 		speed = velMax
 		return
 	speed += cantidad * initial_speed
-	print("Velocidad actyal: ", speed)
+	print("Velocidad actual: ", speed)
+
 #hace que el jugador sea indetectable y cambia la opacidad del sprite
 func transparentar(transparencia):
 	jugador.collision_layer = 0
