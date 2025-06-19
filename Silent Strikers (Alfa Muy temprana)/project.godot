@@ -15,10 +15,6 @@ run/main_scene="uid://dc0dg2r02wran"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
-[autoload]
-
-Noisemanager="*res://Codigos/NoiseManager.gd"
-
 [dotnet]
 
 project/assembly_name="Silent Strikers"
