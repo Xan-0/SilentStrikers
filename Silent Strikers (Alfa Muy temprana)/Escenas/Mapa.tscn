@@ -92,8 +92,6 @@ position = Vector2(326, 1248)
 z_index = 1
 position = Vector2(607, 702)
 rotation = 0.0106379
-patrol_points = Array[NodePath]([NodePath("../Marker2D"), NodePath("../Marker2D2"), NodePath("../Marker2D4"), NodePath("../Marker2D3")])
-vision_cone_color = Color(0.640007, 0, 0.275743, 0.301961)
 
 [node name="Item" parent="." instance=ExtResource("5_rj58i")]
 scale = Vector2(0.39, 0.39)

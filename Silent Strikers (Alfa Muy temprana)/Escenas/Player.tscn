@@ -1,226 +1,159 @@
-[gd_scene load_steps=11 format=3 uid="uid://drs5cxv35r63x"]
+[gd_scene load_steps=21 format=3 uid="uid://drs5cxv35r63x"]
 
-[ext_resource type="Texture2D" uid="uid://bem6gwqtit7bv" path="res://Sprites/spritesheetsimetrico2.png" id="1_wwpud"]
-[ext_resource type="Script" uid="uid://dib8nk5h42s3f" path="res://Codigos/animation_player.gd" id="2_wwpud"]
-
-[sub_resource type="GDScript" id="GDScript_xhfnw"]
-script/source = "extends CharacterBody2D
-var puntaje 
-var speed = 500
-var initial_speed = 500
-@export var velMax = 750
-var salud
-var muerto: bool = false # Para cambiar el salud <= 0
-var puntaje_win = 1000 # La cantidad de pts para ganar
-var game = false # Para ver si la partida termino o sigue
-var invisibility_time = 5
-
-var jugador: CharacterBody2D
-var potenciador: Area2D
-var potenciador_duplicado: Area2D #instancia duplicada del potenciador
-var mapa: Node2D
-@export var spawn_points: Array[NodePath] = []
-var spawn_index = 0
-var invisibilidad_usada = false #para que el cooldown empiece a correr sólo cuando se usó
-
-func _ready():
-	salud = 3
-	jugador = get_node(\".\")
-	mapa = get_node(\"..\")
-	potenciador = get_node(\"../Area2D\")
-	potenciador_duplicado = preload(\"res://Escenas/potenciador.tscn\").instantiate()
-	mapa.agregar(potenciador_duplicado)
-	potenciador_duplicado.scale = Vector2(0.39,0.39)
-	potenciador_duplicado.position = Vector2(-81.0,248.0)
-	puntaje = 0
-	muerto = false
-
-# Actualización del movimiento
-func _process(delta):
-	if muerto:
-		return
-	
-	velocity = Vector2()
-	if invisibilidad_usada:
-		invisibility_time-=delta
-	if invisibility_time <= 0:
-		invisibility_time = 5
-		jugador.collision_layer = 1|2|3
-		modulate.a = 1
-		potenciador_duplicado = preload(\"res://Escenas/potenciador.tscn\").instantiate()
-		mapa.agregar(potenciador_duplicado)
-		potenciador_duplicado.scale = Vector2(0.39,0.39)
-		_set_next_spawn_point()
-		invisibilidad_usada = false
-		
-
-
-	if Input.is_action_pressed(\"ui_right\"):
-		velocity.x += 1
-	if Input.is_action_pressed(\"ui_left\"):
-		velocity.x -= 1
-
-	if Input.is_action_pressed(\"ui_down\"):
-		velocity.y += 1
-	if Input.is_action_pressed(\"ui_up\"):
-		velocity.y -= 1
-		
-	if velocity.length() > 0:
-		velocity = velocity.normalized() * speed
-
-	move_and_slide()
-	
-func aumentar_puntaje(cantidad):
-	puntaje += cantidad
-	print(\"Puntaje actual: \", puntaje)
-	if puntaje >= puntaje_win:
-		game = true
-		print(\"Se banco\")
-		## HAY QUE CREAR LA ESCENA WIN O COMO LO VAMOS A HACER T.T
-		get_tree().change_scene_to_file(\"res://Escenas/victory_screen.tscn\")
-
-func perder_salud(cantidad):
-	salud -= cantidad
-	print(\"Salud actual: \", salud)
-	if salud <= 0:
-		muerto = true
-		print(\"gg.\")
-		## Podriamos repetir o hacer una escena para q repita el mapa o mande al menu
-		get_tree().change_scene_to_file(\"res://Escenas/defeat_screen.tscn\")
-	
-func aumentar_velocidad(cantidad):
-	if muerto or speed >= velMax: 
-		speed = velMax
-		return
-	speed += cantidad * initial_speed
-	print(\"Velocidad actyal: \", speed)
-#hace que el jugador sea indetectable y cambia la opacidad del sprite
-func transparentar(transparencia):
-	jugador.collision_layer = 0
-	modulate.a = transparencia
-	invisibilidad_usada = true
-
-func invisible():
-	return invisibilidad_usada
-
-#misma función que en Guardia.gd
-func _set_next_spawn_point():
-	if spawn_points.size() == 0:
-		return
-	var spawn_node = get_node_or_null(spawn_points[spawn_index])
-	if spawn_node:
-		potenciador_duplicado.position = spawn_node.global_position
-	spawn_index = (spawn_index + 1) % spawn_points.size()
-"
-
-[sub_resource type="Animation" id="Animation_hhy33"]
-resource_name = "Abajo"
-step = 0.0
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3]
-}
-
-[sub_resource type="Animation" id="Animation_c1rio"]
-resource_name = "Arriba"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [12, 13, 14, 15]
-}
-
-[sub_resource type="Animation" id="Animation_5hhfp"]
-resource_name = "Derecha"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [4, 5, 6, 7]
-}
-
-[sub_resource type="Animation" id="Animation_kwdw2"]
-resource_name = "Izquierda"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [8, 9, 10, 11]
-}
-
-[sub_resource type="Animation" id="Animation_j2dk4"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_urfe6"]
-_data = {
-&"Abajo": SubResource("Animation_hhy33"),
-&"Arriba": SubResource("Animation_c1rio"),
-&"Derecha": SubResource("Animation_5hhfp"),
-&"Izquierda": SubResource("Animation_kwdw2"),
-&"RESET": SubResource("Animation_j2dk4")
-}
+[ext_resource type="Script" uid="uid://smr3i2rbrfb6" path="res://Codigos/Player.gd" id="1_c1rio"]
+[ext_resource type="Texture2D" uid="uid://3hyj7fsmhhex" path="res://Sprites/1. Protagonista/spritesheetsimetrico2.png" id="2_wwpud"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wwpud"]
-size = Vector2(106, 274)
+size = Vector2(66, 121)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c1rio"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(0, 0, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hhy33"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(240, 0, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5hhfp"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(480, 0, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kwdw2"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(720, 0, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j2dk4"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(0, 900, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_urfe6"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(240, 900, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mok4h"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(480, 900, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t27sq"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(720, 900, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8dcy0"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(0, 300, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7pm4f"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(240, 300, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gl37d"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(480, 300, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rvly3"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(720, 300, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3tm5s"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(0, 600, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qoh2p"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(240, 600, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gs42a"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(480, 600, 240, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f3cnb"]
+atlas = ExtResource("2_wwpud")
+region = Rect2(720, 600, 240, 300)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_p50dg"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c1rio")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hhy33")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5hhfp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kwdw2")
+}],
+"loop": true,
+"name": &"Abajo",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j2dk4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_urfe6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mok4h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t27sq")
+}],
+"loop": true,
+"name": &"Arriba",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8dcy0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7pm4f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gl37d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rvly3")
+}],
+"loop": true,
+"name": &"Derecha",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3tm5s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qoh2p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gs42a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f3cnb")
+}],
+"loop": true,
+"name": &"Izquierda",
+"speed": 5.0
+}]
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 3
-script = SubResource("GDScript_xhfnw")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-rotation = 6.28319
-texture = ExtResource("1_wwpud")
-hframes = 4
-vframes = 4
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-root_node = NodePath("../Sprite2D")
-libraries = {
-&"": SubResource("AnimationLibrary_urfe6")
-}
-script = ExtResource("2_wwpud")
+script = ExtResource("1_c1rio")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 light_mask = 5
 visibility_layer = 5
-position = Vector2(0, 4)
+position = Vector2(-1, -4.5)
 shape = SubResource("RectangleShape2D_wwpud")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-1, -8)
+scale = Vector2(0.504167, 0.53)
+sprite_frames = SubResource("SpriteFrames_p50dg")
+animation = &"Izquierda"

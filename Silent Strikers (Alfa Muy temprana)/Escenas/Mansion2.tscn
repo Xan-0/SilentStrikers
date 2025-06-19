@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=4 uid="uid://ddfhbh5dhitkj"]
 
-[ext_resource type="Texture2D" uid="uid://brmwx5ulu8t76" path="res://Tiles mapas/tileset-mapa1-brillo.png" id="1_qdyep"]
-[ext_resource type="Texture2D" uid="uid://cuecitndoyo4b" path="res://Tiles mapas/Experimental.png" id="2_p2jcf"]
-[ext_resource type="Texture2D" uid="uid://bd32yf8lfvp0e" path="res://Tiles mapas/Interiors_free_48x48.png" id="3_8cohw"]
+[ext_resource type="Texture2D" uid="uid://brmwx5ulu8t76" path="res://Tiles mapas/tileset-mapa1-brillo.png" id="1_w66l0"]
+[ext_resource type="Texture2D" uid="uid://cuecitndoyo4b" path="res://Tiles mapas/Experimental.png" id="2_nllsq"]
+[ext_resource type="Texture2D" uid="uid://bd32yf8lfvp0e" path="res://Tiles mapas/Interiors_free_48x48.png" id="3_vbtcw"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_qdyep"]
 vertices = PackedVector2Array(23, 23, -23, 23, -23, -23, 23, -23)
@@ -11,7 +11,7 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(-23, -23, 23, -23, 23, 
 agent_radius = 0.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vq7rs"]
-texture = ExtResource("1_qdyep")
+texture = ExtResource("1_w66l0")
 texture_region_size = Vector2i(46, 46)
 1:0/0 = 0
 1:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_qdyep")
@@ -40,7 +40,7 @@ texture_region_size = Vector2i(46, 46)
 6:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-23, -23, 23, -23, 23, 23, -23, 23)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sv1sb"]
-texture = ExtResource("2_p2jcf")
+texture = ExtResource("2_nllsq")
 texture_region_size = Vector2i(48, 48)
 0:0/0 = 0
 1:0/0 = 0
@@ -65,7 +65,7 @@ texture_region_size = Vector2i(48, 48)
 6:2/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3ywhp"]
-texture = ExtResource("3_8cohw")
+texture = ExtResource("3_vbtcw")
 texture_region_size = Vector2i(48, 48)
 1:0/0 = 0
 2:0/0 = 0
@@ -1352,3 +1352,4 @@ tile_map_data = PackedByteArray("AAAXAAYABAADACoAAAAXAAcABAADACsAAAAYAAYABAAEACo
 tile_set = SubResource("TileSet_e1o2t")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+visible = false
