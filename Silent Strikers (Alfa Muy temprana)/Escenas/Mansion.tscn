@@ -1,9 +1,10 @@
-[gd_scene load_steps=15 format=4 uid="uid://bj4uwxkcoduja"]
+[gd_scene load_steps=17 format=4 uid="uid://bj4uwxkcoduja"]
 
 [ext_resource type="Texture2D" uid="uid://brmwx5ulu8t76" path="res://Tiles mapas/tileset-mapa1-brillo.png" id="1_vqv8r"]
 [ext_resource type="Texture2D" uid="uid://cuecitndoyo4b" path="res://Tiles mapas/Experimental.png" id="2_cn7dx"]
 [ext_resource type="Texture2D" uid="uid://bd32yf8lfvp0e" path="res://Tiles mapas/Interiors_free_48x48.png" id="3_11dg0"]
 [ext_resource type="PackedScene" uid="uid://drs5cxv35r63x" path="res://Escenas/Player.tscn" id="4_mhhoc"]
+[ext_resource type="PackedScene" uid="uid://cwbr2i4lpl8yd" path="res://Escenas/camara.tscn" id="6_11dg0"]
 [ext_resource type="PackedScene" uid="uid://d1ouhuslclwme" path="res://Escenas/Guardia.tscn" id="6_mhhoc"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_bbkxa"]
@@ -1352,10 +1353,15 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(-74, 17, 203, 19, 205, 
 agent_radius = 30.0
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_cn7dx"]
-vertices = PackedVector2Array(2767.67, 7.29688, 3202.83, 13.7031, 3200.2, 335.047, 2775.86, 239.922, 2774.66, 221, 2287.81, 257.609, 2326.46, 221, 1777.45, 415.789, 1516.66, 418.773, 1510.01, 18.6172, 1529.38, -213.844, 2316.46, -207.156, 2245.74, 524.039, 1788.37, 552.797)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4), PackedInt32Array(4, 3, 5, 6), PackedInt32Array(6, 5, 7, 8, 9, 10, 11), PackedInt32Array(12, 13, 7, 5)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(1511, -234, 2336, -227, 2346, 201, 2754, 201, 2747, -13, 3223, -6, 3220, 360, 2774, 260, 2305, 277, 2263, 543, 1770, 574, 1759, 436, 1497, 439, 1490, 18)])
+vertices = PackedVector2Array(2770.63, 297.891, 2765.37, 209.617, 2823.97, 40.5234, 2834.12, 44.6875, 2866.16, 169.148, 2872.21, 261.367, 2873.79, 285.406, 3172.48, 275, 3155.34, 24.0781, 3205.73, 21.8594, 3216.16, 313.25, 2872.82, 270.602, 2288.16, 255.438, 2245.74, 524.039, 1788.37, 552.797, 1777.45, 415.789, 1905.34, -161.789, 2305.34, 3.92188, 1516.43, 418.773, 1506.33, 63.4922, 2328.03, 221.5)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4, 5, 6), PackedInt32Array(7, 8, 9, 10), PackedInt32Array(7, 10, 11, 5), PackedInt32Array(12, 13, 14, 15, 16, 17), PackedInt32Array(15, 18, 19, 16), PackedInt32Array(12, 17, 20), PackedInt32Array(0, 12, 20, 1), PackedInt32Array(6, 5, 11)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(1904, -184, 2324, -10, 2346, 201, 2751, 190, 2812, 14, 2851, 30, 2886, 166, 2895, 303, 2771, 318, 2305, 277, 2263, 543, 1770, 574, 1759, 436, 1497, 439, 1486, 52), PackedVector2Array(2247, 213, 3151, 254, 3134, 5, 3225, 1, 3237, 336)])
 agent_radius = 20.0
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_mhhoc"]
+vertices = PackedVector2Array(1993.98, 656, 1992.02, 1525.74, 1853.04, 1522.24, 1855.05, 1113.88, 1837.89, 656, 1833.89, 1013.95, 1071.78, 1123.1, 495.367, 1020.93, 628.43, 1469.88, 1003.76, 1464.12)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 0, 3, 5), PackedInt32Array(5, 3, 6, 7), PackedInt32Array(8, 7, 6, 9)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(482, 1011, 1824, 1004, 1828, 646, 2004, 646, 2002, 1536, 1843, 1532, 1845, 1124, 1080, 1133, 1012, 1474, 621, 1480)])
 
 [node name="TestMapa1" type="Node2D"]
 
@@ -1383,20 +1389,34 @@ zoom = Vector2(0.5, 0.5)
 
 [node name="Guardia_1" parent="." node_paths=PackedStringArray("navigation_region", "player") instance=ExtResource("6_mhhoc")]
 position = Vector2(615, 242)
-collision_layer = 255
-collision_mask = 255
 navigation_region = NodePath("../PatrullaGuardia_1")
 player = NodePath("../Player")
-draw_vision_cone = false
+vision_cone_color = Color(1, 1, 0, 1)
 
 [node name="PatrullaGuardia_1" type="NavigationRegion2D" parent="."]
+visible = false
 position = Vector2(1, 14)
 navigation_polygon = SubResource("NavigationPolygon_11dg0")
 
 [node name="Guardia_2" parent="." node_paths=PackedStringArray("navigation_region", "player") instance=ExtResource("6_mhhoc")]
 position = Vector2(2223, 273)
-navigation_region = NodePath("../NavigationRegion2D")
-player = NodePath("../Guardia_1")
+navigation_region = NodePath("../PatrullaGuardia_2")
+player = NodePath("../Player")
+vision_cone_color = Color(0, 1, 0, 1)
 
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+[node name="PatrullaGuardia_2" type="NavigationRegion2D" parent="."]
+visible = false
 navigation_polygon = SubResource("NavigationPolygon_cn7dx")
+
+[node name="Camara" parent="." node_paths=PackedStringArray("player") instance=ExtResource("6_11dg0")]
+position = Vector2(1752, 1193)
+player = NodePath("../Player")
+
+[node name="Guardia_3" parent="." node_paths=PackedStringArray("navigation_region", "player") instance=ExtResource("6_mhhoc")]
+position = Vector2(936, 1344)
+navigation_region = NodePath("../PatrullaGuardia_3")
+player = NodePath("../Player")
+
+[node name="PatrullaGuardia_3" type="NavigationRegion2D" parent="."]
+visible = false
+navigation_polygon = SubResource("NavigationPolygon_mhhoc")

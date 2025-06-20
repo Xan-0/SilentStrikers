@@ -6,7 +6,7 @@ extends Node2D
 @export var draw_vision_cone: bool = true
 @export var vision_cone_color: Color = Color(1, 0, 0, 0.3)
 
-@onready var player: CharacterBody2D = get_node("../Ladron")
+@export var player: CharacterBody2D
 @onready var raycast: RayCast2D = $RayCast2D
 
 var player_detected: bool = false
