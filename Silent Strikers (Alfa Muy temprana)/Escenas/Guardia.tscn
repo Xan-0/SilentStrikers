@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://d1ouhuslclwme"]
+[gd_scene load_steps=26 format=3 uid="uid://d1ouhuslclwme"]
 
 [ext_resource type="Script" uid="uid://bl7xsghjndym2" path="res://Codigos/Guardia.gd" id="1_gxl0b"]
 [ext_resource type="Texture2D" uid="uid://8daqsfakk7h8" path="res://Sprites/guardia 1 ajustado/fullspritesheet_enemigo1.png" id="2_g5ju6"]
@@ -146,6 +146,13 @@ size = Vector2(1.93424, 5.02901)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g5ju6"]
 size = Vector2(153, 312)
 
+[sub_resource type="Gradient" id="Gradient_1uryg"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_g5ju6"]
+gradient = SubResource("Gradient_1uryg")
+fill_from = Vector2(0, 0.520362)
+fill_to = Vector2(1, 0.470588)
+
 [node name="CharacterBody2D" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 3
@@ -172,10 +179,11 @@ debug_enabled = true
 
 [node name="VisionRayCast" type="RayCast2D" parent="."]
 scale = Vector2(3, 6)
-collision_mask = 5
+collision_mask = 4
 collide_with_areas = true
 
 [node name="Area2D" type="Area2D" parent="."]
+visible = false
 scale = Vector2(3, 6)
 script = ExtResource("4_1uryg")
 
@@ -185,7 +193,22 @@ scale = Vector2(0.333333, 0.166667)
 shape = SubResource("RectangleShape2D_g5ju6")
 
 [node name="Vision" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 2
 script = ExtResource("5_g5ju6")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Vision"]
 polygon = PackedVector2Array(1, -2, 460, -165, 460, 165)
+
+[node name="FlashLight" type="PointLight2D" parent="."]
+position = Vector2(-128, 32)
+rotation = -3.15032
+scale = Vector2(0.607621, 0.0478319)
+color = Color(1, 1, 0, 1)
+energy = 16.0
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_g5ju6")
+texture_scale = 5.72
+
+[connection signal="body_entered" from="Vision" to="." method="_on_vision_body_entered"]
+[connection signal="body_exited" from="Vision" to="." method="_on_vision_body_exited"]

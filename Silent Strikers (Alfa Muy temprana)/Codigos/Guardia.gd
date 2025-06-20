@@ -8,18 +8,18 @@ var forward
 @export var player: CharacterBody2D
 var rotation2 = rotation
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
+@onready var animations: AnimatedSprite2D = get_node("AnimatedSprite2D")
 
 ## --- Variables de Visión y Detección ---
-var vision_range = 300.0
-var vision_angle_degrees = 90.0
 var wall_collision_mask = 1
-@onready var vision_raycast: RayCast2D = $VisionRayCast
-@onready var vision_area: Area2D = $Vision
+@onready var line_of_sight: RayCast2D = $VisionRayCast
+@onready var vision_cone: Area2D = $Vision # Asegúrate que el nodo se llame así
+@onready var flashlight: PointLight2D = $FlashLight # El nodo de luz
+var player_in_vision_cone = false
 
 ## --- Variables de Estado ---
 enum State { PATROLLING, CHASING, SEARCHING }
 var current_state = State.PATROLLING
-var player_detected = false
 var last_known_player_position = Vector2.ZERO
 
 ## --- Tiempo de búsqueda ---
@@ -30,15 +30,9 @@ var search_timer = 0.0
 var chase_duration = 8.0
 var chasing_timer = 0.0
 
-## --- Dibujo y Animación ---
-@export var draw_vision_cone: bool = true
-@export var vision_cone_color: Color = Color(1, 1, 0, 0.3)
-@onready var animations: AnimatedSprite2D = get_node("AnimatedSprite2D")
-
 func _ready():
 	add_to_group("Guardias")
-	vision_raycast.add_exception(self)
-	vision_raycast.collision_mask = wall_collision_mask | player.collision_layer
+	line_of_sight.add_exception(self)
 
 	if navigation_region == null:
 		print("[ERROR] ¡No se ha asignado un NavigationRegion2D al guardia!")
@@ -51,27 +45,26 @@ func _physics_process(delta: float):
 	forward = (navigation_agent.get_next_path_position() - global_position).normalized()
 	if forward == Vector2.ZERO:
 		forward = Vector2.RIGHT.rotated(rotation)
-	check_vision(forward)
-	
 	match current_state:
 		State.PATROLLING:
-			vision_range = 300
-			vision_angle_degrees = 90
 			speed = 200
 			_process_patrolling(delta)
 		State.CHASING:
-			vision_range = 600
-			vision_angle_degrees = 120
 			speed = 300
 			_process_chasing(delta)
 		State.SEARCHING:
-			vision_range = 400
-			vision_angle_degrees = 90
 			speed = 200
 			_process_searching(delta)
+	
+	if player_in_vision_cone:
+		check_line_of_sight()
 
 	var move_dir = velocity.normalized()
 	if move_dir != Vector2.ZERO:
+		rotation2 = move_dir.angle()
+		vision_cone.rotation = rotation2
+		line_of_sight.rotation = rotation2
+		flashlight.rotation = rotation2
 		var horizontal = false
 		if move_dir.x > 0 and (move_dir.y > -0.3 and move_dir.y < 0.3):
 			animations.play("Derecha")
@@ -84,13 +77,9 @@ func _physics_process(delta: float):
 				animations.play("Abajo")
 			elif move_dir.y < 0 or (move_dir.y < 0 and move_dir.x < 0) or (move_dir.y < 0 and move_dir.x > 0):
 				animations.play("Arriba")
-		rotation2 = move_dir.angle()
 	
 	move_and_slide()
 	
-	if draw_vision_cone:
-		queue_redraw()
-
 func _process_patrolling(delta):
 	if navigation_agent.is_navigation_finished():
 		_set_next_patrol_point()
@@ -99,10 +88,6 @@ func _process_patrolling(delta):
 func _process_chasing(delta):
 	chasing_timer -= delta
 	navigation_agent.target_position = last_known_player_position
-	if navigation_agent.is_navigation_finished():
-		if not player_detected:
-			current_state = State.SEARCHING
-			search_timer = search_duration
 	_update_navigation_velocity(delta)
 
 func _process_searching(delta):
@@ -120,7 +105,6 @@ func _update_navigation_velocity(delta):
 	else:
 		velocity = velocity.lerp(Vector2.ZERO, acceleration * delta)
 
-# --- FUNCIÓN DE PATRULLA CORREGIDA ---
 func _set_next_patrol_point():
 	if navigation_region == null or navigation_region.navigation_polygon == null:
 		print("[Guardia] NavigationRegion2D o su polígono no están asignados.")
@@ -159,40 +143,7 @@ func _set_next_patrol_point():
 				
 				navigation_agent.target_position = closest_valid_point
 				return
-
 	print("[Guardia] No se pudo encontrar un punto de patrulla válido después de %d intentos." % MAX_ATTEMPTS)
-
-
-# (El resto de funciones no necesitan cambios)
-
-func check_vision(guard_forward_direction: Vector2):
-	var was_detected = player_detected
-	var detected_now = false
-
-	var dir_to_player = player.global_position - global_position
-	var dist = dir_to_player.length()
-
-	if dist <= vision_range:
-		var dir_norm = dir_to_player.normalized()
-		var dot = guard_forward_direction.dot(dir_norm)
-		var limit_dot = cos(deg_to_rad(vision_angle_degrees / 2.0))
-		
-		if dot > limit_dot:
-			if vision_raycast.is_colliding() and vision_raycast.get_collider() == player:
-				detected_now = true
-		
-		if chasing_timer > 0:
-			detected_now = true
-
-	if detected_now:
-		last_known_player_position = player.global_position
-		current_state = State.CHASING
-
-	player_detected = detected_now
-	if player_detected and not was_detected:
-		_on_player_detected()
-	elif not player_detected and was_detected:
-		_on_player_lost()
 
 func _on_player_detected():
 	print("¡Jugador DETECTADO!")
@@ -201,18 +152,40 @@ func _on_player_detected():
 	search_timer = 0.0
 
 func _on_player_lost():
-	print("¡Jugador Perdido!")
+	print("¡Jugador Perdido! Iniciando búsqueda.")
+	if current_state == State.CHASING:
+		current_state = State.SEARCHING
+		search_timer = search_duration
 
-func _draw():
-	var half_angle = deg_to_rad(vision_angle_degrees / 2.0)
-	var segments = 20
-	var points = PackedVector2Array()
+func _on_vision_body_entered(body: Node2D):
+	# Se ejecuta cuando algo entra en el Area2D
+	if body == player:
+		player_in_vision_cone = true
+		print("Jugador entró en el cono de visión.")
 
-	for i in range(segments + 1):
-		var angle = -half_angle + ((half_angle) * 2.0 * i / segments)
-		points.append(Vector2.RIGHT.rotated(angle + rotation2) * vision_range)
+func _on_vision_body_exited(body: Node2D):
+	# Se ejecuta cuando algo sale del Area2D
+	if body == player:
+		player_in_vision_cone = false
+		print("Jugador salió del cono de visión.")
+		if current_state == State.CHASING:
+			_on_player_lost()
 
-	if points.size() > 0:
-		draw_line(Vector2.ZERO, points[0], vision_cone_color, 1.0)
-		draw_polyline(points, vision_cone_color, 1.0)
-		draw_line(Vector2.ZERO, points[-1], vision_cone_color, 1.0)
+
+func check_line_of_sight():
+	# Esta función solo se llama si el jugador ya está en el cono
+	line_of_sight.target_position = to_local(player.global_position)
+	line_of_sight.force_raycast_update()
+
+	if line_of_sight.is_colliding():
+		# Hay una pared en medio. No vemos al jugador.
+		if current_state == State.CHASING:
+			_on_player_lost()
+	else:
+		
+		if current_state != State.CHASING:
+			_on_player_detected()
+		# Actualizamos la última posición conocida mientras lo vemos
+		last_known_player_position = player.global_position
+		# Aseguramos que el estado sea CHASING
+		current_state = State.CHASING

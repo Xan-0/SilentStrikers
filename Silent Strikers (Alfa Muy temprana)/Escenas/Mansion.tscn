@@ -1391,7 +1391,6 @@ zoom = Vector2(0.5, 0.5)
 position = Vector2(615, 242)
 navigation_region = NodePath("../PatrullaGuardia_1")
 player = NodePath("../Player")
-vision_cone_color = Color(1, 1, 0, 1)
 
 [node name="PatrullaGuardia_1" type="NavigationRegion2D" parent="."]
 visible = false
@@ -1402,7 +1401,6 @@ navigation_polygon = SubResource("NavigationPolygon_11dg0")
 position = Vector2(2223, 273)
 navigation_region = NodePath("../PatrullaGuardia_2")
 player = NodePath("../Player")
-vision_cone_color = Color(0, 1, 0, 1)
 
 [node name="PatrullaGuardia_2" type="NavigationRegion2D" parent="."]
 visible = false
