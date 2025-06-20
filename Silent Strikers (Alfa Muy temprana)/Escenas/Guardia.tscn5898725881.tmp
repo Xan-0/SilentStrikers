@@ -141,7 +141,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1uryg"]
-size = Vector2(1.93424, 5.02901)
+size = Vector2(4.32302, 11.412)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g5ju6"]
 size = Vector2(153, 312)
@@ -159,13 +159,13 @@ sprite_frames = SubResource("SpriteFrames_mkqbs")
 animation = &"Izquierda"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(4, -1)
+visible = false
+position = Vector2(1, -2)
 scale = Vector2(10.34, 10.34)
 shape = SubResource("RectangleShape2D_1uryg")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
-path_desired_distance = 30.0
-target_desired_distance = 1.0
+path_desired_distance = 112.1
 avoidance_layers = 3
 avoidance_mask = 3
 debug_enabled = true
