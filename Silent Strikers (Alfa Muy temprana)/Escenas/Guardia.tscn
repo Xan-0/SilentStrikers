@@ -210,5 +210,12 @@ shadow_enabled = true
 texture = SubResource("GradientTexture2D_g5ju6")
 texture_scale = 5.72
 
+[node name="StateLabel" type="Label" parent="."]
+offset_left = -18.0
+offset_top = -92.0
+offset_right = 22.0
+offset_bottom = -69.0
+horizontal_alignment = 1
+
 [connection signal="body_entered" from="Vision" to="." method="_on_vision_body_entered"]
 [connection signal="body_exited" from="Vision" to="." method="_on_vision_body_exited"]

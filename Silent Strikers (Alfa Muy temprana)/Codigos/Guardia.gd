@@ -1,4 +1,5 @@
 extends CharacterBody2D
+@onready var state_label: Label = $StateLabel #DEBUG
 
 ## --- Variables de Movimiento y Navegación ---
 var speed = 300
@@ -22,9 +23,12 @@ enum State { PATROLLING, CHASING, SEARCHING }
 var current_state = State.PATROLLING
 var last_known_player_position = Vector2.ZERO
 
-## --- Tiempo de búsqueda ---
+## --- Tiempo de búsqueda ---\
+@export var search_radius = 200.0 
 var search_duration = 10.0
 var search_timer = 0.0
+@export var chase_persistence_duration = 2.0
+var time_since_player_seen = 0.0
 
 ## --- Tiempo de persecución ---
 var chase_duration = 8.0
@@ -40,6 +44,7 @@ func _ready():
 		return
 	
 	call_deferred("_set_next_patrol_point")
+	set_state(State.PATROLLING)
 
 func _physics_process(delta: float):
 	forward = (navigation_agent.get_next_path_position() - global_position).normalized()
@@ -88,14 +93,22 @@ func _process_patrolling(delta):
 func _process_chasing(delta):
 	chasing_timer -= delta
 	navigation_agent.target_position = last_known_player_position
+	time_since_player_seen += delta
+	if time_since_player_seen > chase_persistence_duration:
+		_on_player_lost()
 	_update_navigation_velocity(delta)
 
 func _process_searching(delta):
 	search_timer -= delta
-	velocity = velocity.lerp(Vector2.ZERO, acceleration * delta)
 	if search_timer <= 0.0:
-		current_state = State.PATROLLING
+		set_state(State.PATROLLING)
 		_set_next_patrol_point()
+		return
+	if navigation_agent.is_navigation_finished():
+		var random_direction = Vector2.RIGHT.rotated(randf_range(0, TAU))
+		var random_point = last_known_player_position + random_direction * randf_range(0, search_radius)
+		navigation_agent.target_position = random_point
+	_update_navigation_velocity(delta)
 
 func _update_navigation_velocity(delta):
 	if not navigation_agent.is_navigation_finished():
@@ -147,14 +160,14 @@ func _set_next_patrol_point():
 
 func _on_player_detected():
 	print("¡Jugador DETECTADO!")
-	current_state = State.CHASING
+	set_state(State.CHASING)
 	chasing_timer = chase_duration
 	search_timer = 0.0
 
 func _on_player_lost():
 	print("¡Jugador Perdido! Iniciando búsqueda.")
 	if current_state == State.CHASING:
-		current_state = State.SEARCHING
+		set_state(State.SEARCHING)
 		search_timer = search_duration
 
 func _on_vision_body_entered(body: Node2D):
@@ -168,24 +181,31 @@ func _on_vision_body_exited(body: Node2D):
 	if body == player:
 		player_in_vision_cone = false
 		print("Jugador salió del cono de visión.")
-		if current_state == State.CHASING:
-			_on_player_lost()
 
 
 func check_line_of_sight():
-	# Esta función solo se llama si el jugador ya está en el cono
 	line_of_sight.target_position = to_local(player.global_position)
 	line_of_sight.force_raycast_update()
 
-	if line_of_sight.is_colliding():
-		# Hay una pared en medio. No vemos al jugador.
-		if current_state == State.CHASING:
-			_on_player_lost()
-	else:
+	if not line_of_sight.is_colliding():
+		time_since_player_seen = 0.0
 		
 		if current_state != State.CHASING:
 			_on_player_detected()
-		# Actualizamos la última posición conocida mientras lo vemos
+			
 		last_known_player_position = player.global_position
-		# Aseguramos que el estado sea CHASING
-		current_state = State.CHASING
+		set_state(State.CHASING)
+
+func set_state(new_state):
+	if new_state == current_state:
+		return
+
+	current_state = new_state
+	if state_label: 
+		match current_state:
+			State.PATROLLING:
+				state_label.text = "Patrolling"
+			State.CHASING:
+				state_label.text = "CHASING!"
+			State.SEARCHING:
+				state_label.text = "Searching..."
