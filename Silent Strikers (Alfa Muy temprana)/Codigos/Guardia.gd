@@ -27,8 +27,6 @@ var last_known_player_position = Vector2.ZERO
 @export var search_radius = 200.0 
 var search_duration = 10.0
 var search_timer = 0.0
-@export var chase_persistence_duration = 2.0
-var time_since_player_seen = 0.0
 
 ## --- Tiempo de persecución ---
 var chase_duration = 8.0
@@ -93,9 +91,6 @@ func _process_patrolling(delta):
 func _process_chasing(delta):
 	chasing_timer -= delta
 	navigation_agent.target_position = last_known_player_position
-	time_since_player_seen += delta
-	if time_since_player_seen > chase_persistence_duration:
-		_on_player_lost()
 	_update_navigation_velocity(delta)
 
 func _process_searching(delta):
@@ -165,7 +160,6 @@ func _on_player_detected():
 	search_timer = 0.0
 
 func _on_player_lost():
-	print("¡Jugador Perdido! Iniciando búsqueda.")
 	if current_state == State.CHASING:
 		set_state(State.SEARCHING)
 		search_timer = search_duration
@@ -181,6 +175,8 @@ func _on_vision_body_exited(body: Node2D):
 	if body == player:
 		player_in_vision_cone = false
 		print("Jugador salió del cono de visión.")
+		if current_state == State.CHASING:
+			_on_player_lost()
 
 
 func check_line_of_sight():
@@ -188,13 +184,13 @@ func check_line_of_sight():
 	line_of_sight.force_raycast_update()
 
 	if not line_of_sight.is_colliding():
-		time_since_player_seen = 0.0
-		
 		if current_state != State.CHASING:
 			_on_player_detected()
 			
 		last_known_player_position = player.global_position
 		set_state(State.CHASING)
+	else:
+		_on_player_lost()
 
 func set_state(new_state):
 	if new_state == current_state:
