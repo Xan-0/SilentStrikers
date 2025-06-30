@@ -33,7 +33,7 @@ var chase_duration = 8.0
 var chasing_timer = 0.0
 
 func _ready():
-	add_to_group("Guardias")
+	add_to_group("GuardiasM1")
 	line_of_sight.add_exception(self)
 
 	if navigation_region == null:
