@@ -1,5 +1,9 @@
 extends CharacterBody2D
 
+#Hay spawns diferentes para los items y potenciadores, con posiciones por defecto pero aleatorias
+#no deberían de poder spawnear 2 veces en el mismo lugar
+#en el código del guardia se puso un hit_cooldown, se reinicia cada vez que el jugador pierde vida
+
 var puntaje
 var speed = 500
 var initial_speed = 500
@@ -10,23 +14,21 @@ var puntaje_win = 1000 # La cantidad de pts para ganar
 var game = false # Para ver si la partida termino o sigue
 var invisibility_time = 5
 var jugador: CharacterBody2D
-var potenciador: Area2D
 var potenciador_duplicado: Area2D #instancia duplicada del potenciador
+var item_duplicado: Area2D #instancia duplicada del item robable
 var mapa: Node2D
-@export var spawn_points: Array[NodePath] = []
+#colocar manuealmente los puntos posibles de spawn
+@export var spawn_points_it: Array[NodePath] = []
+@export var spawn_points_pd: Array[NodePath] = []
 var spawn_index = 0
 var invisibilidad_usada = false #para que el cooldown empiece a correr sólo cuando se usó
+var item_recogido = false #para que se cambie la posicion del item robable
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready():
 	salud = 3
 	jugador = get_node(".")
 	mapa = get_node("..")
-	potenciador = get_node("../Area2D")
-	potenciador_duplicado = preload("res://Escenas/potenciador.tscn").instantiate()
-	mapa.add_child(potenciador_duplicado)
-	potenciador_duplicado.scale = Vector2(0.39, 0.39)
-	potenciador_duplicado.position = Vector2(-81.0, 248.0)
 	puntaje = 0
 	muerto = false
 
@@ -36,7 +38,7 @@ func _process(delta):
 		return
 	
 	velocity = Vector2()
-	if invisibilidad_usada:
+	if invisible():
 		invisibility_time -= delta
 	if invisibility_time <= 0:
 		invisibility_time = 5
@@ -44,9 +46,16 @@ func _process(delta):
 		modulate.a = 1
 		potenciador_duplicado = preload("res://Escenas/potenciador.tscn").instantiate()
 		mapa.add_child(potenciador_duplicado)
-		potenciador_duplicado.scale = Vector2(0.39, 0.39)
-		_set_next_spawn_point()
+		potenciador_duplicado.scale = Vector2(0.3, 0.3)
+		_set_next_spawn_point_pd()
 		invisibilidad_usada = false
+	
+	if item_recogido:
+		item_recogido = false
+		item_duplicado = preload("res://Escenas/item.tscn").instantiate()
+		mapa.add_child(item_duplicado)
+		item_duplicado.scale = Vector2(0.2, 0.2)
+		_set_next_spawn_point_it()
 
 	if Input.is_action_pressed("ui_right"):
 		velocity.x += 1
@@ -112,11 +121,31 @@ func transparentar(transparencia):
 func invisible():
 	return invisibilidad_usada
 
-#misma función que en Guardia.gd
-func _set_next_spawn_point():
-	if spawn_points.size() == 0:
+func recoger():
+	item_recogido = true
+
+func _set_next_spawn_point_pd():
+	if spawn_points_pd.size() == 0:
 		return
-	var spawn_node = get_node_or_null(spawn_points[spawn_index])
+	var new_index = randi_range(0, spawn_points_pd.size()-1)
+	if spawn_index != new_index:
+		spawn_index = new_index
+	else:
+		spawn_index -= 2
+	
+	var spawn_node = get_node_or_null(spawn_points_pd[spawn_index])
 	if spawn_node:
 		potenciador_duplicado.position = spawn_node.global_position
-	spawn_index = (spawn_index + 1) % spawn_points.size()
+
+func _set_next_spawn_point_it():
+	if spawn_points_it.size() == 0:
+		return
+	var new_index = randi_range(0, spawn_points_it.size()-1)
+	if spawn_index != new_index:
+		spawn_index = new_index
+	else:
+		spawn_index -= 2
+	
+	var spawn_node = get_node_or_null(spawn_points_it[spawn_index])
+	if spawn_node:
+		item_duplicado.position = spawn_node.global_position
