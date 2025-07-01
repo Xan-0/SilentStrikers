@@ -9,12 +9,12 @@ func _ready():
 
 #Detecta si el Ladrón entro al rango
 func _on_body_entered(body):
-	if body.name == "Ladron":
+	if body.name == "Player":
 		player_in_range = true
 
 #Detecta si el Ladrón salió del rango
 func _on_body_exited(body):
-	if body.name == "Ladron":
+	if body.name == "Player":
 		player_in_range = false
 
 #Si el jugador esta en rango y presiona "interactuar", se recoge el item
@@ -26,9 +26,9 @@ func _process(delta):
 
 #Llama a la funcion aumentar puntaje del ladron
 func potenciar():
-	var jugador = get_node("../Ladron")
+	var jugador = get_node("../Player")
 	jugador.aumentar_velocidad(potenciado)
 
 func invisibilizar():
-	var jugador = get_node("../Ladron")
+	var jugador = get_node("../Player")
 	jugador.transparentar(0.5)
