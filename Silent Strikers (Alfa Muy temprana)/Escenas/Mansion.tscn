@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=4 uid="uid://bj4uwxkcoduja"]
+[gd_scene load_steps=28 format=4 uid="uid://bj4uwxkcoduja"]
 
 [ext_resource type="Texture2D" uid="uid://brmwx5ulu8t76" path="res://Tiles mapas/tileset-mapa1-brillo.png" id="1_vqv8r"]
 [ext_resource type="Texture2D" uid="uid://cuecitndoyo4b" path="res://Tiles mapas/Experimental.png" id="2_cn7dx"]
@@ -15,6 +15,8 @@
 [ext_resource type="Texture2D" uid="uid://b1rlteqk18guf" path="res://Sprites/sprits de prueba/New Piskel (11).png" id="12_nofbg"]
 [ext_resource type="Texture2D" uid="uid://nlpgntvqo06s" path="res://Sprites/sprits de prueba/New Piskel (9).png" id="13_u1ko5"]
 [ext_resource type="Texture2D" uid="uid://c1d04k1ykdmrx" path="res://Sprites/sprits de prueba/New Piskel (10).png" id="14_2y381"]
+[ext_resource type="PackedScene" uid="uid://b2d1lacrstmpj" path="res://Escenas/item.tscn" id="16_k1w2r"]
+[ext_resource type="PackedScene" uid="uid://jyu2vbo07tku" path="res://Escenas/potenciador.tscn" id="17_5jo1w"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_bbkxa"]
 
@@ -24,7 +26,7 @@ polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(-23, -23, 23, -23, 23, 23, -23, 23)])
 agent_radius = 0.0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bbkxa"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5jo1w"]
 texture = ExtResource("1_vqv8r")
 texture_region_size = Vector2i(46, 46)
 1:0/0 = 0
@@ -56,7 +58,7 @@ texture_region_size = Vector2i(46, 46)
 6:2/0 = 0
 6:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-23, -23, 23, -23, 23, 23, -23, 23)
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_aocxc"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_e5jov"]
 texture = ExtResource("2_cn7dx")
 texture_region_size = Vector2i(46, 46)
 0:0/0 = 0
@@ -83,7 +85,7 @@ texture_region_size = Vector2i(46, 46)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_hxxna"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hxxna"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8kqfa"]
 texture = ExtResource("3_11dg0")
 texture_region_size = Vector2i(48, 48)
 1:0/0 = 0
@@ -1351,9 +1353,9 @@ texture_region_size = Vector2i(48, 48)
 tile_size = Vector2i(46, 46)
 physics_layer_0/collision_layer = 1
 navigation_layer_0/layers = 1
-sources/1 = SubResource("TileSetAtlasSource_bbkxa")
-sources/2 = SubResource("TileSetAtlasSource_aocxc")
-sources/4 = SubResource("TileSetAtlasSource_hxxna")
+sources/1 = SubResource("TileSetAtlasSource_5jo1w")
+sources/2 = SubResource("TileSetAtlasSource_e5jov")
+sources/4 = SubResource("TileSetAtlasSource_8kqfa")
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_11dg0"]
 vertices = PackedVector2Array(16.8516, 635.906, -20.2266, 558.352, 97.0625, 559.227, 191.844, 635.102, 215.344, 559, 97.1484, 559, 87.8438, 291.977, 95.8438, 301.242, -48.4609, 309.758, -44.4531, 47.2109, 173.32, 48.7813, 175.32, 230.688, 597.547, 313.75, 423.328, 233.32, 731.109, 622.906, 479.32, 631.008, 479.703, 594.969, 592.492, 586.992, 732.797, 579.742, 615.547, 578.758, 601.398, 313.844, 864, 194.578, 1386.33, 184.578, 1384.64, 262.883, 860.633, 260.883, 421.32, 47.2422, 864, 50.7578, 862.672, 306.82)
@@ -1391,6 +1393,8 @@ tile_set = SubResource("TileSet_nurg1")
 
 [node name="Player" parent="." instance=ExtResource("4_mhhoc")]
 position = Vector2(104, 339)
+spawn_points_it = Array[NodePath]([NodePath("../Marker2D"), NodePath("../Marker2D2"), NodePath("../Marker2D3"), NodePath("../Marker2D4"), NodePath("../Marker2D5")])
+spawn_points_pd = Array[NodePath]([NodePath("../Marker2D6"), NodePath("../Marker2D7"), NodePath("../Marker2D8")])
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(476, -14)
@@ -1439,6 +1443,7 @@ offset_left = 51.0
 offset_top = 38.0
 offset_right = -131.336
 offset_bottom = -56.936
+metadata/_edit_use_anchors_ = true
 
 [node name="LifeLabel" type="Label" parent="CanvasLayer"]
 anchors_preset = -1
@@ -1448,10 +1453,12 @@ offset_left = 883.0
 offset_top = 19.0
 offset_right = 636.152
 offset_bottom = -59.736
+metadata/_edit_use_anchors_ = true
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
 offset_right = 40.0
 offset_bottom = 40.0
+metadata/_edit_use_anchors_ = true
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer"]
 top_level = true
@@ -1464,6 +1471,7 @@ offset_left = 809.856
 offset_top = 24.0
 offset_right = 1321.86
 offset_bottom = 536.0
+metadata/_edit_use_anchors_ = true
 
 [node name="SubViewport" type="SubViewport" parent="CanvasLayer/SubViewportContainer"]
 handle_input_locally = false
@@ -1508,6 +1516,7 @@ max_value = 1.0
 nine_patch_stretch = true
 texture_under = ExtResource("10_8kqfa")
 texture_progress = ExtResource("11_5hwbx")
+metadata/_edit_use_anchors_ = true
 
 [node name="oportunidad_2" type="TextureProgressBar" parent="CanvasLayer"]
 anchors_preset = -1
@@ -1521,6 +1530,7 @@ max_value = 1.0
 nine_patch_stretch = true
 texture_under = ExtResource("10_8kqfa")
 texture_progress = ExtResource("11_5hwbx")
+metadata/_edit_use_anchors_ = true
 
 [node name="oportunidad_3" type="TextureProgressBar" parent="CanvasLayer"]
 anchors_preset = -1
@@ -1534,6 +1544,7 @@ max_value = 1.0
 nine_patch_stretch = true
 texture_under = ExtResource("10_8kqfa")
 texture_progress = ExtResource("11_5hwbx")
+metadata/_edit_use_anchors_ = true
 
 [node name="barra_de_puntaje_1" type="TextureProgressBar" parent="CanvasLayer"]
 offset_left = 30.0
@@ -1544,6 +1555,7 @@ max_value = 150.0
 texture_under = ExtResource("12_nofbg")
 texture_over = ExtResource("13_u1ko5")
 texture_progress = ExtResource("14_2y381")
+metadata/_edit_use_anchors_ = true
 
 [node name="barra_de_puntaje_2" type="TextureProgressBar" parent="CanvasLayer"]
 offset_left = 130.0
@@ -1556,6 +1568,7 @@ texture_under = ExtResource("12_nofbg")
 texture_over = ExtResource("13_u1ko5")
 texture_progress = ExtResource("14_2y381")
 texture_progress_offset = Vector2(1, 0)
+metadata/_edit_use_anchors_ = true
 
 [node name="barra_de_puntaje_3" type="TextureProgressBar" parent="CanvasLayer"]
 offset_left = 320.0
@@ -1567,3 +1580,40 @@ max_value = 550.0
 texture_under = ExtResource("12_nofbg")
 texture_over = ExtResource("13_u1ko5")
 texture_progress = ExtResource("14_2y381")
+metadata/_edit_use_anchors_ = true
+
+[node name="item" parent="." instance=ExtResource("16_k1w2r")]
+position = Vector2(111, 604)
+scale = Vector2(0.2, 0.2)
+collision_layer = 2
+collision_mask = 3
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(26, 97)
+
+[node name="Marker2D2" type="Marker2D" parent="."]
+position = Vector2(617, 633)
+
+[node name="Marker2D3" type="Marker2D" parent="."]
+position = Vector2(601, 1088)
+
+[node name="Marker2D4" type="Marker2D" parent="."]
+position = Vector2(3237, 42)
+
+[node name="Marker2D5" type="Marker2D" parent="."]
+position = Vector2(1763, 563)
+
+[node name="Marker2D6" type="Marker2D" parent="."]
+position = Vector2(599, 594)
+
+[node name="potenciador" parent="." instance=ExtResource("17_5jo1w")]
+position = Vector2(464, 57)
+scale = Vector2(0.3, 0.3)
+collision_layer = 2
+collision_mask = 3
+
+[node name="Marker2D7" type="Marker2D" parent="."]
+position = Vector2(1534, -223)
+
+[node name="Marker2D8" type="Marker2D" parent="."]
+position = Vector2(2327, -211)
