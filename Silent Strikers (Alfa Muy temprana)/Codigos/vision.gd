@@ -11,12 +11,12 @@ func _ready():
 
 #Detecta si el Ladrón entro al rango
 func _on_body_entered(body):
-	if body.name == "Ladron":
+	if body.name == "Player":
 		emit_signal("ladron_entro")
 
 #Detecta si el Ladrón salió del rango
 func _on_body_exited(body):
-	if body.name == "Ladron":
+	if body.name == "Player":
 		emit_signal("ladron_salio")
 
 #Si el jugador esta en rango
