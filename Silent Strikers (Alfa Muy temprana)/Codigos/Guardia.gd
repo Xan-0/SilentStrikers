@@ -4,6 +4,7 @@ extends CharacterBody2D
 ## --- Variables de Movimiento y Navegación ---
 var speed = 300
 var acceleration = 7.0
+var hit_cooldown = 1.5 #tiempo hasta que el guardia vuelva a hacer daño
 var forward
 @export var navigation_region: NavigationRegion2D
 @export var player: CharacterBody2D
@@ -45,6 +46,7 @@ func _ready():
 	set_state(State.PATROLLING)
 
 func _physics_process(delta: float):
+	hit_cooldown-=delta
 	forward = (navigation_agent.get_next_path_position() - global_position).normalized()
 	if forward == Vector2.ZERO:
 		forward = Vector2.RIGHT.rotated(rotation)
@@ -80,6 +82,9 @@ func _physics_process(delta: float):
 				animations.play("Abajo")
 			elif move_dir.y < 0 or (move_dir.y < 0 and move_dir.x < 0) or (move_dir.y < 0 and move_dir.x > 0):
 				animations.play("Arriba")
+	if abs(player.position.x - position.x) < 70 and abs(player.position.y - position.y) < 120 and hit_cooldown < 0 and not player.invisible():
+		player.perder_salud(1)
+		hit_cooldown = 1.5
 	
 	move_and_slide()
 	
