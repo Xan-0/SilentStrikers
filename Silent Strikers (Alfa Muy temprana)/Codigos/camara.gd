@@ -56,7 +56,7 @@ func get_closest_guardia() -> Node:
 	var closest = null
 	var closest_dist = INF
 
-	for guardia in get_tree().get_nodes_in_group("Guardias"):
+	for guardia in get_tree().get_nodes_in_group("GuardiasM1"):
 		if not guardia.is_inside_tree():
 			continue
 		var dist = global_position.distance_to(guardia.global_position)

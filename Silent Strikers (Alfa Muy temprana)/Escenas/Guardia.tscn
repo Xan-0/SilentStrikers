@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bl7xsghjndym2" path="res://Codigos/Guardia.gd" id="1_gxl0b"]
 [ext_resource type="Texture2D" uid="uid://8daqsfakk7h8" path="res://Sprites/guardia 1 ajustado/fullspritesheet_enemigo1.png" id="2_g5ju6"]
-[ext_resource type="Script" uid="uid://bg7tpbudvl3k3" path="res://Codigos/Ataque.gd" id="4_1uryg"]
+[ext_resource type="Script" path="res://Codigos/Ataque.gd" id="4_1uryg"]
 [ext_resource type="Script" uid="uid://ctuuiip4c0u0s" path="res://Codigos/vision.gd" id="5_g5ju6"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1uryg"]
@@ -178,6 +178,7 @@ avoidance_mask = 3
 debug_enabled = true
 
 [node name="VisionRayCast" type="RayCast2D" parent="."]
+top_level = true
 scale = Vector2(3, 6)
 collision_mask = 4
 collide_with_areas = true
