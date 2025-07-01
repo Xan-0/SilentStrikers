@@ -5,5 +5,5 @@ var angle_between_rays = 5
 
 func _physics_process(delta: float) -> void:
 	if is_colliding():
-		if get_collider().name == "Ladron":
+		if get_collider().name == "Player":
 			print("PLayer detetcted")
