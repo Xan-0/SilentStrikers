@@ -1,7 +1,7 @@
 extends SubViewport
 
 @onready var minimap_camera: Camera2D = $Camera2D
-@onready var player: Node2D = get_node("/root/TestMapa1/Player")  # Ajustá si el path es otro
+@onready var player: Node2D = get_node("../../../../Player")  # Ajustá si el path es otro
 @onready var mapa: TileMapLayer = $TileMapLayer  # Tu copia visual del mapa
 
 func _process(_delta):
