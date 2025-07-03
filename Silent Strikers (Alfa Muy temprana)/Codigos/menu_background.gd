@@ -11,7 +11,16 @@ func _process(delta):
 	var flicker = sin(time * 6.0) * 0.5 + randf_range(-0.2, 0.2)
 	shader_material.set_shader_parameter("flicker_value", flicker)
 
-
-func _on_star_button_pressed() -> void:
+func _on_singleplayer_button_pressed() -> void:
 	var mapa_scene = load("res://Escenas/map_select.tscn")
+	get_tree().change_scene_to_packed(mapa_scene)
+
+
+func _on_multiplayer_button_pressed() -> void:
+	var mapa_scene = load("res://Escenas/multiplayer_screen.tscn")
+	get_tree().change_scene_to_packed(mapa_scene)
+
+
+func _on_options_button_pressed() -> void:
+	var mapa_scene = load("res://Escenas/settings_screen.tscn")
 	get_tree().change_scene_to_packed(mapa_scene)

@@ -1,10 +1,15 @@
 extends SubViewport
 
 @onready var minimap_camera: Camera2D = $Camera2D
-@onready var player: Node2D = get_node("../../../../Player")  # Ajustá si el path es otro
-@onready var mapa: TileMapLayer = $TileMapLayer  # Tu copia visual del mapa
+@onready var player: CharacterBody2D
+@onready var mapa: TileMapLayer = $TileMapLayer # Tu copia visual del mapa
+
+func _ready():
+	player = get_node("/root/TestMapa1/Player")  # Ajusta la ruta al nodo del jugador
+
 
 func _process(_delta):
+		
 	if player and minimap_camera:
 		# Hace que la cámara del minimapa siga al jugador
 		minimap_camera.global_position = player.global_position

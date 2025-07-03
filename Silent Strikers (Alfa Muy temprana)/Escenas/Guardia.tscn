@@ -1,8 +1,7 @@
-[gd_scene load_steps=26 format=3 uid="uid://d1ouhuslclwme"]
+[gd_scene load_steps=25 format=3 uid="uid://d1ouhuslclwme"]
 
 [ext_resource type="Script" uid="uid://bl7xsghjndym2" path="res://Codigos/Guardia.gd" id="1_gxl0b"]
 [ext_resource type="Texture2D" uid="uid://8daqsfakk7h8" path="res://Sprites/guardia 1 ajustado/fullspritesheet_enemigo1.png" id="2_g5ju6"]
-[ext_resource type="Script" path="res://Codigos/Ataque.gd" id="4_1uryg"]
 [ext_resource type="Script" uid="uid://ctuuiip4c0u0s" path="res://Codigos/vision.gd" id="5_g5ju6"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1uryg"]
@@ -188,7 +187,6 @@ visible = false
 scale = Vector2(3, 6)
 collision_layer = 2
 collision_mask = 3
-script = ExtResource("4_1uryg")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(-0.5, 3)
