@@ -5,7 +5,7 @@ extends SubViewport
 @onready var mapa: TileMapLayer = $TileMapLayer # Tu copia visual del mapa
 
 func _ready():
-	player = get_node("/root/TestMapa1/Player")  # Ajusta la ruta al nodo del jugador
+	player = Singleton.devolver_player()
 
 
 func _process(_delta):

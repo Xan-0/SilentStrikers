@@ -2,6 +2,7 @@ extends Area2D
 
 var player_in_range = false
 @export var puntos = 200  # Cuántos puntos da este ítem
+@onready var jugador = Singleton.devolver_player()
 
 func _ready():
 	body_entered.connect(_on_body_entered)
@@ -25,6 +26,5 @@ func _process(delta):
 
 #Llama a la funcion aumentar puntaje del ladron
 func recoger():
-	var jugador = get_node("../Player")
 	jugador.aumentar_puntaje(puntos)
 	jugador.recoger()

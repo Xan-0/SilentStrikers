@@ -1,7 +1,7 @@
 extends Node2D
 
 @onready var jugador_icono = $jugador_icono
-@onready var jugador = get_node("../../../../Player")
+@onready var player = Singleton.devolver_player()
 @onready var icono_guardia_escena = preload("res://Sprites/guardia 1 ajustado/map1enemy_down.png")  # ícono del guardia
 
 var iconos_guardias = []
@@ -17,7 +17,7 @@ func _ready():
 		})
 
 func _process(_delta):
-	jugador_icono.global_position = jugador.global_position
+	jugador_icono.global_position = player.global_position
 	
 	for par in iconos_guardias:
 		par["icono"].global_position = par["guardia"].global_position

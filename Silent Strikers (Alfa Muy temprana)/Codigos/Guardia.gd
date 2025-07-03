@@ -7,7 +7,7 @@ var acceleration = 7.0
 var hit_cooldown = 1.5 #tiempo hasta que el guardia vuelva a hacer daño
 var forward
 @export var navigation_region: NavigationRegion2D
-@export var player: CharacterBody2D
+var player = null
 var rotation2 = rotation
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var animations: AnimatedSprite2D = get_node("AnimatedSprite2D")
@@ -34,6 +34,7 @@ var chase_duration = 8.0
 var chasing_timer = 0.0
 
 func _ready():
+	player = Singleton.devolver_player()
 	add_to_group("GuardiasM1")
 	line_of_sight.add_exception(self)
 

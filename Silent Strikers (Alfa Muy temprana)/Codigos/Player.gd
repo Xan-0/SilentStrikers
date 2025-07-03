@@ -26,6 +26,7 @@ var item_recogido = false #para que se cambie la posicion del item robable
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready():
+	Singleton.registrar_player(self)
 	salud = 3
 	jugador = get_node(".")
 	mapa = get_node("..")

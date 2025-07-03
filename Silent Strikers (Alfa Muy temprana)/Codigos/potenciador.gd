@@ -2,6 +2,7 @@ extends Area2D
 
 var player_in_range = false
 @export var potenciado = 0.25  # Cuántos puntos da este ítem
+@onready var jugador = Singleton.devolver_player()
 
 func _ready():
 	body_entered.connect(_on_body_entered)
@@ -26,9 +27,7 @@ func _process(delta):
 
 #Llama a la funcion aumentar puntaje del ladron
 func potenciar():
-	var jugador = get_node("../Player")
 	jugador.aumentar_velocidad(potenciado)
 
 func invisibilizar():
-	var jugador = get_node("../Player")
 	jugador.transparentar(0.5)
