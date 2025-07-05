@@ -1,0 +1,20 @@
+# Node generated files and folders
+/node_modules
+/dist
+
+# Local databases
+/postgres
+/database
+
+# Local environment vars
+*.env
+
+# non-code files 
+*.log
+*.md
+.git
+.github
+.gitignore
+/endpoints
+/coverage
+/docs

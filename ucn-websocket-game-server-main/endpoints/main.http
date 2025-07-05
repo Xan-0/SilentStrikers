@@ -1,0 +1,24 @@
+@domain=http://localhost:5001
+@token=''
+
+# ###############################
+#            SCORES
+# ###############################
+
+### GET SCORES BY GAME
+GET {{domain}}/scores/
+Authorization: Bearer {{token}}
+
+### ADD GAME SCORE
+POST {{domain}}/scores/
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "playerName": "ScoreTest",
+  "score": 123456
+}
+
+### DELETE ALL GAME SCORE
+DELETE {{domain}}/scores/
+Authorization: Bearer {{token}}
