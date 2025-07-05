@@ -8,11 +8,12 @@ var is_connected = false
 var connection_attempts = 0
 var max_reconnect_attempts = 5
 @onready var ChatSystem = get_node("../ChatSystem")
-
+var player: CharacterBody2D
 # Datos del jugador
 var player_data = {}
 
 func _ready():
+	player = Singleton.devolver_player()
 	websocket = WebSocketPeer.new()
 	connect_to_server()
 
@@ -102,23 +103,41 @@ func handle_message(message: String):
 			handle_connection_accepted(data.data)
 		"public-message":
 			handle_public_message(data.data)
+		"online-players":
+			handle_online_players(data.data)
 		"player-connected":
 			handle_player_connected(data.data)
 		"player-disconnected":
 			handle_player_disconnected(data.data)
+		"match-request-received":
+			handle_match_request_received(data.get("data", {}), data.get("msg", ""))
 		"error":
 			handle_error(data.data)
 			print("Tipo de mensaje desconocido: ", data.type)
 			
 func handle_connection_accepted(data: Dictionary):
 	player_data = data
-	print("Conexión aceptada. ID asignado: ", data.get("id", ""))
+	print("✅ Conexión aceptada. ID asignado: ", data.get("id", ""))
+	print("✅ Nombre del jugador: ", data.get("name", ""))
+	if ChatSystem and ChatSystem.has_method("set_player_name"):
+		ChatSystem.set_player_name(data.get("name", ""))
+	var player_list = get_node_or_null("../PlayerListSystem")
+	if player_list and player_list.has_method("set_my_player_data"):
+		player_list.set_my_player_data(data)
 
 func handle_public_message(data: Dictionary):
 	var player_name = data.get("playerName", "")
 	var message = data.get("playerMsg", "")
 	ChatSystem.on_message_received(player_name, message)
 	print(player_name, ": ", message)
+	
+func handle_online_players(players_data: Array):
+	print("👥 Lista de jugadores recibida: ", players_data.size(), " jugadores")
+	var player_list = get_node_or_null("../PlayerListSystem")
+	if player_list and player_list.has_method("update_player_list"):
+		player_list.update_player_list(players_data)
+	else:
+		print("⚠️ PlayerListSystem no encontrado")
 
 func handle_player_connected(data: Dictionary):
 	var player_name = data.get("name", "")
@@ -164,6 +183,50 @@ func disconnect_from_server():
 		
 		websocket.close()
 		is_connected = false
+
+func request_online_players():
+	if not is_connected:
+		print("⚠️ No conectado, no se puede solicitar lista de jugadores")
+		return
+	
+	var request = {
+		"event": "online-players"
+	}
+	send_message(request)
+	print("📤 Solicitando lista de jugadores online")
+
+func handle_match_request_received(data: Dictionary, message: String):
+	var player_id = data.get("playerId", "")
+	var match_id = data.get("matchId", "")
+	
+	print("⚔️ Solicitud de partida recibida:")
+	print("  - Player ID: ", player_id)
+	print("  - Match ID: ", match_id)
+	print("  - Mensaje: ", message)
+	
+	# Extraer nombre del jugador del mensaje
+	var player_name = extract_player_name_from_message(message)
+	
+	# Actualizar lista de jugadores PRIMERO
+	var player_list = get_node_or_null("../PlayerListSystem")
+	if player_list:
+		if player_list.has_method("request_online_players"):
+			player_list.request_online_players()
+		# Esperar un momento para que se actualice la lista, luego mostrar la solicitud
+		await get_tree().create_timer(0.5).timeout
+		
+		if player_list.has_method("show_match_request"):
+			player_list.show_match_request(player_name, player_id, match_id)
+	else:
+		print("⚠️ PlayerListUI no encontrado")
+
+func extract_player_name_from_message(message: String) -> String:
+	# El mensaje viene como: "Match request received from player 'Teto'"
+	var parts = message.split("'")
+	if parts.size() >= 2:
+		return parts[1]  # El nombre está entre las comillas simples
+	else:
+		return "Jugador desconocido"
 
 func _exit_tree():
 	disconnect_from_server()

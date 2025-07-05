@@ -1,5 +1,6 @@
-[gd_scene load_steps=36 format=4 uid="uid://boxt8jcjxq02j"]
+[gd_scene load_steps=37 format=4 uid="uid://boxt8jcjxq02j"]
 
+[ext_resource type="Script" uid="uid://jcqpaxgrjj02" path="res://GUI/WScript.gd" id="1_e5jov"]
 [ext_resource type="Texture2D" uid="uid://brmwx5ulu8t76" path="res://assets/Tiles mapas/tileset-mapa1-brillo.png" id="1_vqv8r"]
 [ext_resource type="Texture2D" uid="uid://cuecitndoyo4b" path="res://assets/Tiles mapas/Experimental.png" id="2_cn7dx"]
 [ext_resource type="Texture2D" uid="uid://bd32yf8lfvp0e" path="res://assets/Tiles mapas/Interiors_free_48x48.png" id="3_11dg0"]
@@ -2724,6 +2725,9 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(-1996, 746, -1913, 969,
 agent_radius = 33.0
 
 [node name="TestMapa1" type="Node2D"]
+
+[node name="Node" type="Node" parent="."]
+script = ExtResource("1_e5jov")
 
 [node name="Piso 2" type="TileMapLayer" parent="."]
 position = Vector2(499, 2290)

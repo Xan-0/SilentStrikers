@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=4 uid="uid://bd1b7wnelunlv"]
+[gd_scene load_steps=16 format=4 uid="uid://bd1b7wnelunlv"]
 
 [ext_resource type="Script" uid="uid://tvry024spyp2" path="res://GUI/Multiplayer.gd" id="1_ff6ed"]
 [ext_resource type="Script" uid="uid://jcqpaxgrjj02" path="res://GUI/WScript.gd" id="2_pfcct"]
 [ext_resource type="Texture2D" uid="uid://c328v6fpq215f" path="res://assets/backgroundmenu.png" id="2_uecc1"]
 [ext_resource type="FontFile" uid="uid://c8u4n25tng03p" path="res://assets/fonts/VCR_OSD_MONO_1.001.ttf" id="3_pfcct"]
 [ext_resource type="Script" uid="uid://4hvg1bxo8wq" path="res://GUI/ChatSystem.gd" id="5_hb7u2"]
+[ext_resource type="Script" uid="uid://387fn74puu0f" path="res://GUI/PlayerListSystem.gd" id="6_hb7u2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hb7u2"]
 bg_color = Color(0.258824, 0.14902, 0.027451, 1)
@@ -326,6 +327,7 @@ shadow_offset = Vector2(0, 3.41)
 
 [node name="MultiplayerScene" type="Node"]
 script = ExtResource("1_ff6ed")
+metadata/_edit_horizontal_guides_ = [51.0]
 
 [node name="Node" type="Node" parent="."]
 script = ExtResource("2_pfcct")
@@ -350,22 +352,33 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_hb7u2")
 
 [node name="Label" type="Label" parent="Node/Panel"]
 layout_mode = 0
-offset_left = 378.0
-offset_top = 14.0
-offset_right = 740.0
-offset_bottom = 79.0
+offset_left = 25.0
+offset_top = 40.0
+offset_right = 387.0
+offset_bottom = 105.0
 theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 theme_override_fonts/font = ExtResource("3_pfcct")
 theme_override_font_sizes/font_size = 50
-text = "Multijugador"
+text = "Chat"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="Node/Panel"]
+offset_left = 664.0
+offset_top = 43.0
+offset_right = 1026.0
+offset_bottom = 108.0
+theme_override_colors/font_color = Color(1, 0.8, 0, 1)
+theme_override_fonts/font = ExtResource("3_pfcct")
+theme_override_font_sizes/font_size = 50
+text = "Matchmaking"
 horizontal_alignment = 1
 
 [node name="BackMenuButton" type="Button" parent="Node/Panel"]
 layout_mode = 2
-offset_left = 722.0
-offset_top = 511.0
-offset_right = 1042.0
-offset_bottom = 579.0
+offset_left = 491.0
+offset_top = 44.0
+offset_right = 586.0
+offset_bottom = 89.0
 size_flags_vertical = 3
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -376,7 +389,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_edxip")
 theme_override_styles/hover = SubResource("StyleBoxFlat_3gkcn")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_3npvr")
 theme_override_styles/normal = SubResource("StyleBoxFlat_qkvoq")
-text = "Volver al menú"
+text = "Volver"
 
 [node name="ChatSystem" type="Control" parent="."]
 layout_mode = 3
@@ -418,5 +431,8 @@ offset_left = 29.0
 offset_top = 572.0
 offset_right = 72.0
 offset_bottom = 610.0
+
+[node name="PlayerListSystem" type="Node" parent="."]
+script = ExtResource("6_hb7u2")
 
 [connection signal="pressed" from="Node/Panel/BackMenuButton" to="." method="_on_back_menu_button_pressed"]

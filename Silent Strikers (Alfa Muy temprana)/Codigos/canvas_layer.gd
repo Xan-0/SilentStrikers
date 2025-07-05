@@ -8,6 +8,7 @@ extends CanvasLayer
 @onready var barra_de_puntaje_1 = $barra_de_puntaje_1
 @onready var barra_de_puntaje_2 = $barra_de_puntaje_2
 @onready var barra_de_puntaje_3 = $barra_de_puntaje_3
+@onready var WScript = get_node("../Node")
 
 var player: CharacterBody2D
 var salud: int 
@@ -39,6 +40,8 @@ func update_hud():# Actualiza las etiquetas del HUD con los valores del jugador
 	
 	if player.puntaje <=150:
 		barra_de_puntaje_1.value = player.puntaje
+		if (player.puntaje == 150):
+			WScript.enviar_poder()
 	elif player.puntaje <= 450:
 		barra_de_puntaje_1.value = 150
 		barra_de_puntaje_2.value = player.puntaje - 150
