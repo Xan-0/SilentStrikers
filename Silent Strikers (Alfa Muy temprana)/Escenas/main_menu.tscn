@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=4 uid="uid://dc0dg2r02wran"]
 
 [ext_resource type="Texture2D" uid="uid://c328v6fpq215f" path="res://assets/backgroundmenu.png" id="1_0nokl"]
-[ext_resource type="Script" uid="uid://dblv1s8tgx5y0" path="res://Codigos/menu_background.gd" id="1_8rvje"]
+[ext_resource type="Script" uid="uid://dblv1s8tgx5y0" path="res://GUI/menu_background.gd" id="1_8rvje"]
 [ext_resource type="Script" uid="uid://dm1fp0ltr46lj" path="res://shaders/linterna_shader.shader.gd" id="3_8gvmq"]
 [ext_resource type="Shader" uid="uid://gfqffc631fr0" path="res://shaders/menu_background.gdshader" id="3_got42"]
 [ext_resource type="Texture2D" uid="uid://gi7mfquo8eq8" path="res://assets/title_font.png" id="3_mkaih"]
@@ -395,6 +395,7 @@ texture = ExtResource("3_mkaih")
 expand_mode = 1
 
 [node name="LightMask" type="ColorRect" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_8rvje")
 anchors_preset = 15
 anchor_right = 1.0

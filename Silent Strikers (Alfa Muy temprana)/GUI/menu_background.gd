@@ -17,7 +17,7 @@ func _on_singleplayer_button_pressed() -> void:
 
 
 func _on_multiplayer_button_pressed() -> void:
-	var mapa_scene = load("res://Escenas/multiplayer_screen.tscn")
+	var mapa_scene = load("res://Escenas/multiplayer_scene.tscn")
 	get_tree().change_scene_to_packed(mapa_scene)
 
 

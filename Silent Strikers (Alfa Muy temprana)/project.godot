@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 Singleton="*res://Codigos/singleton.gd"
+WScript="*res://GUI/WScript.gd"
+ChatSystem="*res://GUI/ChatSystem.gd"
 
 [dotnet]
 
