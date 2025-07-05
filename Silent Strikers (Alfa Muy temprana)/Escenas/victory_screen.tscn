@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://6o58gku2lopy" path="res://GUI/BackToMenu.gd" id="1_4nbv4"]
 [ext_resource type="Texture2D" uid="uid://cdpjri02qbn" path="res://assets/victory_background.png" id="1_o5orl"]
-[ext_resource type="FontFile" uid="uid://c8u4n25tng03p" path="res://fonts/VCR_OSD_MONO_1.001.ttf" id="2_4nbv4"]
+[ext_resource type="FontFile" uid="uid://c8u4n25tng03p" path="res://assets/fonts/VCR_OSD_MONO_1.001.ttf" id="2_4nbv4"]
 
 [sub_resource type="Image" id="Image_ws5tn"]
 data = {

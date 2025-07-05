@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://bvnfc55vxqy6s" path="res://GUI/pause_screen.gd" id="1_duq8p"]
 [ext_resource type="Texture2D" uid="uid://c328v6fpq215f" path="res://assets/backgroundmenu.png" id="1_qeunj"]
-[ext_resource type="FontFile" uid="uid://c8u4n25tng03p" path="res://fonts/VCR_OSD_MONO_1.001.ttf" id="2_hr2n2"]
-[ext_resource type="Shader" uid="uid://gfqffc631fr0" path="res://shaders/menu_background.gdshader" id="3_27awe"]
-[ext_resource type="Script" uid="uid://dm1fp0ltr46lj" path="res://shaders/linterna_shader.shader.gd" id="4_duq8p"]
+[ext_resource type="FontFile" uid="uid://c8u4n25tng03p" path="res://assets/fonts/VCR_OSD_MONO_1.001.ttf" id="2_hr2n2"]
+[ext_resource type="Shader" uid="uid://gfqffc631fr0" path="res://assets/shaders/menu_background.gdshader" id="3_27awe"]
+[ext_resource type="Script" uid="uid://dm1fp0ltr46lj" path="res://assets/shaders/linterna_shader.shader.gd" id="4_duq8p"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gchx3"]
 bg_color = Color(0.258824, 0.14902, 0.027451, 1)

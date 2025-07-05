@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=4 uid="uid://bufh334gp6nfj"]
 
 [ext_resource type="Script" uid="uid://6o58gku2lopy" path="res://GUI/BackToMenu.gd" id="1_qrkyg"]
-[ext_resource type="FontFile" uid="uid://c8u4n25tng03p" path="res://fonts/VCR_OSD_MONO_1.001.ttf" id="1_up55u"]
+[ext_resource type="FontFile" uid="uid://c8u4n25tng03p" path="res://assets/fonts/VCR_OSD_MONO_1.001.ttf" id="1_up55u"]
 [ext_resource type="Texture2D" uid="uid://c2qxtbnqff16i" path="res://assets/defeat_background.png" id="1_ws5tn"]
 
 [sub_resource type="Image" id="Image_ws5tn"]

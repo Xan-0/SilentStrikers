@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b2d1lacrstmpj"]
 
 [ext_resource type="Script" uid="uid://cycwmsx0ial3o" path="res://Codigos/item.gd" id="1_tnite"]
-[ext_resource type="Texture2D" uid="uid://bw5jx5n3gm5le" path="res://Imagenes/item_robable_02.png" id="2_e2spd"]
+[ext_resource type="Texture2D" uid="uid://bw5jx5n3gm5le" path="res://assets/Imagenes/item_robable_02.png" id="2_e2spd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kg5e7"]
 radius = 26.3358

@@ -6,6 +6,7 @@ var chat_messages: VBoxContainer
 var message_input: LineEdit
 var send_button: Button
 var chat_toggle: Button
+@onready var WScript = get_node("../Node")
 
 
 # Configuración del chat
@@ -97,7 +98,7 @@ func setup_chat_interface(canvas_layer: CanvasLayer):
 	connect_signals()
 	
 	# Agregar mensaje de bienvenida
-	add_system_message("Chat iniciado. ¡Bienvenido FrankyTheCatt!")
+	add_system_message("Chat iniciado. ¡Bienvenido!")
 	print("=== Chat listo ===")
 
 func get_safe_timestamp() -> String:
@@ -206,9 +207,9 @@ func add_chat_message(sender: String, message: String):
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.custom_minimum_size.y = 20
 	if sender == "Sistema":
-		label.modulate = Color.YELLOW
+		label.modulate = Color.DARK_ORCHID
 	elif sender == "Tú":
-		label.modulate = Color.CYAN
+		label.modulate = Color.CADET_BLUE
 	else:
 		label.modulate = Color.WHITE
 	

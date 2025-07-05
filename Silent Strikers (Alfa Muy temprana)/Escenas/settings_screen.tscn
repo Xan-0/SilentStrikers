@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=4 uid="uid://bwop2iq8be4v0"]
+[gd_scene load_steps=15 format=4 uid="uid://bwop2iq8be4v0"]
 
 [ext_resource type="Script" uid="uid://hstyri8kr0eo" path="res://GUI/settings_screen.gd" id="1_srqes"]
 [ext_resource type="Texture2D" uid="uid://c328v6fpq215f" path="res://assets/backgroundmenu.png" id="2_assm4"]
-[ext_resource type="FontFile" uid="uid://c8u4n25tng03p" path="res://fonts/VCR_OSD_MONO_1.001.ttf" id="3_n20dh"]
+[ext_resource type="FontFile" uid="uid://c8u4n25tng03p" path="res://assets/fonts/VCR_OSD_MONO_1.001.ttf" id="3_n20dh"]
+[ext_resource type="Script" uid="uid://tvry024spyp2" path="res://GUI/Multiplayer.gd" id="4_yo8wy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7q1qo"]
 bg_color = Color(0.258824, 0.14902, 0.027451, 1)
@@ -440,6 +441,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_t5s44")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_hbblf")
 theme_override_styles/normal = SubResource("StyleBoxFlat_2k6ht")
 text = "Volver al menú"
+script = ExtResource("4_yo8wy")
 
 [node name="Label" type="Label" parent="Panel"]
 layout_mode = 0
@@ -454,3 +456,4 @@ text = "Configuración"
 
 [connection signal="value_changed" from="Panel/VBoxContainer/HSlider" to="." method="_on_volume_slider_value_changed"]
 [connection signal="item_selected" from="Panel/VBoxContainer/ResolutionDropdown" to="." method="_on_resolution_selected"]
+[connection signal="pressed" from="Panel/VBoxContainer/BackMenuButton" to="Panel/VBoxContainer/BackMenuButton" method="_on_back_menu_button_pressed"]

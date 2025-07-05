@@ -1,7 +1,10 @@
-[gd_scene load_steps=12 format=4 uid="uid://bd1b7wnelunlv"]
+[gd_scene load_steps=15 format=4 uid="uid://bd1b7wnelunlv"]
 
+[ext_resource type="Script" uid="uid://tvry024spyp2" path="res://GUI/Multiplayer.gd" id="1_ff6ed"]
+[ext_resource type="Script" uid="uid://jcqpaxgrjj02" path="res://GUI/WScript.gd" id="2_pfcct"]
 [ext_resource type="Texture2D" uid="uid://c328v6fpq215f" path="res://assets/backgroundmenu.png" id="2_uecc1"]
-[ext_resource type="FontFile" uid="uid://c8u4n25tng03p" path="res://fonts/VCR_OSD_MONO_1.001.ttf" id="3_pfcct"]
+[ext_resource type="FontFile" uid="uid://c8u4n25tng03p" path="res://assets/fonts/VCR_OSD_MONO_1.001.ttf" id="3_pfcct"]
+[ext_resource type="Script" uid="uid://4hvg1bxo8wq" path="res://GUI/ChatSystem.gd" id="5_hb7u2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hb7u2"]
 bg_color = Color(0.258824, 0.14902, 0.027451, 1)
@@ -322,48 +325,10 @@ shadow_size = 5
 shadow_offset = Vector2(0, 3.41)
 
 [node name="MultiplayerScene" type="Node"]
-
-[node name="ChatSystem" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="ChatContainer" type="VBoxContainer" parent="ChatSystem"]
-visible = false
-layout_mode = 0
-offset_left = 94.0
-offset_top = 121.0
-offset_right = 493.0
-offset_bottom = 543.0
-alignment = 2
-
-[node name="ChatDisplay" type="ScrollContainer" parent="ChatSystem/ChatContainer"]
-layout_mode = 2
-
-[node name="ChatMessages" type="VBoxContainer" parent="ChatSystem/ChatContainer/ChatDisplay"]
-layout_mode = 2
-
-[node name="ChatInput" type="HBoxContainer" parent="ChatSystem/ChatContainer"]
-layout_mode = 2
-
-[node name="MessageLineEdit" type="LineEdit" parent="ChatSystem/ChatContainer/ChatInput"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-
-[node name="SendButton" type="Button" parent="ChatSystem/ChatContainer/ChatInput"]
-custom_minimum_size = Vector2(30, 0)
-layout_mode = 2
-
-[node name="ChatToggle" type="Button" parent="ChatSystem"]
-visible = false
-layout_mode = 0
-offset_left = 29.0
-offset_top = 572.0
-offset_right = 72.0
-offset_bottom = 610.0
+script = ExtResource("1_ff6ed")
 
 [node name="Node" type="Node" parent="."]
+script = ExtResource("2_pfcct")
 
 [node name="TextureRect" type="TextureRect" parent="Node"]
 anchors_preset = 15
@@ -412,5 +377,46 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_3gkcn")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_3npvr")
 theme_override_styles/normal = SubResource("StyleBoxFlat_qkvoq")
 text = "Volver al menú"
+
+[node name="ChatSystem" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_hb7u2")
+
+[node name="ChatContainer" type="VBoxContainer" parent="ChatSystem"]
+visible = false
+layout_mode = 0
+offset_left = 94.0
+offset_top = 121.0
+offset_right = 493.0
+offset_bottom = 543.0
+alignment = 2
+
+[node name="ChatDisplay" type="ScrollContainer" parent="ChatSystem/ChatContainer"]
+layout_mode = 2
+
+[node name="ChatMessages" type="VBoxContainer" parent="ChatSystem/ChatContainer/ChatDisplay"]
+layout_mode = 2
+
+[node name="ChatInput" type="HBoxContainer" parent="ChatSystem/ChatContainer"]
+layout_mode = 2
+
+[node name="MessageLineEdit" type="LineEdit" parent="ChatSystem/ChatContainer/ChatInput"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+
+[node name="SendButton" type="Button" parent="ChatSystem/ChatContainer/ChatInput"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+
+[node name="ChatToggle" type="Button" parent="ChatSystem"]
+visible = false
+layout_mode = 0
+offset_left = 29.0
+offset_top = 572.0
+offset_right = 72.0
+offset_bottom = 610.0
 
 [connection signal="pressed" from="Node/Panel/BackMenuButton" to="." method="_on_back_menu_button_pressed"]

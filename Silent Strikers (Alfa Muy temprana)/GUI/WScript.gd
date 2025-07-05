@@ -3,11 +3,11 @@ extends Node
 # WebSocket peer
 var websocket: WebSocketPeer
 var server_url = "ws://localhost:4010/?gameId=B&playerName=Teto"  # Cambia según tu servidor
-
 # Estado de conexión
 var is_connected = false
 var connection_attempts = 0
 var max_reconnect_attempts = 5
+@onready var ChatSystem = get_node("../ChatSystem")
 
 # Datos del jugador
 var player_data = {}
@@ -102,8 +102,8 @@ func handle_message(message: String):
 			handle_connection_accepted(data.data)
 		"public-message":
 			handle_public_message(data.data)
-		"player_left":
-			handle_player_left(data.data)
+		"player-connected":
+			handle_player_connected(data.data)
 		"player_position":
 			handle_player_position(data.data)
 		"error":
@@ -120,9 +120,9 @@ func handle_public_message(data: Dictionary):
 	ChatSystem.on_message_received(player_name, message)
 	print(player_name, ": ", message)
 
-func handle_player_left(data: Dictionary):
-	print("Jugador se fue: ", data.get("player_id", ""))
-	# Aquí puedes eliminar el sprite/nodo del jugador
+func handle_player_connected(data: Dictionary):
+	print(data.get("name", ""))
+	ChatSystem.on_player_joined_chat(data.get("name", ""))
 
 func handle_player_position(data: Dictionary):
 	var player_id = data.get("player_id", "")
@@ -144,7 +144,6 @@ func attempt_reconnection():
 	# Esperar antes de reconectar
 	await get_tree().create_timer(2.0).timeout
 	connect_to_server()
-
 
 func send_public_message(text: String):
 	var message = {

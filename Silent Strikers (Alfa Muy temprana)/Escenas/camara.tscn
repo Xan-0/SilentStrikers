@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cwbr2i4lpl8yd"]
 
 [ext_resource type="Script" uid="uid://b5qj15j1pihj7" path="res://Codigos/camara.gd" id="1_d77kl"]
-[ext_resource type="Texture2D" uid="uid://bukx3iv34xhxd" path="res://Imagenes/item_robable_04.png" id="2_2wb37"]
+[ext_resource type="Texture2D" uid="uid://bukx3iv34xhxd" path="res://assets/Imagenes/item_robable_04.png" id="2_2wb37"]
 [ext_resource type="Script" uid="uid://dhhvre6mbytx" path="res://Codigos/area_camara.gd" id="3_ksbri"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r7dab"]
