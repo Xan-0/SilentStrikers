@@ -104,8 +104,8 @@ func handle_message(message: String):
 			handle_public_message(data.data)
 		"player-connected":
 			handle_player_connected(data.data)
-		"player_position":
-			handle_player_position(data.data)
+		"player-disconnected":
+			handle_player_disconnected(data.data)
 		"error":
 			handle_error(data.data)
 			print("Tipo de mensaje desconocido: ", data.type)
@@ -121,14 +121,12 @@ func handle_public_message(data: Dictionary):
 	print(player_name, ": ", message)
 
 func handle_player_connected(data: Dictionary):
-	print(data.get("name", ""))
-	ChatSystem.on_player_joined_chat(data.get("name", ""))
+	var player_name = data.get("name", "")
+	ChatSystem.on_player_joined_chat(player_name)
 
-func handle_player_position(data: Dictionary):
-	var player_id = data.get("player_id", "")
-	var position = data.get("position", {})
-	print("Posición de ", player_id, ": ", position)
-	# Actualizar posición visual del jugador
+func handle_player_disconnected(data: Dictionary):
+	var player_name = data.get("name", "")
+	ChatSystem.on_player_left_chat(player_name)
 
 func handle_error(data: Dictionary):
 	print("Error del servidor: ", data.get("message", ""))
