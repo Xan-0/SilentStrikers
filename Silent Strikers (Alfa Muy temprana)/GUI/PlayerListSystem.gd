@@ -29,7 +29,8 @@ func _ready():
 	await get_tree().process_frame
 	await get_tree().process_frame
 	create_player_list_ui()
-	_ready_auto_refresh()  # Llamar aquí para iniciar el auto-refresh
+	_ready_auto_refresh()
+	WebSocketManager.request_online_players()  # Llamar aquí para iniciar el auto-refresh
 
 func create_player_list_ui():
 	print("👥 Creando UI de lista de jugadores...")
@@ -286,6 +287,7 @@ func _on_challenge_player(player_data: Dictionary):
 	call_deferred("request_online_players")
 
 func _ready_auto_refresh():
+	
 	var timer = Timer.new()
 	timer.wait_time = 2.0  # Cada 5 segundos en lugar de 1
 	timer.timeout.connect(_on_auto_refresh)
@@ -296,7 +298,6 @@ func _ready_auto_refresh():
 func show_match_request(player_name: String, player_id: String, match_id: String):
 	show_match_request_internal(player_name, player_id, match_id, true)
 
-# FUNCIÓN INTERNA: Mostrar solicitud con opción de notificar
 func show_match_request_internal(player_name: String, player_id: String, match_id: String, notify_chat: bool = true):
 	print("🎯 Mostrando solicitud de partida de: ", player_name, " (ID: ", player_id, ")")
 	
