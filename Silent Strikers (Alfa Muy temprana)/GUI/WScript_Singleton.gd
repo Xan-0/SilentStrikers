@@ -28,6 +28,9 @@ signal match_quit(data)
 signal player_list_updated(players)
 signal chat_message_received(sender, message)
 
+
+
+
 func _ready():
 	print("🔗 WebSocketManager Singleton iniciado")
 	websocket = WebSocketPeer.new()

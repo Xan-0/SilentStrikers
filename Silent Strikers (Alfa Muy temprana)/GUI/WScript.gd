@@ -16,6 +16,10 @@ func _ready():
 	WebSocketManager.connect("player_list_updated", _on_player_list_updated)
 	WebSocketManager.connect("chat_message_received", _on_chat_message_received)
 
+	#señales in-game
+	
+	WebSocketManager.connect("game_ended", _on_game_ended)
+
 func _on_player_connected(data: Dictionary):
 	print("✅ Jugador conectado: ", data.get("name", ""))
 	
@@ -48,7 +52,7 @@ func _on_match_started(data: Dictionary):
 		ChatSystem.prepare_for_scene_change()
 	
 	# Cambiar a selección de mapas
-	var map_selection_scene = load("res://Escenas/map_select.tscn")
+	var map_selection_scene = load("res://Escenas/Mansion_multijugador.tscn")
 	if map_selection_scene:
 		get_tree().change_scene_to_packed(map_selection_scene)
 	else:
@@ -72,3 +76,14 @@ func send_public_message(text: String):
 
 func request_online_players():
 	WebSocketManager.request_online_players()
+
+func _on_game_ended(data: Dictionary):
+	print("📢 Evento 'game-ended' recibido: ", data)
+
+	# Cargar escena de pantalla de derrota
+	var defeat_scene = load("res://Escenas/Pantallas/defeat_screen.tscn")
+	if defeat_scene:
+		get_tree().change_scene_to_packed(defeat_scene)
+	else:
+		print("❌ No se pudo cargar la pantalla de derrota")
+	
