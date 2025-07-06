@@ -25,7 +25,7 @@ polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(-23, -23, 23, -23, 23, 23, -23, 23)])
 agent_radius = 0.0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5hwbx"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_e5jov"]
 texture = ExtResource("1_vqv8r")
 texture_region_size = Vector2i(46, 46)
 1:0/0 = 0
@@ -54,7 +54,7 @@ texture_region_size = Vector2i(46, 46)
 6:2/0 = 0
 6:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-23, -23, 23, -23, 23, 23, -23, 23)
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nofbg"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8kqfa"]
 texture = ExtResource("2_cn7dx")
 texture_region_size = Vector2i(48, 48)
 0:0/0 = 0
@@ -79,7 +79,7 @@ texture_region_size = Vector2i(48, 48)
 5:2/0 = 0
 6:2/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u1ko5"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5hwbx"]
 texture = ExtResource("3_11dg0")
 texture_region_size = Vector2i(48, 48)
 1:0/0 = 0
@@ -1326,9 +1326,9 @@ tile_size = Vector2i(46, 46)
 physics_layer_0/collision_layer = 1
 physics_layer_0/collision_mask = 3
 navigation_layer_0/layers = 3
-sources/1 = SubResource("TileSetAtlasSource_5hwbx")
-sources/2 = SubResource("TileSetAtlasSource_nofbg")
-sources/4 = SubResource("TileSetAtlasSource_u1ko5")
+sources/1 = SubResource("TileSetAtlasSource_e5jov")
+sources/2 = SubResource("TileSetAtlasSource_8kqfa")
+sources/4 = SubResource("TileSetAtlasSource_5hwbx")
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_bbkxa"]
 
@@ -1338,7 +1338,7 @@ polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(-23, -23, 23, -23, 23, 23, -23, 23)])
 agent_radius = 0.0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5jo1w"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nofbg"]
 texture = ExtResource("1_vqv8r")
 texture_region_size = Vector2i(46, 46)
 1:0/0 = 0
@@ -1370,7 +1370,7 @@ texture_region_size = Vector2i(46, 46)
 6:2/0 = 0
 6:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-23, -23, 23, -23, 23, 23, -23, 23)
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_e5jov"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u1ko5"]
 texture = ExtResource("2_cn7dx")
 texture_region_size = Vector2i(46, 46)
 0:0/0 = 0
@@ -1395,7 +1395,7 @@ texture_region_size = Vector2i(46, 46)
 5:2/0 = 0
 6:2/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8kqfa"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2y381"]
 texture = ExtResource("3_11dg0")
 texture_region_size = Vector2i(48, 48)
 1:0/0 = 0
@@ -2413,9 +2413,9 @@ tile_size = Vector2i(46, 46)
 physics_layer_0/collision_layer = 1
 physics_layer_0/collision_mask = 3
 navigation_layer_0/layers = 3
-sources/1 = SubResource("TileSetAtlasSource_5jo1w")
-sources/2 = SubResource("TileSetAtlasSource_e5jov")
-sources/4 = SubResource("TileSetAtlasSource_8kqfa")
+sources/1 = SubResource("TileSetAtlasSource_nofbg")
+sources/2 = SubResource("TileSetAtlasSource_u1ko5")
+sources/4 = SubResource("TileSetAtlasSource_2y381")
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_11dg0"]
 vertices = PackedVector2Array(16.8516, 635.906, -20.2266, 558.352, 97.0625, 559.227, 191.844, 635.102, 215.344, 559, 97.1484, 559, 87.8438, 291.977, 95.8438, 301.242, -48.4609, 309.758, -44.4531, 47.2109, 173.32, 48.7813, 175.32, 230.688, 597.547, 313.75, 423.328, 233.32, 731.109, 622.906, 479.32, 631.008, 479.703, 594.969, 592.492, 586.992, 732.797, 579.742, 615.547, 578.758, 601.398, 313.844, 864, 194.578, 1386.33, 184.578, 1384.64, 262.883, 860.633, 260.883, 421.32, 47.2422, 864, 50.7578, 862.672, 306.82)
@@ -2540,7 +2540,6 @@ navigation_polygon = SubResource("NavigationPolygon_mhhoc")
 script = ExtResource("5_noela")
 
 [node name="Mascara gris" type="ColorRect" parent="HUD"]
-visible = false
 offset_left = -980.0
 offset_top = -832.0
 offset_right = 4586.0
