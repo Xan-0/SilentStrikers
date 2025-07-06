@@ -1,10 +1,11 @@
 extends CharacterBody2D
+
 @onready var state_label: Label = $StateLabel #DEBUG
 
 ## --- Variables de Movimiento y Navegación ---
 var speed = 300
 var acceleration = 7.0
-var hit_cooldown = 1.5 #tiempo hasta que el guardia vuelva a hacer daño
+var hit_cooldown = 1.5
 var forward
 @export var navigation_region: NavigationRegion2D
 var player = null
@@ -15,8 +16,8 @@ var rotation2 = rotation
 ## --- Variables de Visión y Detección ---
 var wall_collision_mask = 1
 @onready var line_of_sight: RayCast2D = $VisionRayCast
-@onready var vision_cone: Area2D = $Vision # Asegúrate que el nodo se llame así
-@onready var flashlight: PointLight2D = $FlashLight # El nodo de luz
+@onready var vision_cone: Area2D = $Vision
+@onready var flashlight: PointLight2D = $FlashLight
 var player_in_vision_cone = false
 
 ## --- Variables de Estado ---
@@ -24,7 +25,7 @@ enum State { PATROLLING, CHASING, SEARCHING }
 var current_state = State.PATROLLING
 var last_known_player_position = Vector2.ZERO
 
-## --- Tiempo de búsqueda ---\
+## --- Tiempo de búsqueda ---
 @export var search_radius = 200.0 
 var search_duration = 10.0
 var search_timer = 0.0
@@ -37,6 +38,7 @@ func _ready():
 	player = Singleton.devolver_player()
 	add_to_group("GuardiasM1")
 	line_of_sight.add_exception(self)
+	generar_cono_de_vision() # Genera el polígono del cono visual
 
 	if navigation_region == null:
 		print("[ERROR] ¡No se ha asignado un NavigationRegion2D al guardia!")
@@ -46,11 +48,29 @@ func _ready():
 	call_deferred("_set_next_patrol_point")
 	set_state(State.PATROLLING)
 
+func generar_cono_de_vision(fov_degrees := 90, radio := 200.0, resolucion := 12):
+	var fov = deg_to_rad(fov_degrees)
+	var puntos = [Vector2.ZERO]
+	for i in range(resolucion + 1):
+		var angulo = -fov / 2 + (fov * i / float(resolucion))
+		var punto = Vector2(cos(angulo), sin(angulo)) * radio
+		puntos.append(punto)
+
+	$Vision/CollisionPolygon2D.polygon = puntos
+	$Vision/Polygon2D.polygon = puntos
+
+
 func _physics_process(delta: float):
-	hit_cooldown-=delta
+	hit_cooldown -= delta
 	forward = (navigation_agent.get_next_path_position() - global_position).normalized()
 	if forward == Vector2.ZERO:
 		forward = Vector2.RIGHT.rotated(rotation)
+		
+	flashlight.rotation = rotation2
+	flashlight.position = Vector2(197, 30).rotated(rotation2) # cambia 16 según qué tan lejos está la linterna de la mano
+
+
+
 	match current_state:
 		State.PATROLLING:
 			speed = 200
@@ -71,6 +91,7 @@ func _physics_process(delta: float):
 		vision_cone.rotation = rotation2
 		line_of_sight.rotation = rotation2
 		flashlight.rotation = rotation2
+
 		var horizontal = false
 		if move_dir.x > 0 and (move_dir.y > -0.3 and move_dir.y < 0.3):
 			animations.play("Derecha")
@@ -78,17 +99,21 @@ func _physics_process(delta: float):
 		elif move_dir.x < 0 and (move_dir.y > -0.3 and move_dir.y < 0.3):
 			animations.play("Izquierda")
 			horizontal = true
+			flashlight.position = Vector2(197, 30-60).rotated(rotation2)
 		if not horizontal:
-			if move_dir.y > 0  or (move_dir.y > 0 and move_dir.x < 0) or (move_dir.y > 0 and move_dir.x > 0):
+			
+			if move_dir.y > 0:
 				animations.play("Abajo")
-			elif move_dir.y < 0 or (move_dir.y < 0 and move_dir.x < 0) or (move_dir.y < 0 and move_dir.x > 0):
+			elif move_dir.y < 0:
 				animations.play("Arriba")
+				flashlight.position = Vector2(197-30, 30).rotated(rotation2)
+
 	if abs(player.position.x - position.x) < 70 and abs(player.position.y - position.y) < 120 and hit_cooldown < 0 and not player.invisible():
 		player.perder_salud(1)
 		hit_cooldown = 1.5
 	
 	move_and_slide()
-	
+
 func _process_patrolling(delta):
 	if navigation_agent.is_navigation_finished():
 		_set_next_patrol_point()
@@ -171,28 +196,23 @@ func _on_player_lost():
 		search_timer = search_duration
 
 func _on_vision_body_entered(body: Node2D):
-	# Se ejecuta cuando algo entra en el Area2D
 	if body == player:
 		player_in_vision_cone = true
 		print("Jugador entró en el cono de visión.")
 
 func _on_vision_body_exited(body: Node2D):
-	# Se ejecuta cuando algo sale del Area2D
 	if body == player:
 		player_in_vision_cone = false
 		print("Jugador salió del cono de visión.")
 		if current_state == State.CHASING:
 			_on_player_lost()
 
-
 func check_line_of_sight():
 	line_of_sight.target_position = to_local(player.global_position)
 	line_of_sight.force_raycast_update()
-
 	if not line_of_sight.is_colliding():
 		if current_state != State.CHASING:
 			_on_player_detected()
-			
 		last_known_player_position = player.global_position
 		set_state(State.CHASING)
 	else:
@@ -201,9 +221,8 @@ func check_line_of_sight():
 func set_state(new_state):
 	if new_state == current_state:
 		return
-
 	current_state = new_state
-	if state_label: 
+	if state_label:
 		match current_state:
 			State.PATROLLING:
 				state_label.text = "Patrolling"

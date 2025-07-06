@@ -183,7 +183,6 @@ collision_mask = 4
 collide_with_areas = true
 
 [node name="Area2D" type="Area2D" parent="."]
-visible = false
 scale = Vector2(3, 6)
 collision_layer = 2
 collision_mask = 3
@@ -194,19 +193,27 @@ scale = Vector2(0.333333, 0.166667)
 shape = SubResource("RectangleShape2D_g5ju6")
 
 [node name="Vision" type="Area2D" parent="."]
+position = Vector2(4, 32)
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("5_g5ju6")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Vision"]
+visible = false
+position = Vector2(3, 33)
 polygon = PackedVector2Array(1, -2, 460, -165, 460, 165)
 
+[node name="Polygon2D" type="Polygon2D" parent="Vision"]
+visible = false
+color = Color(0.811765, 0.756863, 0.0627451, 0.47451)
+
 [node name="FlashLight" type="PointLight2D" parent="."]
-position = Vector2(-128, 32)
-rotation = -3.15032
-scale = Vector2(0.607621, 0.0478319)
+position = Vector2(241, 29)
+rotation = -9.43751
+scale = Vector2(1.23912, 0.0284979)
+skew = -0.00872665
 color = Color(1, 1, 0, 1)
-energy = 16.0
+energy = 7.05
 shadow_enabled = true
 texture = SubResource("GradientTexture2D_g5ju6")
 texture_scale = 5.72

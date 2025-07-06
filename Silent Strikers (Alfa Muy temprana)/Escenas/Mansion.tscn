@@ -2963,6 +2963,13 @@ texture_over = ExtResource("13_u1ko5")
 texture_progress = ExtResource("14_2y381")
 metadata/_edit_use_anchors_ = true
 
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = 3237.0
+offset_top = -839.0
+offset_right = 8803.0
+offset_bottom = 4926.0
+color = Color(0.109804, 0.109804, 0.109804, 0.392157)
+
 [node name="item" parent="." instance=ExtResource("16_k1w2r")]
 position = Vector2(111, 604)
 scale = Vector2(0.2, 0.2)
@@ -3000,14 +3007,17 @@ position = Vector2(1534, -223)
 position = Vector2(2327, -211)
 
 [node name="PatrullaGuardia_4" type="NavigationRegion2D" parent="."]
+visible = false
 position = Vector2(499, 2304)
 navigation_polygon = SubResource("NavigationPolygon_sd6ds")
 
 [node name="PatrullaGuardia_5" type="NavigationRegion2D" parent="."]
+visible = false
 position = Vector2(494, 2288)
 navigation_polygon = SubResource("NavigationPolygon_6q0rs")
 
 [node name="PatrullaGuardia_6" type="NavigationRegion2D" parent="."]
+visible = false
 position = Vector2(3379, 2304)
 navigation_polygon = SubResource("NavigationPolygon_s3cwq")
 
