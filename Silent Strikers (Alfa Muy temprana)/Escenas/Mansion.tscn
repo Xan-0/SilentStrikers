@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=4 uid="uid://boxt8jcjxq02j"]
+[gd_scene load_steps=36 format=4 uid="uid://d4lyib7n06dms"]
 
 [ext_resource type="Texture2D" uid="uid://brmwx5ulu8t76" path="res://assets/Tiles mapas/tileset-mapa1-brillo.png" id="1_vqv8r"]
 [ext_resource type="Texture2D" uid="uid://cuecitndoyo4b" path="res://assets/Tiles mapas/Experimental.png" id="2_cn7dx"]
@@ -2525,7 +2525,7 @@ visible = false
 navigation_polygon = SubResource("NavigationPolygon_cn7dx")
 
 [node name="Camara" parent="." node_paths=PackedStringArray("player") instance=ExtResource("6_11dg0")]
-position = Vector2(1752, 1193)
+position = Vector2(1785, 1204)
 player = NodePath("../Player")
 
 [node name="Guardia_3" parent="." node_paths=PackedStringArray("navigation_region") instance=ExtResource("6_mhhoc")]
@@ -2540,6 +2540,7 @@ navigation_polygon = SubResource("NavigationPolygon_mhhoc")
 script = ExtResource("5_noela")
 
 [node name="Mascara gris" type="ColorRect" parent="HUD"]
+visible = false
 offset_left = -980.0
 offset_top = -832.0
 offset_right = 4586.0

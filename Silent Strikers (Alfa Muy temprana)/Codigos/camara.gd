@@ -11,7 +11,7 @@ extends Node2D
 
 var player_detected: bool = false
 var last_known_position: Vector2 = Vector2.ZERO
-var rotation2 := rotation  # dirección visual de la cámara
+var rotation2 := rotation  # Dirección visual de la cámara
 
 func _ready():
 	raycast.collision_mask = wall_collision_mask | player.collision_layer
@@ -31,6 +31,8 @@ func check_vision():
 	var distance = dir_to_player.length()
 
 	if distance > vision_range:
+		if player_detected:
+			_on_player_lost()
 		player_detected = false
 		return
 
@@ -52,6 +54,25 @@ func check_vision():
 		_on_player_lost()
 	player_detected = false
 
+func _on_player_detected():
+	var guardia = get_closest_guardia()
+	if guardia:
+		guardia.last_known_player_position = last_known_position
+		guardia.current_state = guardia.State.CHASING
+		guardia.chasing_timer = guardia.chase_duration
+
+		if guardia.has_node("NavigationAgent2D") and guardia.navigation_region:
+			var nav: NavigationAgent2D = guardia.get_node("NavigationAgent2D")
+			var nav_map = guardia.navigation_region.get_navigation_map()
+			var closest = NavigationServer2D.map_get_closest_point(nav_map, last_known_position)
+			nav.target_position = closest
+
+func _on_player_lost():
+	var guardia = get_closest_guardia()
+	if guardia and guardia.current_state == guardia.State.CHASING:
+		guardia.current_state = guardia.State.SEARCHING
+		guardia.search_timer = guardia.search_duration
+
 func get_closest_guardia() -> Node:
 	var closest = null
 	var closest_dist = INF
@@ -65,27 +86,18 @@ func get_closest_guardia() -> Node:
 			closest = guardia
 	return closest
 
-func _on_player_detected():
-	print("📷 Cámara detectó al ladrón.")
-	var guardia = get_closest_guardia()
-	if guardia:
-		guardia.last_known_player_position = last_known_position
-		guardia.current_state = guardia.State.CHASING
-		guardia.chasing_timer = guardia.chase_duration
-
-func _on_player_lost():
-	print("📷 Cámara perdió de vista al ladrón.")
-
 func _draw():
+	if not draw_vision_cone:
+		return
+
 	var half_angle = deg_to_rad(vision_angle_degrees / 2.0)
 	var segments = 20
 	var points = PackedVector2Array()
+	points.append(Vector2.ZERO)  # Centro de la cámara
 
 	for i in range(segments + 1):
 		var angle = -half_angle + (i / float(segments)) * (2 * half_angle)
-		points.append(Vector2.RIGHT.rotated(angle + rotation2) * vision_range * 2)
+		var dir = Vector2.RIGHT.rotated(angle + rotation2)
+		points.append(dir * vision_range)
 
-	if points.size() > 0:
-		draw_line(Vector2.ZERO, points[0], vision_cone_color, 1.0)
-		draw_polyline(points, vision_cone_color, 1.0)
-		draw_line(Vector2.ZERO, points[-1], vision_cone_color, 1.0)
+	draw_colored_polygon(points, vision_cone_color)
