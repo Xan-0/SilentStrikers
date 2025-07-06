@@ -10,9 +10,12 @@ func _process(delta):
 	# Flicker suave con aleatoriedad
 	var flicker = sin(time * 6.0) * 0.5 + randf_range(-0.2, 0.2)
 	shader_material.set_shader_parameter("flicker_value", flicker)
+	
+
+
 
 func _on_singleplayer_button_pressed() -> void:
-	var mapa_scene = load("res://Escenas/map_select.tscn")
+	var mapa_scene = load("res://GUI/Escenas/map_select.tscn")
 	get_tree().change_scene_to_packed(mapa_scene)
 
 
