@@ -6,9 +6,6 @@ var player_list_container: VBoxContainer
 var refresh_button: Button
 var title_label: Label
 
-# Referencia al WebSocket manager
-@onready var websocket_manager = get_node("../Node")
-
 # Datos
 var my_player_data = {}
 var current_players = []
@@ -97,8 +94,8 @@ func _on_refresh_pressed():
 
 # NUEVA FUNCIÓN: Función centralizada para solicitar jugadores
 func request_online_players():
-	if websocket_manager and websocket_manager.has_method("request_online_players"):
-		websocket_manager.request_online_players()
+	if WebSocketManager and WebSocketManager.has_method("request_online_players"):
+		WebSocketManager.request_online_players()
 	else:
 		print("⚠️ No se puede actualizar: WebSocket no disponible")
 
@@ -277,7 +274,7 @@ func _on_challenge_player(player_data: Dictionary):
 			"playerId": player_data.get("id"),
 		}
 	}
-	websocket_manager.send_message(body_challenge)
+	WebSocketManager.send_message(body_challenge)
 	
 	# Notificar en chat
 	var chat_system = get_node_or_null("../ChatSystem")
@@ -361,7 +358,7 @@ func _on_accept_match_request(player_id: String):
 	var accept_response = {
 		"event": "accept-match"
 	}
-	websocket_manager.send_message(accept_response)
+	WebSocketManager.send_message(accept_response)
 	
 	# Notificar en el chat
 	var chat_system = get_node_or_null("../ChatSystem")
@@ -372,7 +369,7 @@ func _on_accept_match_request(player_id: String):
 		"event": "connect-match"
 		}
 	
-	websocket_manager.send_message(connect_match)
+	WebSocketManager.send_message(connect_match)
 	
 	# Ocultar solicitud
 	hide_match_request(player_id)
@@ -384,13 +381,13 @@ func connect_match():
 	var connect_match = {
 		"event" : "connect-match"
 	}
-	websocket_manager.send_message(connect_match)
+	WebSocketManager.send_message(connect_match)
 
 func ping_match():
 	var ping_match = {
 		"event" : "ping-match"
 	}
-	websocket_manager.send_message(ping_match)
+	WebSocketManager.send_message(ping_match)
 
 func _on_decline_match_request(player_id: String):
 	print("❌ Declinando solicitud de partida del jugador: ", player_id)
@@ -403,7 +400,7 @@ func _on_decline_match_request(player_id: String):
 	var decline_response = {
 		"event": "reject-match"
 	}
-	websocket_manager.send_message(decline_response)
+	WebSocketManager.send_message(decline_response)
 	
 	# Notificar en el chat
 	var chat_system = get_node_or_null("../ChatSystem")
@@ -436,7 +433,7 @@ func _on_auto_decline_timeout(player_id: String, timer: Timer):
 		var decline_response = {
 			"event": "reject-match"
 		}
-		websocket_manager.send_message(decline_response)
+		WebSocketManager.send_message(decline_response)
 		
 		# Notificar en el chat
 		var chat_system = get_node_or_null("../ChatSystem")
@@ -492,5 +489,5 @@ func hide_match_request(player_id: String):
 				break
 
 func _on_auto_refresh():
-	if websocket_manager and websocket_manager.has_method("request_online_players"):
-		websocket_manager.request_online_players()
+	if WebSocketManager and WebSocketManager.has_method("request_online_players"):
+		WebSocketManager.request_online_players()
