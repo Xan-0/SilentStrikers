@@ -48,7 +48,7 @@ func _on_match_started(data: Dictionary):
 		ChatSystem.prepare_for_scene_change()
 	
 	# Cambiar a selección de mapas
-	var map_selection_scene = load("res://Escenas/MapSelection.tscn")
+	var map_selection_scene = load("res://Escenas/map_select.tscn")
 	if map_selection_scene:
 		get_tree().change_scene_to_packed(map_selection_scene)
 	else:

@@ -352,7 +352,6 @@ func _on_accept_match_request(player_id: String):
 	
 	var request_data = pending_requests.get(player_id, {})
 	var player_name = request_data.get("player_name", "")
-	var match_id = request_data.get("match_id", "")
 	
 	# Enviar respuesta de aceptación al servidor
 	var accept_response = {
@@ -365,11 +364,7 @@ func _on_accept_match_request(player_id: String):
 	if chat_system:
 		chat_system.add_chat_message("Sistema", "✅ Has aceptado el desafío de " + player_name)
 	
-	var connect_match = {
-		"event": "connect-match"
-		}
-	
-	WebSocketManager.send_message(connect_match)
+	connect_match()
 	
 	# Ocultar solicitud
 	hide_match_request(player_id)
@@ -394,8 +389,6 @@ func _on_decline_match_request(player_id: String):
 	
 	var request_data = pending_requests.get(player_id, {})
 	var player_name = request_data.get("player_name", "")
-	var match_id = request_data.get("match_id", "")
-	
 	# Enviar respuesta de rechazo al servidor
 	var decline_response = {
 		"event": "reject-match"
