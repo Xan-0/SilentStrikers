@@ -18,6 +18,7 @@ config/icon="res://assets/icon.svg"
 [autoload]
 
 Singleton="*res://Codigos/singleton.gd"
+WebSocketManager="*res://GUI/WScript_Singleton.gd"
 
 [dotnet]
 

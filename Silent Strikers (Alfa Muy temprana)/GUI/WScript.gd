@@ -1,173 +1,74 @@
 extends Node
 
-# WebSocket peer
-var websocket: WebSocketPeer
-var server_url = "ws://localhost:4010/?gameId=B&playerName=Teto"  # Cambia según tu servidor
-# Estado de conexión
-var is_connected = false
-var connection_attempts = 0
-var max_reconnect_attempts = 5
+# Este script ahora solo maneja la integración con la UI local
+# El WebSocket real está en el singleton
+
 @onready var ChatSystem = get_node("../ChatSystem")
 
-# Datos del jugador
-var player_data = {}
-
 func _ready():
-	websocket = WebSocketPeer.new()
-	connect_to_server()
+	print("🔗 Cliente WebSocket local iniciado")
+	# Conectar señales del singleton
+	WebSocketManager.connect("player_connected", _on_player_connected)
+	WebSocketManager.connect("match_request_received", _on_match_request_received)
+	WebSocketManager.connect("match_accepted", _on_match_accepted)
+	WebSocketManager.connect("match_ready", _on_match_ready)
+	WebSocketManager.connect("match_started", _on_match_started)
+	WebSocketManager.connect("player_list_updated", _on_player_list_updated)
+	WebSocketManager.connect("chat_message_received", _on_chat_message_received)
 
-func connect_to_server():
-	print("Conectando al servidor WebSocket...")
-	var error = websocket.connect_to_url(server_url)
+func _on_player_connected(data: Dictionary):
+	print("✅ Jugador conectado: ", data.get("name", ""))
 	
-	if error != OK:
-		print("Error al conectar: ", error)
-		attempt_reconnection()
+	if ChatSystem and ChatSystem.has_method("set_player_name"):
+		ChatSystem.set_player_name(data.get("name", ""))
+	
+	var player_list = get_node_or_null("../PlayerListSystem")
+	if player_list and player_list.has_method("set_my_player_data"):
+		player_list.set_my_player_data(data)
+
+func _on_match_request_received(player_name: String, player_id: String, match_id: String):
+	var player_list = get_node_or_null("../PlayerListSystem")
+	if player_list and player_list.has_method("show_match_request"):
+		player_list.show_match_request(player_name, player_id, match_id)
+
+func _on_match_accepted(data: Dictionary):
+	var player_list = get_node_or_null("../PlayerListSystem")
+	if player_list and player_list.has_method("connect_match"):
+		player_list.connect_match()
+
+func _on_match_ready(data: Dictionary):
+	var player_list = get_node_or_null("../PlayerListSystem")
+	if player_list and player_list.has_method("ping_match"):
+		player_list.ping_match()
+
+func _on_match_started(data: Dictionary):
+	print("🎮 Partida iniciada, cargando selección de mapas...")
+	
+	if ChatSystem and ChatSystem.has_method("prepare_for_scene_change"):
+		ChatSystem.prepare_for_scene_change()
+	
+	# Cambiar a selección de mapas
+	var map_selection_scene = load("res://GUI/Escenas/map_select.tscn")
+	if map_selection_scene:
+		get_tree().change_scene_to_packed(map_selection_scene)
 	else:
-		print("Conexión iniciada a la ip ", server_url)
+		print("❌ Error: No se pudo cargar MapSelection.tscn")
 
-func _process(_delta):
-	websocket.poll()
-	var state = websocket.get_ready_state()
-	
-	match state:
-		WebSocketPeer.STATE_CONNECTING:
-			pass
-			
-		WebSocketPeer.STATE_OPEN:
-			if not is_connected:
-				is_connected = true
-				connection_attempts = 0
-				print("Conectado al servidor WebSocket!")
-				on_connection_established()
-			
-			while websocket.get_available_packet_count():
-				var packet = websocket.get_packet()
-				var message = packet.get_string_from_utf8()
-				handle_message(message)
-				
-		WebSocketPeer.STATE_CLOSING:
-			print("Cerrando conexión...")
-			
-		WebSocketPeer.STATE_CLOSED:
-			if is_connected:
-				print("Conexión perdida")
-				is_connected = false
-				attempt_reconnection()
+func _on_player_list_updated(players: Array):
+	var player_list = get_node_or_null("../PlayerListSystem")
+	if player_list and player_list.has_method("update_player_list"):
+		player_list.update_player_list(players)
 
-func on_connection_established():
-	var login = {
-		"event": "login",
-		"data": {
-			"gameKey": "ED6XK9"
-		}
-	}
-	send_message(login)
+func _on_chat_message_received(sender: String, message: String):
+	if ChatSystem and ChatSystem.has_method("on_message_received"):
+		ChatSystem.on_message_received(sender, message)
 
-func generate_player_id() -> String:
-	return "player_" + str(Time.get_unix_time_from_system()) + "_" + str(randi() % 1000)
-
+# Funciones de conveniencia para mantener compatibilidad
 func send_message(data: Dictionary):
-	if not is_connected:
-		print("No conectado. No se puede enviar mensaje.")
-		return
-
-	var json_string = JSON.stringify(data)
-	var error = websocket.send_text(json_string)
-	
-	if error != OK:
-		print("Error al enviar mensaje: ", error)
-
-func handle_message(message: String):
-	var json = JSON.new()
-	var parse_result = json.parse(message)
-	
-	if parse_result != OK:
-		print("Error al parsear mensaje JSON")
-		return
-	
-	var data = json.data
-	
-	if not data.has("event"):
-		print("Mensaje sin tipo")
-		return
-	
-	var event = data.get("event", "")
-	var status = data.get("status", "")
-	var msg = data.get("msg", "")
-	print("Evento: ", event, " | Estado: ", status, " | Mensaje: ", msg)
-	
-	match event:
-		"login":
-			handle_connection_accepted(data.data)
-		"public-message":
-			handle_public_message(data.data)
-		"player-connected":
-			handle_player_connected(data.data)
-		"player-disconnected":
-			handle_player_disconnected(data.data)
-		"error":
-			handle_error(data.data)
-			print("Tipo de mensaje desconocido: ", data.type)
-			
-func handle_connection_accepted(data: Dictionary):
-	player_data = data
-	print("Conexión aceptada. ID asignado: ", data.get("id", ""))
-
-func handle_public_message(data: Dictionary):
-	var player_name = data.get("playerName", "")
-	var message = data.get("playerMsg", "")
-	ChatSystem.on_message_received(player_name, message)
-	print(player_name, ": ", message)
-
-func handle_player_connected(data: Dictionary):
-	var player_name = data.get("name", "")
-	ChatSystem.on_player_joined_chat(player_name)
-
-func handle_player_disconnected(data: Dictionary):
-	var player_name = data.get("name", "")
-	ChatSystem.on_player_left_chat(player_name)
-
-func handle_error(data: Dictionary):
-	print("Error del servidor: ", data.get("message", ""))
-
-func attempt_reconnection():
-	if connection_attempts >= max_reconnect_attempts:
-		print("Máximo de intentos de reconexión alcanzado")
-		return
-	
-	connection_attempts += 1
-	print("Intento de reconexión ", connection_attempts, "/", max_reconnect_attempts)
-	
-	# Esperar antes de reconectar
-	await get_tree().create_timer(2.0).timeout
-	connect_to_server()
+	WebSocketManager.send_message(data)
 
 func send_public_message(text: String):
-	var message = {
-		"event": "send-public-message",
-		"data": {
-			"message": text
-			}
-		}
-	send_message(message)
+	WebSocketManager.send_public_message(text)
 
-func disconnect_from_server():
-	if is_connected:
-		var message = {
-			"type": "player_disconnect",
-			"data": {
-				"player_id": player_data.get("player_id", "")
-			}
-		}
-		send_message(message)
-		
-		websocket.close()
-		is_connected = false
-
-func _exit_tree():
-	disconnect_from_server()
-
-func _on_back_menu_button_pressed() -> void:
-	var mapa_scene = load("res://Escenas/main_menu.tscn")
-	get_tree().change_scene_to_packed(mapa_scene)
+func request_online_players():
+	WebSocketManager.request_online_players()

@@ -42,8 +42,8 @@ func setup_chat_interface(canvas_layer: CanvasLayer):
 	chat_ui = Control.new()
 	chat_ui.name = "ChatUI"
 	# Posición fija en la esquina inferior izquierda
-	chat_ui.position = Vector2(15, 435)  # Posición visible
-	chat_ui.size = Vector2(400, 200)
+	chat_ui.position = Vector2(25, 120)  # Posición visible
+	chat_ui.size = Vector2(400, 500)
 	canvas_layer.add_child(chat_ui)
 	
 	# Fondo del chat
@@ -60,37 +60,31 @@ func setup_chat_interface(canvas_layer: CanvasLayer):
 	# === ÁREA DE MENSAJES ===
 	var scroll_container = ScrollContainer.new()
 	scroll_container.position = Vector2(5, 5)
-	scroll_container.size = Vector2(390, 160)
+	scroll_container.size = Vector2(390, 445)
 	chat_ui.add_child(scroll_container)
 	
 	chat_messages = VBoxContainer.new()
 	chat_messages.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll_container.add_child(chat_messages)
 	
-	# === ÁREA DE INPUT ===
+	# === ÁREA DE INPUT (OCUPA TODA LA PARTE INFERIOR) ===
 	var input_container = HBoxContainer.new()
-	input_container.position = Vector2(5, 170)
-	input_container.size = Vector2(390, 25)
+	input_container.position = Vector2(5, 445)  # Posición en la parte inferior
+	input_container.size = Vector2(390, 50)  # Altura aumentada y ancho completo
 	chat_ui.add_child(input_container)
 	
-	# Input de texto
+	# Input de texto (ocupa la mayoría del ancho)
 	message_input = LineEdit.new()
 	message_input.placeholder_text = "Escribe tu mensaje..."
-	message_input.size = Vector2(320, 25)
+	message_input.size = Vector2(300, 50)  # Más ancho y alto
+	message_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL  # Se expande para llenar el espacio
 	input_container.add_child(message_input)
 	
 	# Botón enviar
 	send_button = Button.new()
 	send_button.text = "Enviar"
-	send_button.size = Vector2(65, 25)
+	send_button.size = Vector2(80, 40)
 	input_container.add_child(send_button)
-	
-	# === BOTÓN TOGGLE ===
-	chat_toggle = Button.new()
-	chat_toggle.text = "Ocultar"
-	chat_toggle.position = Vector2(20, 360)  # Encima del chat
-	chat_toggle.size = Vector2(80, 30)
-	canvas_layer.add_child(chat_toggle)
 	
 	print("UI del chat creada en posición: ", chat_ui.position)
 	
@@ -171,6 +165,10 @@ func handle_chat_command(command: String):
 			add_system_message("/toggle - Mostrar/ocultar chat")
 		"/clear":
 			clear_chat()
+		"/players", "/refresh":
+			if WScript and WScript.has_method("request_online_players"):
+				WScript.request_online_players()
+				add_chat_message("Sistema", "🔄 Actualizando lista de jugadores...")
 		"/test":
 			add_chat_message("Sistema", "¡Este es un mensaje de prueba!")
 		"/toggle":
