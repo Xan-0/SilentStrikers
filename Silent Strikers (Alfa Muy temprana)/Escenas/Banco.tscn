@@ -1,10 +1,9 @@
-[gd_scene load_steps=12 format=4 uid="uid://dl2c808di5er1"]
+[gd_scene load_steps=11 format=4 uid="uid://dl2c808di5er1"]
 
-[ext_resource type="Texture2D" uid="uid://bd32yf8lfvp0e" path="res://Tiles mapas/Interiors_free_48x48.png" id="1_kgjmw"]
-[ext_resource type="Texture2D" uid="uid://dd2amsagrfw71" path="res://Tiles mapas/caja fuerte (1) (1).png" id="2_tpfsg"]
-[ext_resource type="Texture2D" uid="uid://dqenefsxqqyka" path="res://Tiles mapas/oro (1).png" id="3_bhxpy"]
-[ext_resource type="Texture2D" uid="uid://bi8ov4by0h6ia" path="res://Tiles mapas/estatuanashe.png" id="4_r0jbp"]
-[ext_resource type="Texture2D" uid="uid://7hxicn05xac4" path="res://Tiles mapas/tileset mapa3.png" id="5_21210"]
+[ext_resource type="Texture2D" uid="uid://bd32yf8lfvp0e" path="res://assets/Tiles mapas/Interiors_free_48x48.png" id="1_kgjmw"]
+[ext_resource type="Texture2D" uid="uid://cji12h6yd886u" path="res://assets/caja fuerte (1) (1).png" id="2_tpfsg"]
+[ext_resource type="Texture2D" uid="uid://bkfxtm5raqmol" path="res://assets/estatuanashe.png" id="4_r0jbp"]
+[ext_resource type="Texture2D" uid="uid://b5qt7yqemi5we" path="res://assets/tileset mapa3.png" id="5_21210"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gg3kn"]
 texture = ExtResource("1_kgjmw")
@@ -1447,7 +1446,7 @@ texture_region_size = Vector2i(46, 46)
 1:1/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6x6hr"]
-texture = ExtResource("3_bhxpy")
+texture = ExtResource("5_21210")
 texture_region_size = Vector2i(51, 51)
 0:0/0 = 0
 1:0/0 = 0
