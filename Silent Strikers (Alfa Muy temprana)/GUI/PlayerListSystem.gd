@@ -107,7 +107,6 @@ func set_my_player_data(data: Dictionary):
 	print("🆔 Datos del jugador establecidos: ", data.get("name", ""))
 
 func update_player_list(players_data: Array):
-	print("📝 Actualizando lista de jugadores con ", players_data.size(), " jugadores")
 	
 	current_players = players_data
 	
@@ -132,8 +131,6 @@ func update_player_list(players_data: Array):
 		if player_items.has(player_id):
 			var request_data = temp_pending[player_id]
 			show_match_request_internal(request_data.player_name, player_id, request_data.match_id, false)
-	
-	print("✅ Lista de jugadores actualizada")
 
 func create_player_item(player_data: Dictionary):
 	var player_id = player_data.get("id", "")
@@ -371,11 +368,29 @@ func _on_accept_match_request(player_id: String):
 	if chat_system:
 		chat_system.add_chat_message("Sistema", "✅ Has aceptado el desafío de " + player_name)
 	
+	var connect_match = {
+		"event": "connect-match"
+		}
+	
+	websocket_manager.send_message(connect_match)
+	
 	# Ocultar solicitud
 	hide_match_request(player_id)
 	
 	# Actualizar lista
 	call_deferred("request_online_players")
+
+func connect_match():
+	var connect_match = {
+		"event" : "connect-match"
+	}
+	websocket_manager.send_message(connect_match)
+
+func ping_match():
+	var ping_match = {
+		"event" : "ping-match"
+	}
+	websocket_manager.send_message(ping_match)
 
 func _on_decline_match_request(player_id: String):
 	print("❌ Declinando solicitud de partida del jugador: ", player_id)

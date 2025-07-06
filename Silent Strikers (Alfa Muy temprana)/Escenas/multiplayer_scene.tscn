@@ -363,6 +363,7 @@ text = "Chat"
 horizontal_alignment = 1
 
 [node name="Label2" type="Label" parent="Node/Panel"]
+layout_mode = 0
 offset_left = 664.0
 offset_top = 43.0
 offset_right = 1026.0

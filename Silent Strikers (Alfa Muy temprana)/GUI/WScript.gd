@@ -111,6 +111,12 @@ func handle_message(message: String):
 			handle_player_disconnected(data.data)
 		"match-request-received":
 			handle_match_request_received(data.get("data", {}), data.get("msg", ""))
+		"match-accepted":
+			handle_match_accepted(data.data)
+		"players-ready":
+			handle_match_ready(data.data)
+		"match-start":
+			handle_match_start(data.data)
 		"error":
 			handle_error(data.data)
 			print("Tipo de mensaje desconocido: ", data.type)
@@ -125,6 +131,17 @@ func handle_connection_accepted(data: Dictionary):
 	if player_list and player_list.has_method("set_my_player_data"):
 		player_list.set_my_player_data(data)
 
+func handle_match_start(data: Dictionary):
+	pass
+
+func handle_match_accepted(data: Dictionary):
+	var player_list = get_node_or_null("../PlayerListSystem")
+	player_list.connect_match()
+	
+func handle_match_ready(data: Dictionary):
+	var player_list = get_node_or_null("../PlayerListSystem")
+	player_list.ping_match()
+
 func handle_public_message(data: Dictionary):
 	var player_name = data.get("playerName", "")
 	var message = data.get("playerMsg", "")
@@ -132,7 +149,6 @@ func handle_public_message(data: Dictionary):
 	print(player_name, ": ", message)
 	
 func handle_online_players(players_data: Array):
-	print("👥 Lista de jugadores recibida: ", players_data.size(), " jugadores")
 	var player_list = get_node_or_null("../PlayerListSystem")
 	if player_list and player_list.has_method("update_player_list"):
 		player_list.update_player_list(players_data)
@@ -193,7 +209,6 @@ func request_online_players():
 		"event": "online-players"
 	}
 	send_message(request)
-	print("📤 Solicitando lista de jugadores online")
 
 func handle_match_request_received(data: Dictionary, message: String):
 	var player_id = data.get("playerId", "")
