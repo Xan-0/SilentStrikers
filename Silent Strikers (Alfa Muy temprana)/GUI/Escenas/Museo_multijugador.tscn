@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=4 uid="uid://2m2k5pw0h4u0"]
+[gd_scene load_steps=32 format=4 uid="uid://qve64xykyspo"]
 
 [ext_resource type="Texture2D" uid="uid://d1ugwl33ka3du" path="res://assets/Tiles mapas/tileset2.png" id="1_anik7"]
 [ext_resource type="Texture2D" uid="uid://n5kg0fr0ffk0" path="res://assets/Tiles mapas/T-Rex_Skeleton.png" id="2_rf74x"]

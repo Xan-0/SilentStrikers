@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=4 uid="uid://buyglx7t1l3kr"]
+[gd_scene load_steps=37 format=4 uid="uid://dxpfes4jejfhm"]
 
 [ext_resource type="Script" uid="uid://jcqpaxgrjj02" path="res://GUI/WScript.gd" id="1_j20gj"]
 [ext_resource type="Texture2D" uid="uid://brmwx5ulu8t76" path="res://assets/Tiles mapas/tileset-mapa1-brillo.png" id="2_md8ji"]

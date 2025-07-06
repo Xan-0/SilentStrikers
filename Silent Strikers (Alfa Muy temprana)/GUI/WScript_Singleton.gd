@@ -146,9 +146,9 @@ func handle_message(message: String):
 			handle_match_quit(data.get("data", {}))
 		"error":
 			handle_error(data.get("data", {}))
-		_:
-			print("❓ Evento desconocido: ", event)
-
+		"game-ended":
+			handle_game_ended(data.get("data", {}))
+		
 func handle_login(data: Dictionary):
 	player_data = data
 	print("✅ Login exitoso - ID: ", data.get("id", ""))

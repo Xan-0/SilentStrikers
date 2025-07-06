@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c1wuaquc176pl"]
+
+[ext_resource type="Script" uid="uid://b8l5veospmw5c" path="res://GUI/loss_escene.gd" id="1_blbly"]
+
+[node name="LossEscene" type="Node"]
+script = ExtResource("1_blbly")

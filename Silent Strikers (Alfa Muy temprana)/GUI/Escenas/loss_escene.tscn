@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1wuaquc176pl"]
+
+[ext_resource type="Script" uid="uid://b8l5veospmw5c" path="res://GUI/loss_escene.gd" id="1_blbly"]
+[ext_resource type="Script" uid="uid://4hvg1bxo8wq" path="res://GUI/ChatSystem.gd" id="2_63utq"]
+
+[node name="LossEscene" type="Node"]
+script = ExtResource("1_blbly")
+
+[node name="ChatSystem" type="Node" parent="."]
+script = ExtResource("2_63utq")

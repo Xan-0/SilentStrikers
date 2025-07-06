@@ -15,16 +15,9 @@ func _on_Mapa_1_pressed() -> void:
 	var mapa_scene = load("res://GUI/Escenas/Mansion_multijugador.tscn")
 	get_tree().change_scene_to_packed(mapa_scene)
 
-
-func _on_go_back_button_pressed() -> void:
-	var mapa_scene = load("res://Escenas/main_menu.tscn")
-	get_tree().change_scene_to_packed(mapa_scene)
-
-
 func _on_mapa_2_pressed() -> void:
 	var mapa_scene = load("res://GUI/Escenas/Museo_multijugador.tscn")
 	get_tree().change_scene_to_packed(mapa_scene)
-
 
 func _on_mapa_3_pressed() -> void:
 	var mapa_scene = load("res://GUI/Escenas/Banco_multijugador.tscn")

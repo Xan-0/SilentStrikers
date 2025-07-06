@@ -1,4 +1,4 @@
-extends Control
+extends Node
 
 # Referencias a nodos UI
 var chat_ui: Control
@@ -6,7 +6,6 @@ var chat_messages: VBoxContainer
 var message_input: LineEdit
 var send_button: Button
 var chat_toggle: Button
-@onready var WScript = get_node("../Node")
 
 
 # Configuración del chat
@@ -145,7 +144,7 @@ func send_chat_message(sender: String, text: String):
 			add_chat_message(sender, text)
 		
 		# Enviar al servidor si está conectado
-		WScript.send_public_message(text)
+		WebSocketManager.send_public_message(text)
 		print("Mensaje enviado al servidor")
 	# Limpiar input
 	message_input.text = ""
@@ -166,8 +165,8 @@ func handle_chat_command(command: String):
 		"/clear":
 			clear_chat()
 		"/players", "/refresh":
-			if WScript and WScript.has_method("request_online_players"):
-				WScript.request_online_players()
+			if WebSocketManager and WebSocketManager.has_method("request_online_players"):
+				WebSocketManager.request_online_players()
 				add_chat_message("Sistema", "🔄 Actualizando lista de jugadores...")
 		"/test":
 			add_chat_message("Sistema", "¡Este es un mensaje de prueba!")

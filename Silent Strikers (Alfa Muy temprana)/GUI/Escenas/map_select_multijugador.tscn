@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://7uhd6fg6s7xc"]
+[gd_scene load_steps=16 format=4 uid="uid://c3l6bdyjbxhjr"]
 
 [ext_resource type="Script" uid="uid://dwomanueendiu" path="res://GUI/MapSelectMultijugador.gd" id="1_bthnh"]
 [ext_resource type="Texture2D" uid="uid://c328v6fpq215f" path="res://assets/backgroundmenu.png" id="2_70hue"]
@@ -376,7 +376,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_ff3br")
 theme_override_styles/hover = SubResource("StyleBoxFlat_rvxg2")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_yjjqr")
 theme_override_styles/normal = SubResource("StyleBoxFlat_0dpy0")
-text = "Galería de Arte"
+text = "Museo"
 
 [node name="Mapa_3" type="Button" parent="CenterContainer/Panel/Botonera"]
 layout_mode = 2
@@ -391,20 +391,6 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_rvxg2")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_yjjqr")
 theme_override_styles/normal = SubResource("StyleBoxFlat_0dpy0")
 text = "Banco"
-
-[node name="GoBackButton" type="Button" parent="CenterContainer/Panel/Botonera"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/font_hover_color = Color(0.847059, 0.741176, 0.545098, 1)
-theme_override_colors/font_color = Color(0.847059, 0.741176, 0.545098, 1)
-theme_override_colors/font_pressed_color = Color(0.847059, 0.741176, 0.545098, 1)
-theme_override_fonts/font = SubResource("FontFile_k7xcd")
-theme_override_font_sizes/font_size = 27
-theme_override_styles/focus = SubResource("StyleBoxEmpty_ff3br")
-theme_override_styles/hover = SubResource("StyleBoxFlat_rvxg2")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_yjjqr")
-theme_override_styles/normal = SubResource("StyleBoxFlat_0dpy0")
-text = "Volver"
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
@@ -431,4 +417,3 @@ script = ExtResource("5_m01lq")
 [connection signal="pressed" from="CenterContainer/Panel/Botonera/Mapa_1" to="." method="_on_Mapa_1_pressed"]
 [connection signal="pressed" from="CenterContainer/Panel/Botonera/Mapa_2" to="." method="_on_mapa_2_pressed"]
 [connection signal="pressed" from="CenterContainer/Panel/Botonera/Mapa_3" to="." method="_on_mapa_3_pressed"]
-[connection signal="pressed" from="CenterContainer/Panel/Botonera/GoBackButton" to="." method="_on_go_back_button_pressed"]
