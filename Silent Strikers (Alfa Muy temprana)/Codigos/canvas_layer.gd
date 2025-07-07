@@ -38,9 +38,13 @@ func update_hud():# Actualiza las etiquetas del HUD con los valores del jugador
 	
 	if player.puntaje <=150:
 		barra_de_puntaje_1.value = player.puntaje
+		barra_de_puntaje_2 = 0;
+		barra_de_puntaje_3 = 0;
+		
 	elif player.puntaje <= 450:
 		barra_de_puntaje_1.value = 150
 		barra_de_puntaje_2.value = player.puntaje - 150
+		barra_de_puntaje_3 = 0;
 	elif player.puntaje <= 1000:
 		barra_de_puntaje_1.value = 150
 		barra_de_puntaje_2.value = 300

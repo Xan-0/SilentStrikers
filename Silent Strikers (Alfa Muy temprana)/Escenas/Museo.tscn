@@ -2219,7 +2219,7 @@ sources/6 = SubResource("TileSetAtlasSource_w8g50")
 
 [node name="Player" parent="." instance=ExtResource("1_n87ba")]
 z_index = 1
-position = Vector2(266, 268)
+position = Vector2(266, 252)
 spawn_points_it = Array[NodePath]([NodePath("../Marker2D"), NodePath("../Marker2D2"), NodePath("../Marker2D3"), NodePath("../Marker2D4"), NodePath("../Marker2D5")])
 spawn_points_pd = Array[NodePath]([NodePath("../Marker2D6"), NodePath("../Marker2D7"), NodePath("../Marker2D8")])
 
@@ -2256,8 +2256,8 @@ script = ExtResource("16_ua2ai")
 [node name="Mascara gris" type="ColorRect" parent="HUD"]
 offset_left = -654.0
 offset_top = -3254.0
-offset_right = 6113.0
-offset_bottom = 2760.0
+offset_right = 8889.0
+offset_bottom = 2966.0
 color = Color(0.109804, 0.109804, 0.109804, 0.392157)
 
 [node name="Puntaje" type="Label" parent="HUD"]
