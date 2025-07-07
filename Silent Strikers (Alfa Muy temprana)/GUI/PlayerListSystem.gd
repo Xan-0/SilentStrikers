@@ -1,5 +1,9 @@
 extends Node
 
+# === CONFIGURACIÓN DE TAMAÑO Y POSICIÓN ===
+var size_multiplier: float = 1.5  # 1.0 = 100%, 1.5 = 150%, 2.0 = 200%
+var position_offset: Vector2 = Vector2(-650, 150)  # Ajustar posición fácilmente
+
 # Referencias a nodos UI
 var player_list_ui: Control
 var player_list_container: VBoxContainer
@@ -32,7 +36,7 @@ func _ready():
 	await get_tree().process_frame
 	create_player_list_ui()
 	_ready_auto_refresh()
-	WebSocketManager.request_online_players()  # Llamar aquí para iniciar el auto-refresh
+	WebSocketManager.request_online_players()
 
 func create_player_list_ui():
 	print("👥 Creando UI de lista de jugadores...")
@@ -45,12 +49,12 @@ func create_player_list_ui():
 		get_tree().current_scene.add_child(ui_layer)
 		await get_tree().process_frame
 	
-	# Contenedor principal (lado derecho de la pantalla) - Aumentado altura para incluir input
+	# Contenedor principal con tamaño escalado
 	player_list_ui = Control.new()
 	player_list_ui.name = "PlayerListUI"
-	player_list_ui.size = Vector2(300, 450)  # Incrementado de 400 a 450
+	player_list_ui.size = Vector2(300 * size_multiplier, 450 * size_multiplier)
 	player_list_ui.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	player_list_ui.position = Vector2(-450, 120)
+	player_list_ui.position = position_offset
 	ui_layer.add_child(player_list_ui)
 	
 	# Fondo
@@ -63,84 +67,85 @@ func create_player_list_ui():
 	# Título
 	title_label = Label.new()
 	title_label.text = "👥 Jugadores Online (0)"
-	title_label.position = Vector2(10, 5)
-	title_label.size = Vector2(280, 25)
-	title_label.add_theme_font_size_override("font_size", 14)
+	title_label.position = Vector2(10 * size_multiplier, 5 * size_multiplier)
+	title_label.size = Vector2(280 * size_multiplier, 25 * size_multiplier)
+	title_label.add_theme_font_size_override("font_size", int(14 * size_multiplier))
 	title_label.modulate = Color.CYAN
 	player_list_ui.add_child(title_label)
 	
 	# Botón refresh
 	refresh_button = Button.new()
 	refresh_button.text = "🔄"
-	refresh_button.position = Vector2(260, 5)
-	refresh_button.size = Vector2(30, 25)
+	refresh_button.position = Vector2(260 * size_multiplier, 5 * size_multiplier)
+	refresh_button.size = Vector2(30 * size_multiplier, 25 * size_multiplier)
+	refresh_button.add_theme_font_size_override("font_size", int(14 * size_multiplier))
 	refresh_button.pressed.connect(_on_refresh_pressed)
 	player_list_ui.add_child(refresh_button)
 	
-	# Área de scroll para la lista - Reducido altura para dejar espacio al input
+	# Área de scroll para la lista
 	var scroll_container = ScrollContainer.new()
-	scroll_container.position = Vector2(5, 35)
-	scroll_container.size = Vector2(290, 320)  # Reducido de 360 a 320
+	scroll_container.position = Vector2(5 * size_multiplier, 35 * size_multiplier)
+	scroll_container.size = Vector2(290 * size_multiplier, 320 * size_multiplier)
 	player_list_ui.add_child(scroll_container)
 	
 	# Contenedor de jugadores
 	player_list_container = VBoxContainer.new()
 	player_list_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	player_list_container.add_theme_constant_override("separation", 5)
+	player_list_container.add_theme_constant_override("separation", int(5 * size_multiplier))
 	scroll_container.add_child(player_list_container)
 	
-	# --- NUEVA SECCIÓN: Input para cambiar nombre ---
+	# --- SECCIÓN: Input para cambiar nombre ---
 	
 	# Separador visual
 	var separator = HSeparator.new()
-	separator.position = Vector2(5, 360)
-	separator.size = Vector2(290, 5)
+	separator.position = Vector2(5 * size_multiplier, 360 * size_multiplier)
+	separator.size = Vector2(290 * size_multiplier, 5 * size_multiplier)
 	separator.modulate = Color.GRAY
 	player_list_ui.add_child(separator)
 	
 	# Label para el input
 	var input_label = Label.new()
 	input_label.text = "✏️ Cambiar nombre:"
-	input_label.position = Vector2(10, 370)
-	input_label.size = Vector2(150, 20)
-	input_label.add_theme_font_size_override("font_size", 12)
+	input_label.position = Vector2(10 * size_multiplier, 370 * size_multiplier)
+	input_label.size = Vector2(150 * size_multiplier, 20 * size_multiplier)
+	input_label.add_theme_font_size_override("font_size", int(12 * size_multiplier))
 	input_label.modulate = Color.LIGHT_GRAY
 	player_list_ui.add_child(input_label)
 	
 	# Input de texto para el nombre
 	name_input = LineEdit.new()
 	name_input.placeholder_text = "Nuevo nombre..."
-	name_input.position = Vector2(10, 395)
-	name_input.size = Vector2(200, 30)
-	name_input.add_theme_font_size_override("font_size", 12)
-	name_input.max_length = 20  # Limitar caracteres
+	name_input.position = Vector2(10 * size_multiplier, 395 * size_multiplier)
+	name_input.size = Vector2(200 * size_multiplier, 30 * size_multiplier)
+	name_input.add_theme_font_size_override("font_size", int(12 * size_multiplier))
+	name_input.max_length = 20
 	
 	# Estilo del input
 	var input_style = StyleBoxFlat.new()
 	input_style.bg_color = Color(0.1, 0.1, 0.1, 0.8)
 	input_style.border_color = Color.GRAY
-	input_style.border_width_bottom = 2
-	input_style.border_width_top = 2
-	input_style.border_width_left = 2
-	input_style.border_width_right = 2
-	input_style.corner_radius_top_left = 5
-	input_style.corner_radius_top_right = 5
-	input_style.corner_radius_bottom_left = 5
-	input_style.corner_radius_bottom_right = 5
+	input_style.border_width_bottom = int(2 * size_multiplier)
+	input_style.border_width_top = int(2 * size_multiplier)
+	input_style.border_width_left = int(2 * size_multiplier)
+	input_style.border_width_right = int(2 * size_multiplier)
+	input_style.corner_radius_top_left = int(5 * size_multiplier)
+	input_style.corner_radius_top_right = int(5 * size_multiplier)
+	input_style.corner_radius_bottom_left = int(5 * size_multiplier)
+	input_style.corner_radius_bottom_right = int(5 * size_multiplier)
 	name_input.add_theme_stylebox_override("normal", input_style)
 	
 	# Estilo cuando está enfocado
 	var input_style_focus = StyleBoxFlat.new()
 	input_style_focus.bg_color = Color(0.15, 0.15, 0.15, 0.9)
 	input_style_focus.border_color = Color.CYAN
-	input_style_focus.border_width_bottom = 2
-	input_style_focus.border_width_top = 2
-	input_style_focus.border_width_left = 2
-	input_style_focus.border_width_right = 2
-	input_style_focus.corner_radius_top_left = 5
-	input_style_focus.corner_radius_top_right = 5
-	input_style_focus.corner_radius_bottom_left = 5
-	input_style_focus.corner_radius_bottom_right = 5
+	input_style_focus.border_width_bottom = int(2 * size_multiplier)
+	input_style_focus.border_width_top = int(2 * size_multiplier)
+	input_style_focus.border_width_left = int(2 * size_multiplier)
+	input_style_focus.border_width_right = int(2 * size_multiplier)
+	input_style_focus.corner_radius_top_left = int(5 * size_multiplier)
+	input_style_focus.corner_radius_top_right = int(5 * size_multiplier)
+	input_style_focus.corner_radius_bottom_left = int(5 * size_multiplier)
+	input_style_focus.corner_radius_bottom_right = int(5 * size_multiplier)
 	name_input.add_theme_stylebox_override("focus", input_style_focus)
 	
 	player_list_ui.add_child(name_input)
@@ -148,33 +153,33 @@ func create_player_list_ui():
 	# Botón para cambiar nombre
 	change_name_button = Button.new()
 	change_name_button.text = "✓"
-	change_name_button.position = Vector2(220, 395)
-	change_name_button.size = Vector2(70, 30)
-	change_name_button.add_theme_font_size_override("font_size", 14)
+	change_name_button.position = Vector2(220 * size_multiplier, 395 * size_multiplier)
+	change_name_button.size = Vector2(70 * size_multiplier, 30 * size_multiplier)
+	change_name_button.add_theme_font_size_override("font_size", int(14 * size_multiplier))
 	
 	# Estilo del botón
 	var button_style = StyleBoxFlat.new()
-	button_style.bg_color = Color(0.2, 0.6, 0.2, 0.8)  # Verde
-	button_style.corner_radius_top_left = 5
-	button_style.corner_radius_top_right = 5
-	button_style.corner_radius_bottom_left = 5
-	button_style.corner_radius_bottom_right = 5
+	button_style.bg_color = Color(0.2, 0.6, 0.2, 0.8)
+	button_style.corner_radius_top_left = int(5 * size_multiplier)
+	button_style.corner_radius_top_right = int(5 * size_multiplier)
+	button_style.corner_radius_bottom_left = int(5 * size_multiplier)
+	button_style.corner_radius_bottom_right = int(5 * size_multiplier)
 	change_name_button.add_theme_stylebox_override("normal", button_style)
 	
 	# Estilo cuando se presiona
 	var button_style_pressed = StyleBoxFlat.new()
 	button_style_pressed.bg_color = Color(0.1, 0.4, 0.1, 0.8)
-	button_style_pressed.corner_radius_top_left = 5
-	button_style_pressed.corner_radius_top_right = 5
-	button_style_pressed.corner_radius_bottom_left = 5
-	button_style_pressed.corner_radius_bottom_right = 5
+	button_style_pressed.corner_radius_top_left = int(5 * size_multiplier)
+	button_style_pressed.corner_radius_top_right = int(5 * size_multiplier)
+	button_style_pressed.corner_radius_bottom_left = int(5 * size_multiplier)
+	button_style_pressed.corner_radius_bottom_right = int(5 * size_multiplier)
 	change_name_button.add_theme_stylebox_override("pressed", button_style_pressed)
 	change_name_button.pressed.connect(_on_change_name_button_pressed)
 	player_list_ui.add_child(change_name_button)
 	
 	name_input.text_submitted.connect(_on_name_input_submitted)
 	
-	print("✅ UI de lista de jugadores creada con input para cambiar nombre")
+	print("✅ UI de lista de jugadores creada con multiplicador: ", size_multiplier)
 
 func _on_name_input_submitted(new_text: String):
 	_on_change_name_button_pressed()
@@ -214,7 +219,6 @@ func _on_refresh_pressed():
 	print("🔄 Actualizando lista de jugadores manualmente...")
 	request_online_players()
 
-# NUEVA FUNCIÓN: Función centralizada para solicitar jugadores
 func request_online_players():
 	if WebSocketManager and WebSocketManager.has_method("request_online_players"):
 		WebSocketManager.request_online_players()
@@ -226,7 +230,6 @@ func set_my_player_data(data: Dictionary):
 	print("🆔 Datos del jugador establecidos: ", data.get("name", ""))
 
 func update_player_list(players_data: Array):
-	
 	current_players = players_data
 	
 	# Guardar solicitudes pendientes antes de limpiar
@@ -258,9 +261,9 @@ func create_player_item(player_data: Dictionary):
 	var game_data = player_data.get("game", {})
 	var game_name = game_data.get("name", "Sin juego")
 	
-	# Contenedor del jugador
+	# Contenedor del jugador con tamaño escalado
 	var player_item = Control.new()
-	player_item.custom_minimum_size.y = 70
+	player_item.custom_minimum_size.y = 70 * size_multiplier
 	player_item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	player_item.name = "PlayerItem_" + player_id
 	
@@ -269,23 +272,23 @@ func create_player_item(player_data: Dictionary):
 	
 	# Fondo del item
 	var item_bg = ColorRect.new()
-	item_bg.size = Vector2(280, 65)
+	item_bg.size = Vector2(280 * size_multiplier, 65 * size_multiplier)
 	item_bg.color = Color(0.2, 0.2, 0.2, 0.5)
 	item_bg.name = "ItemBg"
 	
 	# Destacar si soy yo
 	if player_id == my_player_data.get("id", ""):
-		item_bg.color = Color(0.2, 0.4, 0.6, 0.7)  # Azul para el jugador actual
+		item_bg.color = Color(0.2, 0.4, 0.6, 0.7)
 	
 	player_item.add_child(item_bg)
 	
 	# Icono de estado
 	var status_icon = Label.new()
 	status_icon.text = status_icons.get(player_status, "●")
-	status_icon.position = Vector2(10, 5)
-	status_icon.size = Vector2(20, 20)
+	status_icon.position = Vector2(10 * size_multiplier, 5 * size_multiplier)
+	status_icon.size = Vector2(20 * size_multiplier, 20 * size_multiplier)
 	status_icon.modulate = status_colors.get(player_status, Color.WHITE)
-	status_icon.add_theme_font_size_override("font_size", 16)
+	status_icon.add_theme_font_size_override("font_size", int(16 * size_multiplier))
 	status_icon.name = "StatusIcon"
 	player_item.add_child(status_icon)
 	
@@ -294,9 +297,9 @@ func create_player_item(player_data: Dictionary):
 	name_label.text = player_name
 	if player_id == my_player_data.get("id", ""):
 		name_label.text += " (Tú)"
-	name_label.position = Vector2(35, 5)
-	name_label.size = Vector2(200, 20)
-	name_label.add_theme_font_size_override("font_size", 12)
+	name_label.position = Vector2(35 * size_multiplier, 5 * size_multiplier)
+	name_label.size = Vector2(200 * size_multiplier, 20 * size_multiplier)
+	name_label.add_theme_font_size_override("font_size", int(12 * size_multiplier))
 	name_label.modulate = Color.WHITE
 	name_label.name = "NameLabel"
 	player_item.add_child(name_label)
@@ -304,9 +307,9 @@ func create_player_item(player_data: Dictionary):
 	# Estado del jugador
 	var status_label = Label.new()
 	status_label.text = get_status_text(player_status)
-	status_label.position = Vector2(35, 20)
-	status_label.size = Vector2(150, 15)
-	status_label.add_theme_font_size_override("font_size", 10)
+	status_label.position = Vector2(35 * size_multiplier, 20 * size_multiplier)
+	status_label.size = Vector2(150 * size_multiplier, 15 * size_multiplier)
+	status_label.add_theme_font_size_override("font_size", int(10 * size_multiplier))
 	status_label.modulate = status_colors.get(player_status, Color.GRAY)
 	status_label.name = "StatusLabel"
 	player_item.add_child(status_label)
@@ -314,18 +317,18 @@ func create_player_item(player_data: Dictionary):
 	# Juego actual
 	var game_label = Label.new()
 	game_label.text = "🎮 " + game_name
-	game_label.position = Vector2(35, 35)
-	game_label.size = Vector2(200, 15)
-	game_label.add_theme_font_size_override("font_size", 9)
+	game_label.position = Vector2(35 * size_multiplier, 35 * size_multiplier)
+	game_label.size = Vector2(200 * size_multiplier, 15 * size_multiplier)
+	game_label.add_theme_font_size_override("font_size", int(9 * size_multiplier))
 	game_label.modulate = Color.LIGHT_GRAY
 	game_label.name = "GameLabel"
 	player_item.add_child(game_label)
 	
-	# Contenedor de botones de aceptar/declinar (oculto por defecto)
+	# Contenedor de botones de aceptar/declinar
 	var button_container = HBoxContainer.new()
-	button_container.position = Vector2(200, 25)
-	button_container.size = Vector2(70, 30)
-	button_container.add_theme_constant_override("separation", 5)
+	button_container.position = Vector2(200 * size_multiplier, 25 * size_multiplier)
+	button_container.size = Vector2(70 * size_multiplier, 30 * size_multiplier)
+	button_container.add_theme_constant_override("separation", int(5 * size_multiplier))
 	button_container.visible = false
 	button_container.name = "ButtonContainer"
 	player_item.add_child(button_container)
@@ -333,14 +336,14 @@ func create_player_item(player_data: Dictionary):
 	# Botón aceptar (✅)
 	var accept_button = Button.new()
 	accept_button.text = "✅"
-	accept_button.custom_minimum_size = Vector2(30, 30)
-	accept_button.add_theme_font_size_override("font_size", 14)
+	accept_button.custom_minimum_size = Vector2(30 * size_multiplier, 30 * size_multiplier)
+	accept_button.add_theme_font_size_override("font_size", int(14 * size_multiplier))
 	var accept_style = StyleBoxFlat.new()
 	accept_style.bg_color = Color.GREEN
-	accept_style.corner_radius_top_left = 5
-	accept_style.corner_radius_top_right = 5
-	accept_style.corner_radius_bottom_left = 5
-	accept_style.corner_radius_bottom_right = 5
+	accept_style.corner_radius_top_left = int(5 * size_multiplier)
+	accept_style.corner_radius_top_right = int(5 * size_multiplier)
+	accept_style.corner_radius_bottom_left = int(5 * size_multiplier)
+	accept_style.corner_radius_bottom_right = int(5 * size_multiplier)
 	accept_button.add_theme_stylebox_override("normal", accept_style)
 	accept_button.pressed.connect(_on_accept_match_request.bind(player_id))
 	accept_button.name = "AcceptButton"
@@ -349,14 +352,14 @@ func create_player_item(player_data: Dictionary):
 	# Botón declinar (❌)
 	var decline_button = Button.new()
 	decline_button.text = "❌"
-	decline_button.custom_minimum_size = Vector2(30, 30)
-	decline_button.add_theme_font_size_override("font_size", 14)
+	decline_button.custom_minimum_size = Vector2(30 * size_multiplier, 30 * size_multiplier)
+	decline_button.add_theme_font_size_override("font_size", int(14 * size_multiplier))
 	var decline_style = StyleBoxFlat.new()
 	decline_style.bg_color = Color.RED
-	decline_style.corner_radius_top_left = 5
-	decline_style.corner_radius_top_right = 5
-	decline_style.corner_radius_bottom_left = 5
-	decline_style.corner_radius_bottom_right = 5
+	decline_style.corner_radius_top_left = int(5 * size_multiplier)
+	decline_style.corner_radius_top_right = int(5 * size_multiplier)
+	decline_style.corner_radius_bottom_left = int(5 * size_multiplier)
+	decline_style.corner_radius_bottom_right = int(5 * size_multiplier)
 	decline_button.add_theme_stylebox_override("normal", decline_style)
 	decline_button.pressed.connect(_on_decline_match_request.bind(player_id))
 	decline_button.name = "DeclineButton"
@@ -366,8 +369,9 @@ func create_player_item(player_data: Dictionary):
 	if player_id != my_player_data.get("id", "") and player_status == "AVAILABLE":
 		var action_button = Button.new()
 		action_button.text = "⚔️"
-		action_button.position = Vector2(245, 25)
-		action_button.size = Vector2(25, 25)
+		action_button.position = Vector2(245 * size_multiplier, 25 * size_multiplier)
+		action_button.size = Vector2(25 * size_multiplier, 25 * size_multiplier)
+		action_button.add_theme_font_size_override("font_size", int(12 * size_multiplier))
 		action_button.pressed.connect(_on_challenge_player.bind(player_data))
 		action_button.name = "ChallengeButton"
 		player_item.add_child(action_button)
@@ -408,13 +412,12 @@ func _on_challenge_player(player_data: Dictionary):
 	call_deferred("request_online_players")
 
 func _ready_auto_refresh():
-	
 	var timer = Timer.new()
-	timer.wait_time = 2.0  # Cada 5 segundos en lugar de 1
+	timer.wait_time = 2.0
 	timer.timeout.connect(_on_auto_refresh)
 	timer.autostart = true
 	add_child(timer)
-	print("⏰ Auto-refresh configurado cada 5 segundos")
+	print("⏰ Auto-refresh configurado cada 2 segundos")
 
 func show_match_request(player_name: String, player_id: String, match_id: String):
 	show_match_request_internal(player_name, player_id, match_id, true)
@@ -452,7 +455,7 @@ func show_match_request_internal(player_name: String, player_id: String, match_i
 	# Cambiar el fondo para destacar la solicitud
 	var item_bg = player_item.get_node_or_null("ItemBg")
 	if item_bg:
-		item_bg.color = Color(0.6, 0.3, 0.1, 0.8)  # Naranja para solicitud pendiente
+		item_bg.color = Color(0.6, 0.3, 0.1, 0.8)
 	
 	# Actualizar el estado en el label
 	var status_label = player_item.get_node_or_null("StatusLabel")
@@ -505,6 +508,7 @@ func _on_decline_match_request(player_id: String):
 	
 	var request_data = pending_requests.get(player_id, {})
 	var player_name = request_data.get("player_name", "")
+	
 	# Enviar respuesta de rechazo al servidor
 	var decline_response = {
 		"event": "reject-match"
@@ -583,9 +587,9 @@ func hide_match_request(player_id: String):
 	var item_bg = player_item.get_node_or_null("ItemBg")
 	if item_bg:
 		if player_id == my_player_data.get("id", ""):
-			item_bg.color = Color(0.2, 0.4, 0.6, 0.7)  # Azul para jugador actual
+			item_bg.color = Color(0.2, 0.4, 0.6, 0.7)
 		else:
-			item_bg.color = Color(0.2, 0.2, 0.2, 0.5)  # Gris normal
+			item_bg.color = Color(0.2, 0.2, 0.2, 0.5)
 	
 	# Restaurar estado normal
 	var status_label = player_item.get_node_or_null("StatusLabel")

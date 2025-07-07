@@ -353,9 +353,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_hb7u2")
 
 [node name="Label" type="Label" parent="Node/Panel"]
 layout_mode = 0
-offset_left = 36.0
+offset_left = 22.0
 offset_top = 26.0
-offset_right = 643.0
+offset_right = 629.0
 offset_bottom = 114.0
 theme = ExtResource("4_s8u8u")
 theme_override_font_sizes/font_size = 100
@@ -364,22 +364,22 @@ horizontal_alignment = 1
 
 [node name="Label2" type="Label" parent="Node/Panel"]
 layout_mode = 0
-offset_left = 1173.0
+offset_left = 1147.0
 offset_top = 22.0
-offset_right = 1818.0
+offset_right = 1792.0
 offset_bottom = 110.0
 theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 theme_override_fonts/font = ExtResource("3_pfcct")
 theme_override_font_sizes/font_size = 100
-text = "Matchs"
+text = "Matchmaking"
 horizontal_alignment = 1
 
 [node name="BackMenuButton" type="Button" parent="Node/Panel"]
 layout_mode = 2
-offset_left = 822.0
-offset_top = 34.0
-offset_right = 1076.0
-offset_bottom = 107.0
+offset_left = 836.0
+offset_top = 1000.0
+offset_right = 1048.0
+offset_bottom = 1045.0
 size_flags_vertical = 3
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)

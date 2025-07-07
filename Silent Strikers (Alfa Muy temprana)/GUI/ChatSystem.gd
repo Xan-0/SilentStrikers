@@ -1,12 +1,15 @@
 extends Node
 
+# === CONFIGURACIÓN DE TAMAÑO Y POSICIÓN ===
+var size_multiplier: float = 1.5  # 1.0 = 100%, 1.5 = 150%, 2.0 = 200%
+var position_offset: Vector2 = Vector2(75, 150)  # Ajustar posición fácilmente
+
 # Referencias a nodos UI
 var chat_ui: Control
 var chat_messages: VBoxContainer
 var message_input: LineEdit
 var send_button: Button
 var chat_toggle: Button
-
 
 # Configuración del chat
 var max_messages = 50
@@ -40,9 +43,9 @@ func setup_chat_interface(canvas_layer: CanvasLayer):
 	# === CONTENEDOR PRINCIPAL DEL CHAT ===
 	chat_ui = Control.new()
 	chat_ui.name = "ChatUI"
-	# Posición fija en la esquina inferior izquierda
-	chat_ui.position = Vector2(25, 120)  # Posición visible
-	chat_ui.size = Vector2(400, 500)
+	# Posición fija escalada
+	chat_ui.position = position_offset
+	chat_ui.size = Vector2(400 * size_multiplier, 500 * size_multiplier)
 	canvas_layer.add_child(chat_ui)
 	
 	# Fondo del chat
@@ -51,15 +54,15 @@ func setup_chat_interface(canvas_layer: CanvasLayer):
 	bg_panel.size = chat_ui.size
 	var style_box = StyleBoxFlat.new()
 	style_box.bg_color = Color(0, 0, 0, 0.8)  # Fondo negro semi-transparente
-	style_box.corner_radius_top_left = 5
-	style_box.corner_radius_top_right = 5
+	style_box.corner_radius_top_left = int(5 * size_multiplier)
+	style_box.corner_radius_top_right = int(5 * size_multiplier)
 	bg_panel.add_theme_stylebox_override("panel", style_box)
 	chat_ui.add_child(bg_panel)
 	
 	# === ÁREA DE MENSAJES ===
 	var scroll_container = ScrollContainer.new()
-	scroll_container.position = Vector2(5, 5)
-	scroll_container.size = Vector2(390, 445)
+	scroll_container.position = Vector2(5 * size_multiplier, 5 * size_multiplier)
+	scroll_container.size = Vector2(390 * size_multiplier, 445 * size_multiplier)
 	chat_ui.add_child(scroll_container)
 	
 	chat_messages = VBoxContainer.new()
@@ -68,21 +71,23 @@ func setup_chat_interface(canvas_layer: CanvasLayer):
 	
 	# === ÁREA DE INPUT (OCUPA TODA LA PARTE INFERIOR) ===
 	var input_container = HBoxContainer.new()
-	input_container.position = Vector2(5, 445)  # Posición en la parte inferior
-	input_container.size = Vector2(390, 50)  # Altura aumentada y ancho completo
+	input_container.position = Vector2(5 * size_multiplier, 445 * size_multiplier)
+	input_container.size = Vector2(390 * size_multiplier, 50 * size_multiplier)
 	chat_ui.add_child(input_container)
 	
 	# Input de texto (ocupa la mayoría del ancho)
 	message_input = LineEdit.new()
 	message_input.placeholder_text = "Escribe tu mensaje..."
-	message_input.size = Vector2(300, 50)  # Más ancho y alto
-	message_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL  # Se expande para llenar el espacio
+	message_input.size = Vector2(300 * size_multiplier, 50 * size_multiplier)
+	message_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	message_input.add_theme_font_size_override("font_size", int(12 * size_multiplier))
 	input_container.add_child(message_input)
 	
 	# Botón enviar
 	send_button = Button.new()
 	send_button.text = "Enviar"
-	send_button.size = Vector2(80, 40)
+	send_button.size = Vector2(80 * size_multiplier, 40 * size_multiplier)
+	send_button.add_theme_font_size_override("font_size", int(12 * size_multiplier))
 	input_container.add_child(send_button)
 	
 	print("UI del chat creada en posición: ", chat_ui.position)
@@ -202,7 +207,8 @@ func add_chat_message(sender: String, message: String):
 	label.text = "[" + timestamp + "] " + sender + ": " + message
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.custom_minimum_size.y = 20
+	label.custom_minimum_size.y = 20 * size_multiplier
+	label.add_theme_font_size_override("font_size", int(11 * size_multiplier))
 	if sender == "Sistema":
 		label.modulate = Color.DARK_ORCHID
 	elif sender == "Tú":

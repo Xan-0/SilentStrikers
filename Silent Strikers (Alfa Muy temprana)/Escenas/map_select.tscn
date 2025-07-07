@@ -327,26 +327,36 @@ texture = ExtResource("1_h1ldm")
 expand_mode = 1
 stretch_mode = 5
 
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 768.0
+offset_top = 81.0
+offset_right = 1158.0
+offset_bottom = 241.0
+texture = ExtResource("3_1m77x")
+expand_mode = 2
+
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 0
-offset_left = 120.0
-offset_top = -112.0
-offset_right = 1033.0
-offset_bottom = 943.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 1931.0
+offset_bottom = 1132.0
 scale = Vector2(0.995838, 0.952969)
 
 [node name="Panel" type="Panel" parent="CenterContainer"]
-custom_minimum_size = Vector2(700, 450)
+custom_minimum_size = Vector2(1000, 600)
 layout_mode = 2
 size_flags_stretch_ratio = 0.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_h1ldm")
 
 [node name="Botonera" type="VBoxContainer" parent="CenterContainer/Panel"]
+custom_minimum_size = Vector2(800, 500)
 layout_mode = 0
-offset_left = 108.894
-offset_top = 60.0263
-offset_right = 593.894
-offset_bottom = 402.026
+offset_left = 105.374
+offset_top = 47.7069
+offset_right = 905.374
+offset_bottom = 547.707
 theme_override_constants/separation = 24
 
 [node name="Map1Button2" type="Button" parent="CenterContainer/Panel/Botonera"]
@@ -405,15 +415,6 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_nuel7")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_k0w1s")
 theme_override_styles/normal = SubResource("StyleBoxFlat_8fs2h")
 text = "Volver"
-
-[node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 386.0
-offset_top = 16.0
-offset_right = 776.0
-offset_bottom = 176.0
-texture = ExtResource("3_1m77x")
-expand_mode = 2
 
 [node name="LightMask" type="ColorRect" parent="."]
 visible = false

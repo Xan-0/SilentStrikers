@@ -322,10 +322,10 @@ anchor_left = 0.429
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -56.208
-offset_top = 43.0
-offset_right = 196.0
-offset_bottom = 239.0
+offset_left = -59.68
+offset_top = -8.0
+offset_right = 214.0
+offset_bottom = 305.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 9
@@ -387,10 +387,15 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_cc230")
 text = "Salir"
 
 [node name="TextureRect" type="TextureRect" parent="."]
-offset_left = 358.0
-offset_top = 118.0
-offset_right = 839.0
-offset_bottom = 304.0
+anchors_preset = -1
+anchor_left = 0.384
+anchor_top = 0.273
+anchor_right = 0.634
+anchor_bottom = 0.5
+offset_left = -47.28
+offset_top = -175.84
+offset_right = 35.72
+offset_bottom = -214.0
 texture = ExtResource("3_mkaih")
 expand_mode = 1
 
