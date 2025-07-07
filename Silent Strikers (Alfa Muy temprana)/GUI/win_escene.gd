@@ -8,26 +8,27 @@ var result_container: VBoxContainer
 var chat_system: Node
 
 # Variables para el resultado
-var defeat_data: Dictionary = {}
+var victory_data: Dictionary = {}
 
 func _ready():
-	print("💀 Pantalla de derrota cargada")
+	print("🏆 Pantalla de victoria cargada")
 	
 	# Conectar señales del WebSocketManager si existe
 	if WebSocketManager:
 		WebSocketManager.connect("rematch_requested", _on_rematch_requested)
 		WebSocketManager.connect("match_quit", _on_match_quit)
+		WebSocketManager.connect("match_ready", _on_players_ready_rematch)
 		WebSocketManager.connect("match_started", _on_rematch_started)
 		WebSocketManager.set_game_state("POST_GAME")
 	
 	create_ui()
 
 func create_ui():
-	print("🎨 Creando UI de derrota...")
+	print("🎨 Creando UI de victoria...")
 	
 	# Fondo principal
 	var bg = ColorRect.new()
-	bg.color = Color(0, 0, 0, 0.8)  # Fondo oscuro semi-transparente
+	bg.color = Color(0, 0.1, 0, 0.8)  # Fondo verde oscuro semi-transparente
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 	
@@ -43,20 +44,21 @@ func create_ui():
 	result_container.add_theme_constant_override("separation", 15)
 	main_container.add_child(result_container)
 	
-	# Título de derrota
-	var defeat_title = Label.new()
-	defeat_title.text = "💀 DERROTA"
-	defeat_title.add_theme_font_size_override("font_size", 36)
-	defeat_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	defeat_title.modulate = Color.RED
-	result_container.add_child(defeat_title)
+	# Título de victoria
+	var victory_title = Label.new()
+	victory_title.text = "🏆 ¡VICTORIA!"
+	victory_title.add_theme_font_size_override("font_size", 36)
+	victory_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	victory_title.modulate = Color.GOLD
+	result_container.add_child(victory_title)
 	
 	# Subtítulo
 	var subtitle = Label.new()
-	subtitle.text = "Has perdido la partida"
+	subtitle.name = "SubtitleLabel"
+	subtitle.text = "¡Has ganado la partida!"
 	subtitle.add_theme_font_size_override("font_size", 18)
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.modulate = Color.LIGHT_GRAY
+	subtitle.modulate = Color.LIGHT_GREEN
 	result_container.add_child(subtitle)
 	
 	# Información adicional (aquí agregas tus botones)
@@ -67,16 +69,18 @@ func create_ui():
 	# Crear botones de acción
 	create_action_buttons(info_container)
 	
-	print("✅ UI de derrota creada")
+	print("✅ UI de victoria creada")
 
 func create_action_buttons(container: VBoxContainer):
 	# Contenedor horizontal para botones
 	var button_container = HBoxContainer.new()
+	button_container.name = "ButtonContainer"
 	button_container.add_theme_constant_override("separation", 15)
 	container.add_child(button_container)
 	
 	# Botón de revancha
 	var rematch_button = Button.new()
+	rematch_button.name = "RematchButton"
 	rematch_button.text = "🔄 REVANCHA"
 	rematch_button.custom_minimum_size = Vector2(150, 50)
 	rematch_button.add_theme_font_size_override("font_size", 14)
@@ -94,6 +98,7 @@ func create_action_buttons(container: VBoxContainer):
 	
 	# Botón salir
 	var quit_button = Button.new()
+	quit_button.name = "QuitButton"
 	quit_button.text = "🚪 SALIR"
 	quit_button.custom_minimum_size = Vector2(150, 50)
 	quit_button.add_theme_font_size_override("font_size", 14)
@@ -122,20 +127,18 @@ func create_action_buttons(container: VBoxContainer):
 	status_label.modulate = Color.YELLOW
 	container.add_child(status_label)
 
-# === FUNCIONES DE EVENTOS ===
-
+# === FUNCIONES DE EVENTOS DE REVANCHA ===
 
 func _on_rematch_button_pressed():
-	print("🔄 Solicitando revancha...")
+	print("🔄 Enviando solicitud de revancha...")
 	
 	if WebSocketManager:
+		# Enviar send-rematch-request según la documentación
 		WebSocketManager.send_rematch_request()
 	
 	# Actualizar UI
-	var status_label = get_node_or_null("VBoxContainer/VBoxContainer/VBoxContainer/StatusLabel")
-	if status_label:
-		status_label.text = "⏳ Esperando respuesta de revancha..."
-		status_label.modulate = Color.ORANGE
+	update_status("⏳ Solicitud de revancha enviada. Esperando respuesta...", Color.ORANGE)
+	disable_rematch_button()
 	
 	# Notificar en el chat
 	if chat_system and chat_system.has_method("add_chat_message"):
@@ -145,61 +148,126 @@ func _on_quit_button_pressed():
 	print("🚪 Saliendo de la partida...")
 	
 	if WebSocketManager:
+		# Enviar quit-match según la documentación
 		WebSocketManager.quit_match()
+	
+	update_status("🚪 Saliendo de la partida...", Color.GRAY)
 	
 	# Notificar en el chat
 	if chat_system and chat_system.has_method("add_chat_message"):
 		chat_system.add_chat_message("Sistema", "🚪 Saliendo de la partida...")
 
 func _on_rematch_requested(data: Dictionary):
-	print("🔄 El otro jugador solicita revancha")
+	# El oponente solicita revancha (evento rematch-request recibido)
+	print("🔄 El oponente solicita revancha")
 	
-	var status_label = get_node_or_null("VBoxContainer/VBoxContainer/VBoxContainer/StatusLabel")
-	if status_label:
-		status_label.text = "🔄 ¡El otro jugador quiere revancha!"
-		status_label.modulate = Color.GREEN
+	update_status("🔄 ¡El oponente quiere revancha! Presiona 'REVANCHA' para aceptar", Color.GREEN)
+	enable_rematch_button()
+	
+	# Cambiar texto del botón para indicar que es para aceptar
+	var rematch_button = get_node_or_null("VBoxContainer/VBoxContainer/VBoxContainer/ButtonContainer/RematchButton")
+	if rematch_button:
+		rematch_button.text = "✅ ACEPTAR REVANCHA"
 	
 	# Notificar en el chat
 	if chat_system and chat_system.has_method("add_chat_message"):
 		chat_system.add_chat_message("Sistema", "🔄 El otro jugador solicita revancha")
 
+func _on_players_ready_rematch(data: Dictionary):
+	# Ambos jugadores aceptaron la revancha (evento players-ready recibido)
+	print("🎯 Ambos jugadores listos para revancha")
+	
+	update_status("🎯 ¡Revancha aceptada! Preparando partida...", Color.CYAN)
+	disable_all_buttons()
+	
+	# Según la documentación, ahora debemos enviar ping-match
+	if WebSocketManager:
+		WebSocketManager.ping_match()
+
 func _on_rematch_started(data: Dictionary):
-	print("🔄 Revancha iniciada")
+	# La revancha ha iniciado (evento match-start recibido)
+	print("🎮 Revancha iniciada - Cargando...")
+	
+	update_status("🎮 ¡Revancha iniciada! Cargando...", Color.GREEN)
 	
 	if chat_system and chat_system.has_method("add_chat_message"):
 		chat_system.add_chat_message("Sistema", "🎮 ¡Revancha iniciada! Cargando...")
 	
 	await get_tree().create_timer(2.0).timeout
 	
-	# Cargar escena de selección de mapas o directamente al juego
+	# Cargar la escena del juego o selección de mapas
 	var map_selection = load("res://Escenas/MapSelection.tscn")
 	if map_selection:
 		get_tree().change_scene_to_packed(map_selection)
 	else:
-		print("⚠️ No se encontró MapSelection.tscn")
+		# Si no existe selección de mapas, ir directo al juego
+		var game_scene = load("res://Escenas/Game.tscn")
+		if game_scene:
+			get_tree().change_scene_to_packed(game_scene)
+		else:
+			print("⚠️ No se encontró escena de juego")
 
 func _on_match_quit(data: Dictionary):
-	print("🚪 Volviendo al lobby")
+	# El oponente salió (evento close-match recibido)
+	print("🚪 El oponente abandonó la partida")
+	
+	update_status("🚪 El oponente abandonó. No es posible la revancha", Color.RED)
+	disable_rematch_button()
 	
 	if chat_system and chat_system.has_method("add_chat_message"):
-		chat_system.add_chat_message("Sistema", "🚪 Volviendo al lobby...")
+		chat_system.add_chat_message("Sistema", "🚪 El oponente abandonó la partida")
 	
-	await get_tree().create_timer(1.5).timeout
+	await get_tree().create_timer(3.0).timeout
 	
-	var lobby = load("res://Escenas/main_menu.tscn")
-	if lobby:
-		get_tree().change_scene_to_packed(lobby)
+	# Volver al menú principal
+	var main_menu = load("res://Escenas/main_menu.tscn")
+	if main_menu:
+		get_tree().change_scene_to_packed(main_menu)
 	else:
 		print("⚠️ No se encontró main_menu.tscn")
 
-func set_defeat_data(data: Dictionary):
-	defeat_data = data
+# === FUNCIONES DE UTILIDAD ===
+
+func update_status(text: String, color: Color):
+	var status_label = get_node_or_null("VBoxContainer/VBoxContainer/VBoxContainer/StatusLabel")
+	if status_label:
+		status_label.text = text
+		status_label.modulate = color
+
+func disable_rematch_button():
+	var rematch_button = get_node_or_null("VBoxContainer/VBoxContainer/VBoxContainer/ButtonContainer/RematchButton")
+	if rematch_button:
+		rematch_button.disabled = true
+
+func enable_rematch_button():
+	var rematch_button = get_node_or_null("VBoxContainer/VBoxContainer/VBoxContainer/ButtonContainer/RematchButton")
+	if rematch_button:
+		rematch_button.disabled = false
+
+func disable_all_buttons():
+	var rematch_button = get_node_or_null("VBoxContainer/VBoxContainer/VBoxContainer/ButtonContainer/RematchButton")
+	var quit_button = get_node_or_null("VBoxContainer/VBoxContainer/VBoxContainer/ButtonContainer/QuitButton")
 	
-	# Actualizar información de derrota si es necesaria
-	var subtitle = get_node_or_null("VBoxContainer/VBoxContainer/Label")
+	if rematch_button:
+		rematch_button.disabled = true
+	if quit_button:
+		quit_button.disabled = true
+
+func set_victory_data(data: Dictionary):
+	victory_data = data
+	
+	# Actualizar información de victoria si es necesaria
+	var subtitle = get_node_or_null("VBoxContainer/VBoxContainer/SubtitleLabel")
 	if subtitle:
-		var reason = data.get("reason", "Motivo desconocido")
-		subtitle.text = "Razón: " + reason
+		var score = data.get("final_score", 0)
+		var reason = data.get("reason", "")
+		
+		if score > 0:
+			subtitle.text = "¡Ganaste con " + str(score) + " puntos!"
+		elif reason != "":
+			subtitle.text = "Ganaste: " + reason
+		else:
+			subtitle.text = "¡Has ganado la partida!"
 
 func _input(event):
 	# Atajos de teclado
@@ -212,5 +280,5 @@ func _input(event):
 					_on_rematch_button_pressed()
 
 func _exit_tree():
-	print("🧹 Limpiando pantalla de derrota...")
+	print("🧹 Limpiando pantalla de victoria...")
 	

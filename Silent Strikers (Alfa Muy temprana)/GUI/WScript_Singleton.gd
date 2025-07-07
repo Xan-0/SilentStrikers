@@ -142,7 +142,7 @@ func handle_message(message: String):
 			handle_game_ended(data.get("data", {}))
 		"rematch-request":
 			handle_rematch_request(data.get("data", {}))
-		"close-match", "quit-match":
+		"close-match":
 			handle_match_quit(data.get("data", {}))
 		"error":
 			handle_error(data.get("data", {}))
@@ -266,6 +266,8 @@ func finish_game(result_data: Dictionary = {}):
 	game_state = "POST_GAME"
 	send_message(message)
 
+func death_avisor():
+	var message = {}
 func send_rematch_request():
 	var message = {"event": "send-rematch-request"}
 	send_message(message)

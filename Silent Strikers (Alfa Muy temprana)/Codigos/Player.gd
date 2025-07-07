@@ -42,6 +42,8 @@ func _ready():
 	# Conectar señales para recibir hechizos del oponente
 	if WebSocketManager:
 		WebSocketManager.connect("game_data_received", _on_spell_received)
+		# Conectar también game_ended para manejar cuando el oponente gana
+		WebSocketManager.connect("game_ended", _on_opponent_won)
 
 # Actualización del movimiento y las animaciones
 func _process(delta):
@@ -140,8 +142,9 @@ func send_spell(spell_type: String):
 		WebSocketManager.send_game_data(spell_data)
 		print("📡 Hechizo ", spell_type, " enviado: ", spell_data)
 		
-		# Efecto visual local
-		show_spell_cast_effect(spell_type)
+		# Efecto visual local solo para hechizos normales (no death)
+		if spell_type != "death":
+			show_spell_cast_effect(spell_type)
 	else:
 		print("⚠️ WebSocketManager no disponible")
 
@@ -180,8 +183,40 @@ func apply_spell_effect(spell: String):
 			apply_spell_x_effect()
 		"C":
 			apply_spell_c_effect()
+		"death":
+			apply_opponent_death_notification()
 		_:
 			print("⚠️ Hechizo desconocido: ", spell)
+
+func apply_opponent_death_notification():
+	# El oponente me está avisando que ÉL murió, por lo tanto YO gano
+	print("🎉 El oponente ha muerto - ¡HAS GANADO!")
+	
+	# Marcar que el juego terminó
+	game = true
+	muerto = false  # Asegurar que no estoy muerto
+	
+	# Enviar finish-game para declarar mi victoria
+	if WebSocketManager:
+		WebSocketManager.finish_game({
+			"winner_reason": "opponent_died",
+			"final_score": puntaje
+		})
+	
+	# Ir a pantalla de victoria
+	await get_tree().create_timer(1.0).timeout
+	get_tree().change_scene_to_file("res://Escenas/victory_screen.tscn")
+
+func _on_opponent_won(data: Dictionary):
+	# El oponente envió finish-game (él ganó por alguna razón)
+	print("😵 El oponente ha ganado la partida")
+	
+	muerto = true
+	game = true
+	
+	# Ir a pantalla de derrota
+	await get_tree().create_timer(1.0).timeout
+	get_tree().change_scene_to_file("res://Escenas/defeat_screen.tscn")
 
 func apply_spell_z_effect():
 	# Hechizo Z: Ralentizar por 8 segundos
@@ -196,9 +231,10 @@ func apply_spell_z_effect():
 	timer.wait_time = 8.0
 	timer.one_shot = true
 	timer.timeout.connect(func(): 
-		speed = original_speed
-		modulate = Color.WHITE
-		print("⭐ Efecto de ralentización terminado")
+		if not muerto:  # Solo restaurar si sigo vivo
+			speed = original_speed
+			modulate = Color.WHITE
+			print("⭐ Efecto de ralentización terminado")
 	)
 	add_child(timer)
 	timer.start()
@@ -214,8 +250,9 @@ func apply_spell_x_effect():
 	timer.wait_time = 12.0
 	timer.one_shot = true
 	timer.timeout.connect(func(): 
-		modulate.a = 1.0
-		print("⭐ Efecto de visión reducida terminado")
+		if not muerto:  # Solo restaurar si sigo vivo
+			modulate.a = 1.0
+			print("⭐ Efecto de visión reducida terminado")
 	)
 	add_child(timer)
 	timer.start()
@@ -234,9 +271,10 @@ func apply_spell_c_effect():
 	timer.wait_time = 10.0
 	timer.one_shot = true
 	timer.timeout.connect(func(): 
-		controls_confused = false
-		modulate = Color.WHITE
-		print("⭐ Efecto de confusión terminado")
+		if not muerto:  # Solo restaurar si sigo vivo
+			controls_confused = false
+			modulate = Color.WHITE
+			print("⭐ Efecto de confusión terminado")
 	)
 	add_child(timer)
 	timer.start()
@@ -271,24 +309,38 @@ func aumentar_puntaje(cantidad):
 	
 	if puntaje >= puntaje_win:
 		game = true
-		print("¡Ganaste!")
+		print("¡Ganaste por puntaje!")
 		
-		# Enviar victoria usando finish-game
+		# CORRECCIÓN: Solo envío finish-game, NO envío spell "death"
+		# Porque YO gané por puntaje, no porque el oponente murió
 		if WebSocketManager:
-			WebSocketManager.finish_game({})
+			WebSocketManager.finish_game({
+				"winner_reason": "reached_target_score",
+				"final_score": puntaje
+			})
 		
+		# Ir a pantalla de victoria
+		await get_tree().create_timer(1.0).timeout
 		get_tree().change_scene_to_file("res://Escenas/victory_screen.tscn")
 
 func perder_salud(cantidad):
 	salud -= cantidad
 	print("Salud actual: ", salud)
+	
 	if salud <= 0:
 		muerto = true
-		print("Perdiste")
+		print("💀 Has muerto!")
 		
-		# La derrota se maneja cuando recibes "game-ended" del oponente
-		# No necesitas enviar nada aquí
+		# Enviar señal de muerte al oponente (YO morí)
+		if WebSocketManager:
+			send_spell("death")
+			print("📡 Señal de muerte enviada al oponente (YO morí)")
 		
+		# NO enviar finish-game aquí porque YO perdí
+		# El oponente recibirá el "death" y él enviará finish-game
+		
+		# Ir a pantalla de derrota después de un momento
+		await get_tree().create_timer(2.0).timeout
 		get_tree().change_scene_to_file("res://Escenas/defeat_screen.tscn")
 	
 func aumentar_velocidad(cantidad):
