@@ -17,7 +17,6 @@ func _ready():
 	if WebSocketManager:
 		WebSocketManager.connect("rematch_requested", _on_rematch_requested)
 		WebSocketManager.connect("match_quit", _on_match_quit)
-		WebSocketManager.connect("match_started", _on_rematch_started)
 		WebSocketManager.set_game_state("POST_GAME")
 	
 	create_ui()
@@ -162,20 +161,6 @@ func _on_rematch_requested(data: Dictionary):
 	if chat_system and chat_system.has_method("add_chat_message"):
 		chat_system.add_chat_message("Sistema", "🔄 El otro jugador solicita revancha")
 
-func _on_rematch_started(data: Dictionary):
-	print("🔄 Revancha iniciada")
-	
-	if chat_system and chat_system.has_method("add_chat_message"):
-		chat_system.add_chat_message("Sistema", "🎮 ¡Revancha iniciada! Cargando...")
-	
-	await get_tree().create_timer(2.0).timeout
-	
-	# Cargar escena de selección de mapas o directamente al juego
-	var map_selection = load("res://Escenas/MapSelection.tscn")
-	if map_selection:
-		get_tree().change_scene_to_packed(map_selection)
-	else:
-		print("⚠️ No se encontró MapSelection.tscn")
 
 func _on_match_quit(data: Dictionary):
 	print("🚪 Volviendo al lobby")

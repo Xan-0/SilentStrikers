@@ -12,12 +12,17 @@ func _ready():
 	WebSocketManager.connect("match_request_received", _on_match_request_received)
 	WebSocketManager.connect("match_accepted", _on_match_accepted)
 	WebSocketManager.connect("match_ready", _on_match_ready)
+	WebSocketManager.connect("rematch_requested", _on_rematch_request)
 	WebSocketManager.connect("match_started", _on_match_started)
 	WebSocketManager.connect("match_quit", _on_close_match)
 	WebSocketManager.connect("player_list_updated", _on_player_list_updated)
 	WebSocketManager.connect("chat_message_received", _on_chat_message_received)
 	WebSocketManager.connect("game_ended", _on_game_ended)
-	
+
+func _on_rematch_request():
+	if ChatSystem and ChatSystem.has_method("on_message_received"):
+		ChatSystem.on_message_received("Rival", "Quiere la revancha")
+
 func _on_close_match():
 	WebSocketManager.quit_match()
 	var main_menu = load("res://Escenas/main_menu.tscn")
@@ -55,9 +60,7 @@ func _on_match_accepted(data: Dictionary):
 		player_list.connect_match()
 
 func _on_match_ready(data: Dictionary):
-	var player_list = get_node_or_null("../PlayerListSystem")
-	if player_list and player_list.has_method("ping_match"):
-		player_list.ping_match()
+	WebSocketManager.ping_match()
 
 func _on_match_started(data: Dictionary):
 	print("🎮 Partida iniciada, cargando selección de mapas...")

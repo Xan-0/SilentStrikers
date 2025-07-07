@@ -149,7 +149,7 @@ func handle_message(message: String):
 		"game-ended":
 			handle_game_ended(data.get("data", {}))
 		"rematch-request":
-			handle_rematch_request(data.get("data", {}))
+			handle_rematch_request()
 		"close-match":
 			handle_close_match()
 		"quit-match":
@@ -208,9 +208,9 @@ func handle_game_ended(data: Dictionary):
 	game_state = "POST_GAME"
 	emit_signal("game_ended", data)
 
-func handle_rematch_request(data: Dictionary):
+func handle_rematch_request():
 	print("🔄 Solicitud de revancha recibida del oponente")
-	emit_signal("rematch_requested", data)
+	emit_signal("rematch_requested")
 
 func handle_close_match():
 	print("🚪 CLOSE-MATCH: El oponente salió de la partida")

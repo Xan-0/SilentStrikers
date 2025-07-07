@@ -18,7 +18,6 @@ func _ready():
 		WebSocketManager.connect("rematch_requested", _on_rematch_requested)
 		WebSocketManager.connect("match_quit", _on_match_quit)
 		WebSocketManager.connect("match_ready", _on_players_ready_rematch)
-		WebSocketManager.connect("match_started", _on_rematch_started)
 		WebSocketManager.set_game_state("POST_GAME")
 	
 	create_ui()
@@ -179,29 +178,6 @@ func _on_players_ready_rematch(data: Dictionary):
 	# Según la documentación, ahora debemos enviar ping-match
 	if WebSocketManager:
 		WebSocketManager.ping_match()
-
-func _on_rematch_started(data: Dictionary):
-	# La revancha ha iniciado (evento match-start recibido)
-	print("🎮 Revancha iniciada - Cargando...")
-	
-	update_status("🎮 ¡Revancha iniciada! Cargando...", Color.GREEN)
-	
-	if chat_system and chat_system.has_method("add_chat_message"):
-		chat_system.add_chat_message("Sistema", "🎮 ¡Revancha iniciada! Cargando...")
-	
-	await get_tree().create_timer(2.0).timeout
-	
-	# Cargar la escena del juego o selección de mapas
-	var map_selection = load("res://Escenas/MapSelection.tscn")
-	if map_selection:
-		get_tree().change_scene_to_packed(map_selection)
-	else:
-		# Si no existe selección de mapas, ir directo al juego
-		var game_scene = load("res://Escenas/Game.tscn")
-		if game_scene:
-			get_tree().change_scene_to_packed(game_scene)
-		else:
-			print("⚠️ No se encontró escena de juego")
 
 func _on_match_quit(data: Dictionary):
 	# El oponente salió (evento close-match recibido)

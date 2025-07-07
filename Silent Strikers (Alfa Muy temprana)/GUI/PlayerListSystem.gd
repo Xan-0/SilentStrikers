@@ -379,12 +379,6 @@ func connect_match():
 	}
 	WebSocketManager.send_message(connect_match)
 
-func ping_match():
-	var ping_match = {
-		"event" : "ping-match"
-	}
-	WebSocketManager.send_message(ping_match)
-
 func _on_decline_match_request(player_id: String):
 	print("❌ Declinando solicitud de partida del jugador: ", player_id)
 	
