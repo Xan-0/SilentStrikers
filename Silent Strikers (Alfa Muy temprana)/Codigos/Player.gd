@@ -422,6 +422,11 @@ func aumentar_velocidad(cantidad):
 		speed = velMax
 		return
 	speed += cantidad
+	potenciador_duplicado = preload("res://Escenas/potenciador.tscn").instantiate()
+	potenciador_duplicado.get_child(1).texture = get_sprite_pd()
+	mapa.add_child(potenciador_duplicado)
+	potenciador_duplicado.scale = Vector2(0.3, 0.3)
+	_set_next_spawn_point_pd()
 	print("Velocidad actual: ", speed)
 
 #hace que el jugador sea indetectable y cambia la opacidad del sprite
