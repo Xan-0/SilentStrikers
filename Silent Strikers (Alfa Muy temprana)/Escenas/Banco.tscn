@@ -15,8 +15,8 @@
 [ext_resource type="Script" uid="uid://cf38ppbm0nchk" path="res://Codigos/sub_viewport.gd" id="12_7upgu"]
 [ext_resource type="Script" uid="uid://bmb10fy424788" path="res://Codigos/node_2d.gd" id="15_deglr"]
 [ext_resource type="Texture2D" uid="uid://cq0m31wscfdjr" path="res://assets/icon.svg" id="16_bhaya"]
-[ext_resource type="Texture2D" uid="uid://ix61llfpdhxk" path="res://assets/Sprites/sprits de prueba/New Piskel (14).png" id="17_jecr2"]
-[ext_resource type="Texture2D" uid="uid://xo0sm7rqhs87" path="res://assets/Sprites/sprits de prueba/New Piskel (13).png" id="18_u6f73"]
+[ext_resource type="Texture2D" uid="uid://3v2beybe0ji6" path="res://assets/Sprites/UIs/vida_perdida.png" id="16_tx37k"]
+[ext_resource type="Texture2D" uid="uid://cupu8hi6ix3lq" path="res://assets/Sprites/UIs/vida.png" id="17_860fa"]
 [ext_resource type="Texture2D" uid="uid://b1rlteqk18guf" path="res://assets/Sprites/sprits de prueba/New Piskel (11).png" id="19_0jfhd"]
 [ext_resource type="Texture2D" uid="uid://nlpgntvqo06s" path="res://assets/Sprites/sprits de prueba/New Piskel (9).png" id="20_vcnbm"]
 [ext_resource type="Texture2D" uid="uid://c1d04k1ykdmrx" path="res://assets/Sprites/sprits de prueba/New Piskel (10).png" id="21_7sdlv"]
@@ -1756,8 +1756,8 @@ offset_right = -753.544
 offset_bottom = -252.472
 max_value = 1.0
 nine_patch_stretch = true
-texture_under = ExtResource("17_jecr2")
-texture_progress = ExtResource("18_u6f73")
+texture_under = ExtResource("16_tx37k")
+texture_progress = ExtResource("17_860fa")
 metadata/_edit_use_anchors_ = true
 
 [node name="oportunidad_2" type="TextureProgressBar" parent="HUD"]
@@ -1770,8 +1770,8 @@ offset_right = -678.544
 offset_bottom = -251.472
 max_value = 1.0
 nine_patch_stretch = true
-texture_under = ExtResource("17_jecr2")
-texture_progress = ExtResource("18_u6f73")
+texture_under = ExtResource("16_tx37k")
+texture_progress = ExtResource("17_860fa")
 metadata/_edit_use_anchors_ = true
 
 [node name="oportunidad_3" type="TextureProgressBar" parent="HUD"]
@@ -1784,8 +1784,8 @@ offset_right = -605.544
 offset_bottom = -250.472
 max_value = 1.0
 nine_patch_stretch = true
-texture_under = ExtResource("17_jecr2")
-texture_progress = ExtResource("18_u6f73")
+texture_under = ExtResource("16_tx37k")
+texture_progress = ExtResource("17_860fa")
 metadata/_edit_use_anchors_ = true
 
 [node name="barra_de_puntaje_1" type="TextureProgressBar" parent="HUD"]
