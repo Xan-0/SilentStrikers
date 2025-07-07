@@ -10,7 +10,7 @@ var initial_speed = 500
 @export var velMax = 750
 var salud
 var muerto: bool = false # Para cambiar el salud <= 0
-var puntaje_win = 1000 # La cantidad de pts para ganar
+var puntaje_win = 2500
 var game = false # Para ver si la partida termino o sigue
 var invisibility_time = 5
 var jugador: CharacterBody2D
@@ -117,7 +117,7 @@ func _process(delta):
 
 	move_and_slide()
 
-# === SISTEMA DE HECHIZOS SIMPLIFICADO ===
+# === SISTEMA DE HECHIZOS ===
 
 func _input(event):
 	if muerto:
@@ -133,44 +133,38 @@ func _input(event):
 				try_cast_spell_c()
 
 func try_cast_spell_z():
-	if puntaje < spell_z_cost:
-		print("❌ Hechizo Z - Puntos insuficientes. Necesitas: ", spell_z_cost, " | Tienes: ", puntaje)
-		return
-	
-	# Restar puntos y enviar hechizo (solo en multiplayer)
-	puntaje -= spell_z_cost
-	
+	if is_multiplayer:
+		if puntaje < spell_z_cost:
+			print("❌ Hechizo Z - Puntos insuficientes. Necesitas: ", spell_z_cost, " | Tienes: ", puntaje)
+			return
+
 	if is_multiplayer:
 		send_spell("Z")
+		puntaje -= spell_z_cost
 		print("🔥 HECHIZO Z ENVIADO! Costo: ", spell_z_cost, " | Puntos restantes: ", puntaje)
-	else:
-		print("🔥 HECHIZO Z (Singleplayer)! Costo: ", spell_z_cost, " | Puntos restantes: ", puntaje)
+		
 
 func try_cast_spell_x():
-	if puntaje < spell_x_cost:
-		print("❌ Hechizo X - Puntos insuficientes. Necesitas: ", spell_x_cost, " | Tienes: ", puntaje)
-		return
-	
-	puntaje -= spell_x_cost
+	if is_multiplayer:
+		if puntaje < spell_x_cost:
+			print("❌ Hechizo X - Puntos insuficientes. Necesitas: ", spell_x_cost, " | Tienes: ", puntaje)
+			return
 	
 	if is_multiplayer:
 		send_spell("X")
+		puntaje -= spell_x_cost
 		print("⚡ HECHIZO X ENVIADO! Costo: ", spell_x_cost, " | Puntos restantes: ", puntaje)
-	else:
-		print("⚡ HECHIZO X (Singleplayer)! Costo: ", spell_x_cost, " | Puntos restantes: ", puntaje)
 
 func try_cast_spell_c():
-	if puntaje < spell_c_cost:
-		print("❌ Hechizo C - Puntos insuficientes. Necesitas: ", spell_c_cost, " | Tienes: ", puntaje)
-		return
-	
-	puntaje -= spell_c_cost
-	
+	if is_multiplayer:
+		if puntaje < spell_c_cost:
+			print("❌ Hechizo C - Puntos insuficientes. Necesitas: ", spell_c_cost, " | Tienes: ", puntaje)
+			return
+
 	if is_multiplayer:
 		send_spell("C")
+		puntaje -= spell_c_cost
 		print("💥 HECHIZO C ENVIADO! Costo: ", spell_c_cost, " | Puntos restantes: ", puntaje)
-	else:
-		print("💥 HECHIZO C (Singleplayer)! Costo: ", spell_c_cost, " | Puntos restantes: ", puntaje)
 
 func send_spell(spell_type: String):
 	# Solo enviar en modo multiplayer
@@ -341,13 +335,14 @@ func aumentar_puntaje(cantidad):
 	puntaje += cantidad
 	print("Puntaje actual: ", puntaje)
 	
-	# Mostrar hechizos disponibles
-	if puntaje >= spell_z_cost:
-		print("  ✅ Z disponible (", spell_z_cost, " pts)")
-	if puntaje >= spell_x_cost:
-		print("  ✅ X disponible (", spell_x_cost, " pts)")
-	if puntaje >= spell_c_cost:
-		print("  ✅ C disponible (", spell_c_cost, " pts)")
+	if is_multiplayer:
+		if puntaje >= spell_z_cost:
+			print("  ✅ Z disponible (", spell_z_cost, " pts)")
+		if puntaje >= spell_x_cost:
+			print("  ✅ X disponible (", spell_x_cost, " pts)")
+		if puntaje >= spell_c_cost:
+			print("  ✅ C disponible (", spell_c_cost, " pts)")
+
 	
 	if puntaje >= puntaje_win:
 		game = true
