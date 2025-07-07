@@ -21,7 +21,6 @@ func _ready():
 		WebSocketManager.set_game_state("POST_GAME")
 	
 	create_ui()
-	setup_existing_chat()
 
 func create_ui():
 	print("🎨 Creando UI de derrota...")
@@ -69,30 +68,6 @@ func create_ui():
 	create_action_buttons(info_container)
 	
 	print("✅ UI de derrota creada")
-
-func setup_existing_chat():
-	print("💬 Configurando chat existente...")
-	
-	# Crear instancia del sistema de chat que ya tienes
-	var ChatSystemScene = load("res://GUI/ChatSystem.gd")  # Cambiar por la ruta real
-	if ChatSystemScene:
-		chat_system = Node.new()
-		chat_system.set_script(ChatSystemScene)
-		chat_system.name = "ChatSystem"
-		add_child(chat_system)
-		
-		# Si tu chat necesita referencia al WebSocket, configurarla
-		if chat_system.has_method("set_websocket_reference"):
-			chat_system.set_websocket_reference(WebSocketManager)
-		
-		print("✅ Chat existente configurado")
-		
-		# Agregar mensaje inicial
-		if chat_system.has_method("add_chat_message"):
-			chat_system.add_chat_message("Sistema", "💀 Entraste a la pantalla de derrota")
-			chat_system.add_chat_message("Sistema", "Puedes chatear mientras decides qué hacer")
-	else:
-		print("❌ No se pudo cargar el sistema de chat existente")
 
 func create_action_buttons(container: VBoxContainer):
 	# Contenedor horizontal para botones

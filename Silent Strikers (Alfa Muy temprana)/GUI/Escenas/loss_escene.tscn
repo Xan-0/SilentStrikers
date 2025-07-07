@@ -1,10 +1,53 @@
-[gd_scene load_steps=3 format=3 uid="uid://c1wuaquc176pl"]
+[gd_scene load_steps=4 format=3 uid="uid://c1wuaquc176pl"]
 
 [ext_resource type="Script" uid="uid://b8l5veospmw5c" path="res://GUI/loss_escene.gd" id="1_blbly"]
 [ext_resource type="Script" uid="uid://4hvg1bxo8wq" path="res://GUI/ChatSystem.gd" id="2_63utq"]
+[ext_resource type="Script" uid="uid://jcqpaxgrjj02" path="res://GUI/WScript.gd" id="2_cp0fe"]
 
 [node name="LossEscene" type="Node"]
 script = ExtResource("1_blbly")
 
-[node name="ChatSystem" type="Node" parent="."]
+[node name="Node" type="Node" parent="."]
+script = ExtResource("2_cp0fe")
+
+[node name="ChatSystem" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 script = ExtResource("2_63utq")
+
+[node name="ChatContainer" type="VBoxContainer" parent="ChatSystem"]
+visible = false
+layout_mode = 0
+offset_left = 94.0
+offset_top = 121.0
+offset_right = 493.0
+offset_bottom = 543.0
+alignment = 2
+
+[node name="ChatDisplay" type="ScrollContainer" parent="ChatSystem/ChatContainer"]
+layout_mode = 2
+
+[node name="ChatMessages" type="VBoxContainer" parent="ChatSystem/ChatContainer/ChatDisplay"]
+layout_mode = 2
+
+[node name="ChatInput" type="HBoxContainer" parent="ChatSystem/ChatContainer"]
+layout_mode = 2
+
+[node name="MessageLineEdit" type="LineEdit" parent="ChatSystem/ChatContainer/ChatInput"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+
+[node name="SendButton" type="Button" parent="ChatSystem/ChatContainer/ChatInput"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+
+[node name="ChatToggle" type="Button" parent="ChatSystem"]
+visible = false
+layout_mode = 0
+offset_left = 29.0
+offset_top = 572.0
+offset_right = 72.0
+offset_bottom = 610.0
