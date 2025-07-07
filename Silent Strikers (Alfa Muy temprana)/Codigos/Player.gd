@@ -23,9 +23,9 @@ var is_multiplayer: bool = false
 var multiplayer_errors: int = 0  # Contador de errores de multiplayer
 
 # === SISTEMA DE HECHIZOS SIMPLES ===
-var spell_z_cost = 100      # Costo hechizo Z
-var spell_x_cost = 500      # Costo hechizo X  
-var spell_c_cost = 800      # Costo hechizo C
+var spell_z_cost = 0    # Costo hechizo Z
+var spell_x_cost = 0      # Costo hechizo X  
+var spell_c_cost = 0      # Costo hechizo C
 
 #colocar manuealmente los puntos posibles de spawn
 @export var spawn_points_it: Array[NodePath] = []
@@ -33,6 +33,7 @@ var spell_c_cost = 800      # Costo hechizo C
 var spawn_index = 0
 var invisibilidad_usada = false #para que el cooldown empiece a correr sólo cuando se usó
 var item_recogido = false #para que se cambie la posicion del item robable
+var controls_confused = false
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready():
@@ -100,15 +101,27 @@ func _process(delta):
 		item_duplicado.scale = Vector2(0.2, 0.2)
 		_set_next_spawn_point_it()
 
-	if Input.is_action_pressed("ui_right"):
-		velocity.x += 1
-	if Input.is_action_pressed("ui_left"):
-		velocity.x -= 1
-
-	if Input.is_action_pressed("ui_down"):
-		velocity.y += 1
-	if Input.is_action_pressed("ui_up"):
-		velocity.y -= 1
+	# === CONTROLES CON CONFUSIÓN ===
+	if controls_confused:
+		# Controles invertidos
+		if Input.is_action_pressed("ui_right"):
+			velocity.x -= 1  # Invertido: derecha va a izquierda
+		if Input.is_action_pressed("ui_left"):
+			velocity.x += 1  # Invertido: izquierda va a derecha
+		if Input.is_action_pressed("ui_down"):
+			velocity.y -= 1  # Invertido: abajo va arriba
+		if Input.is_action_pressed("ui_up"):
+			velocity.y += 1  # Invertido: arriba va abajo
+	else:
+		# Controles normales
+		if Input.is_action_pressed("ui_right"):
+			velocity.x += 1
+		if Input.is_action_pressed("ui_left"):
+			velocity.x -= 1
+		if Input.is_action_pressed("ui_down"):
+			velocity.y += 1
+		if Input.is_action_pressed("ui_up"):
+			velocity.y -= 1
 		
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * speed
@@ -186,7 +199,6 @@ func send_spell(spell_type: String):
 		print("⚠️ WebSocketManager no disponible")
 
 func show_spell_cast_effect(spell: String):
-	# Efecto visual simple cuando se envía un hechizo
 	match spell:
 		"Z":
 			modulate = Color.BLUE
@@ -195,7 +207,6 @@ func show_spell_cast_effect(spell: String):
 		"C":
 			modulate = Color.RED
 	
-	# Restaurar color después de 1 segundo
 	var timer = Timer.new()
 	timer.wait_time = 1.0
 	timer.one_shot = true
@@ -266,7 +277,6 @@ func apply_spell_z_effect():
 	var original_speed = speed
 	speed = max(100, speed - 200)
 	modulate = Color.CYAN
-	
 	var timer = Timer.new()
 	timer.wait_time = 8.0
 	timer.one_shot = true
@@ -280,29 +290,28 @@ func apply_spell_z_effect():
 	timer.start()
 
 func apply_spell_x_effect():
-	print("👁️ Tu visibilidad ha sido reducida por el oponente")
+	print("😵 Aturdido por el rival papu")
 	
-	modulate.a = 0.3
-	
+	var original_speed = speed
+	speed = 0
+	modulate = Color.ORCHID
 	var timer = Timer.new()
-	timer.wait_time = 12.0
+	timer.wait_time = 4.0
 	timer.one_shot = true
 	timer.timeout.connect(func(): 
 		if not muerto:
-			modulate.a = 1.0
-			print("⭐ Efecto de visión reducida terminado")
+			speed = original_speed
+			modulate = Color.WHITE
+			print("Aturdision complertada")
 	)
 	add_child(timer)
 	timer.start()
-
-var controls_confused = false
 
 func apply_spell_c_effect():
 	print("🌀 Tus controles han sido confundidos por el oponente")
 	
 	controls_confused = true
 	modulate = Color.MAGENTA
-	
 	var timer = Timer.new()
 	timer.wait_time = 10.0
 	timer.one_shot = true
