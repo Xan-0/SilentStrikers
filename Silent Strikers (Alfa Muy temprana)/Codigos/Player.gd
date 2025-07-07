@@ -23,9 +23,9 @@ var is_multiplayer: bool = false
 var multiplayer_errors: int = 0  # Contador de errores de multiplayer
 
 # === SISTEMA DE HECHIZOS SIMPLES ===
-var spell_z_cost = 0    # Costo hechizo Z
-var spell_x_cost = 0      # Costo hechizo X  
-var spell_c_cost = 0      # Costo hechizo C
+var spell_z_cost = 200    # Costo hechizo Z
+var spell_x_cost = 600      # Costo hechizo X  
+var spell_c_cost = 1000      # Costo hechizo C
 
 #colocar manuealmente los puntos posibles de spawn
 @export var spawn_points_it: Array[NodePath] = []
