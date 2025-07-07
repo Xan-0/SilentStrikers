@@ -1,7 +1,8 @@
-[gd_scene load_steps=43 format=4 uid="uid://dbicubno0126o"]
+[gd_scene load_steps=44 format=4 uid="uid://dbicubno0126o"]
 
 [ext_resource type="Texture2D" uid="uid://d1ugwl33ka3du" path="res://assets/Tiles mapas/tileset2.png" id="1_my4lf"]
 [ext_resource type="PackedScene" uid="uid://drs5cxv35r63x" path="res://Escenas/Player.tscn" id="1_n87ba"]
+[ext_resource type="Script" uid="uid://cuhimvd0txffv" path="res://Escenas/museo.gd" id="1_ua2ai"]
 [ext_resource type="Texture2D" uid="uid://n5kg0fr0ffk0" path="res://assets/Tiles mapas/T-Rex_Skeleton.png" id="2_087d1"]
 [ext_resource type="Texture2D" uid="uid://cm4kkvlg0etu3" path="res://assets/Tiles mapas/cosaseguridadxd.png" id="3_dv8gk"]
 [ext_resource type="Texture2D" uid="uid://r7s5owipc7sa" path="res://assets/Tiles mapas/decoracion4_mapa2.png" id="4_c3g4o"]
@@ -2216,6 +2217,7 @@ sources/18 = SubResource("TileSetAtlasSource_xlf7a")
 sources/6 = SubResource("TileSetAtlasSource_w8g50")
 
 [node name="Testmapa2" type="Node2D"]
+script = ExtResource("1_ua2ai")
 
 [node name="Player" parent="." instance=ExtResource("1_n87ba")]
 z_index = 1
