@@ -207,6 +207,7 @@ polygon = PackedVector2Array(1, -2, 460, -165, 460, 165)
 color = Color(0.811765, 0.756863, 0.0627451, 0.47451)
 
 [node name="FlashLight" type="PointLight2D" parent="."]
+visible = false
 position = Vector2(241, 29)
 rotation = -9.43751
 scale = Vector2(1.23912, 0.0284979)
