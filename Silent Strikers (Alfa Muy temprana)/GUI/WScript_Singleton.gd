@@ -311,6 +311,14 @@ func disconnect_from_server():
 		websocket.close()
 		is_connected = false
 
+func change_player_name(name: String):
+	var message = {"event": "change-name",
+	"data": {
+		"name": name
+		}
+	}
+	send_message(message)
+
 # Getters
 func get_player_data() -> Dictionary:
 	return player_data
