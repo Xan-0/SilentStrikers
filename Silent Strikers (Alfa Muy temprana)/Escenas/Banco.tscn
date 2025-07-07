@@ -1,6 +1,5 @@
-[gd_scene load_steps=31 format=4 uid="uid://dl2c808di5er1"]
+[gd_scene load_steps=30 format=4 uid="uid://dl2c808di5er1"]
 
-[ext_resource type="Script" uid="uid://jcqpaxgrjj02" path="res://GUI/WScript.gd" id="1_7upgu"]
 [ext_resource type="Texture2D" uid="uid://bd32yf8lfvp0e" path="res://assets/Tiles mapas/Interiors_free_48x48.png" id="1_kgjmw"]
 [ext_resource type="Texture2D" uid="uid://cji12h6yd886u" path="res://assets/caja fuerte (1) (1).png" id="2_tpfsg"]
 [ext_resource type="Texture2D" uid="uid://cqwtqvda805ld" path="res://assets/oro (1).png" id="3_bhxpy"]
@@ -22,7 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://nlpgntvqo06s" path="res://assets/Sprites/sprits de prueba/New Piskel (9).png" id="20_vcnbm"]
 [ext_resource type="Texture2D" uid="uid://c1d04k1ykdmrx" path="res://assets/Sprites/sprits de prueba/New Piskel (10).png" id="21_7sdlv"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gg3kn"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tx37k"]
 texture = ExtResource("1_kgjmw")
 texture_region_size = Vector2i(48, 48)
 1:0/0 = 0
@@ -1454,7 +1453,7 @@ texture_region_size = Vector2i(48, 48)
 8:88/0 = 0
 6:9/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4hoao"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_860fa"]
 texture = ExtResource("2_tpfsg")
 texture_region_size = Vector2i(46, 46)
 0:0/0 = 0
@@ -1462,7 +1461,7 @@ texture_region_size = Vector2i(46, 46)
 0:1/0 = 0
 1:1/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6x6hr"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7upgu"]
 texture = ExtResource("3_bhxpy")
 texture_region_size = Vector2i(51, 51)
 0:0/0 = 0
@@ -1472,7 +1471,7 @@ texture_region_size = Vector2i(51, 51)
 1:1/0 = 0
 2:1/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7ds75"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kk5g6"]
 texture = ExtResource("4_r0jbp")
 texture_region_size = Vector2i(51, 51)
 1:0/0 = 0
@@ -1488,7 +1487,7 @@ texture_region_size = Vector2i(51, 51)
 3:3/0 = 0
 3:0/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ruw3t"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6h2d5"]
 texture = ExtResource("5_21210")
 texture_region_size = Vector2i(46, 46)
 0:1/0 = 0
@@ -1511,11 +1510,11 @@ texture_region_size = Vector2i(46, 46)
 
 [sub_resource type="TileSet" id="TileSet_gg3kn"]
 tile_size = Vector2i(46, 46)
-sources/9 = SubResource("TileSetAtlasSource_ruw3t")
-sources/10 = SubResource("TileSetAtlasSource_gg3kn")
-sources/2 = SubResource("TileSetAtlasSource_4hoao")
-sources/3 = SubResource("TileSetAtlasSource_6x6hr")
-sources/5 = SubResource("TileSetAtlasSource_7ds75")
+sources/9 = SubResource("TileSetAtlasSource_6h2d5")
+sources/10 = SubResource("TileSetAtlasSource_tx37k")
+sources/2 = SubResource("TileSetAtlasSource_860fa")
+sources/3 = SubResource("TileSetAtlasSource_7upgu")
+sources/5 = SubResource("TileSetAtlasSource_kk5g6")
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_7upgu"]
 vertices = PackedVector2Array(1350.17, -964.781, 1390.22, -968.781, 1488.27, -970.219, 1484.45, -788.797, 1383.79, -790.219, 1931.91, -919.031, 1933.02, -879.422, 1934.92, -499.953, 1792.74, -754.508, 1786.66, -772.898, 1779.46, -837.68, 1783.59, -1000.17, 1785.41, -1065.65, 1937.88, 394.156, 1926.75, 399, 1798.87, 399, 1788.46, 84.0781, 1791.54, -0.546875, 2213.42, -26, 2296.6, -20.0625, 2294.55, 52.9297, 2078, 317.32, 1249.88, -511.641, 1350.66, -509.891, 1387.79, -497.742, 1249.9, -495.383, 1208.57, -508.523, 1541.92, -1174.08, 1616.17, -1241.69, 1624.18, -551.773, 1485.72, -1109.95, 1485.65, -1114.03, 1538.7, -567.102, 1489.58, -652.961, 1595.04, -499.008, 1933.88, -1238.85, 1781.77, -1091.27, 1778.23, -1160.4, 3452, -200.773, 3326.14, 330.93, 3164.87, 214, 3127.2, -17.5234, 3283.37, -160.992, 3357.06, -185.148, 1789.35, -681.602, 1758.71, -1195.98, 1713.76, -1158.61, 1698.87, -1196.79, 1698.01, -1089.56, 1710.08, -1090.02, 1385.66, -653.227, 1385.74, -648, 1348.74, -648, 1348.67, -653.328, 1712.96, -751.969, 1710.62, -768.68, 2393.9, -33.3594, 2344.02, -35.2734, 2347.99, -51.1484, 2375.33, -45, 2396.16, -45, 2398.16, 140, 2383.81, 47.7266, 1709.42, -1067.38, 1615, 423.07, 1665.59, 416.211, 1663.32, 515.32, 1606.16, 516.641, 1608, 341, 1615, 337, 1605.17, 83, 1605.83, 83, 1348.59, -1109.59, 1388.16, -1109.69, 1483.29, -1243.07, 1493.73, -1242.45, 1249.43, -648, 1212.4, -645.18, 1214.13, -653.688, 1249.4, -653.594, 1789.77, -26.2969, 1790.78, -91.1484, 1798.22, -91.75, 1799.21, -23.2891, 1108.88, -787.422, 1100.03, -657.82, 1098.07, -657.719, 1098.8, -822.383, 1113.4, -970.219, 3516.87, -699.789, 3517.85, -588.711, 3453.04, -591.711, 3295.61, -696.609, 1652.31, -53.3516, 1651.38, -91.5938, 1660.43, -91.3594, 1662.45, -23.7031, 2205.22, -26.6094, 2204.23, -91.5781, 2211.43, -91.3906, 2077.65, -21.3984, 3764.67, -1055.69, 3765.65, -1101.05, 3768.42, -1100.88, 3771.71, -993.773, 3710.83, -994.078, 3651.24, -1058.05, 1938.87, 516.609, 1928.75, 516.352, 1787.88, 399.789, 1697.29, 394.859, 1702.37, 337, 2213.87, 394.367, 2214.87, 515.633, 2202.87, 515.344, 2202, 413.758, 2199.64, 314.68, 1249.91, -492.25, 1100, -494.75, 1100, -512.023, 1100.98, -511.992, 1107, -511.82, 2078, 515.68, 2064.75, 516.297, 2062.76, 392.844, 1097.05, -1242.32, 1111.87, -1242.65, 1110.88, -1115.04, 1109.58, -1108.96, 3114.56, -702.391, 3034.07, -700.383, 3034.64, -823.789, 2396.05, 517.172, 2340.25, 517.82, 2342.24, 399.609, 2397.05, 237.953, 3042, 214, 3042, 332.594, 3034.38, 332.383, 3030.36, 240.047, 3031, 140, 3192.86, -699.422, 3193.86, -588.273, 3110.53, -589.727, 1697.26, -675.547, 1695.87, -675.5, 1695.11, -767.672, 1696.03, -767.719, 1208.95, -1114.77, 1209.88, -1242.59, 1252.78, -1241.41, 1250.94, -1114.66, 3700.99, -686.906, 3701.86, -587.133, 3617.13, -587.859, 3618.14, -701.211, 3711.8, -769.813, 3716.12, -923.531, 1250.87, -1109.33, 1248.78, -966.211, 1207.89, -968.773, 1208.91, -1109.22, 1346.79, -789, 1799.87, 517.352, 1788.87, 517.617, 1109.21, -648, 3775.32, -925.5, 3778.67, -770.781, 1248.95, -789, 1211.74, -784.602, 462.773, -818.102, 461.227, -918.211, 1098.28, -927.188, 1348.54, -1114.4, 1347.16, -1241.21, 1386.21, -1241.78, 1388.09, -1114.29, 1696.94, -999, 1697.08, -999, 3354.92, -587.273, 3298.58, -586.258, 1927.23, -20.7578, 1927.87, -92, 1934.73, -92, 1943.45, -21.2813, 1697.9, -1089.56, 1710.78, -999.32, 1708.54, -839.367, 1489.99, -494.023, 1488.12, -494.031, 1486.88, -648, 3165.87, 330.07, 3042, -20.1797, 3031, 4.46875, 1963.76, -822.023, 1962.85, -879.727, 3032.76, -916.969, 3035.76, -1102, 3592.16, -1102, 3603.82, -1075.08, 1781.76, -645, 1697.76, -645, 1714.62, -678.383, 2064.58, -22.1016, 2066.57, -92, 2074.63, -92, 1660, -4.45313, 1660, 83.3828, 3042, -129.57, 3029, 4.28125, 3029, -114.828, 3030.51, -161.938, 1604.16, -45.3125, 3125.82, -126.461, 1589.83, -1241.15, 1783.24, -554.227, 1109.92, -653.961, 1160.91, -648)
@@ -1536,9 +1535,6 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(1836, -84, 1831, -816, 
 agent_radius = 15.0
 
 [node name="Banco" type="Node2D"]
-
-[node name="Node" type="Node" parent="."]
-script = ExtResource("1_7upgu")
 
 [node name="Tiles" type="Node2D" parent="."]
 
