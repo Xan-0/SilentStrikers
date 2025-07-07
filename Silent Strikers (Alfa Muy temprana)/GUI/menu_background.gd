@@ -27,3 +27,7 @@ func _on_multiplayer_button_pressed() -> void:
 func _on_options_button_pressed() -> void:
 	var mapa_scene = load("res://Escenas/settings_screen.tscn")
 	get_tree().change_scene_to_packed(mapa_scene)
+
+
+func _on_quit_button_pressed() -> void:
+	get_tree().quit()
