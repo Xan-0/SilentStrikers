@@ -2,7 +2,7 @@ extends Node
 
 # WebSocket peer
 var websocket: WebSocketPeer
-var server_url = "ws://localhost:4010/?gameId=B&playerName=isnacio"
+var server_url = "ws://localhost:4010/?gameId=B&playerName=Teto"
 
 # Estado de conexión
 var is_connected = false
@@ -266,8 +266,7 @@ func finish_game(result_data: Dictionary = {}):
 	game_state = "POST_GAME"
 	send_message(message)
 
-func death_avisor():
-	var message = {}
+
 func send_rematch_request():
 	var message = {"event": "send-rematch-request"}
 	send_message(message)

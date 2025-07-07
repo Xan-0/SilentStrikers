@@ -18,6 +18,10 @@ var potenciador_duplicado: Area2D #instancia duplicada del potenciador
 var item_duplicado: Area2D #instancia duplicada del item robable
 var mapa: Node2D
 
+# === SISTEMA DE MODO DE JUEGO ===
+var is_multiplayer: bool = false
+var multiplayer_errors: int = 0  # Contador de errores de multiplayer
+
 # === SISTEMA DE HECHIZOS SIMPLES ===
 var spell_z_cost = 100      # Costo hechizo Z
 var spell_x_cost = 500      # Costo hechizo X  
@@ -39,11 +43,37 @@ func _ready():
 	puntaje = 0
 	muerto = false
 	
-	# Conectar señales para recibir hechizos del oponente
-	if WebSocketManager:
+	# Detectar modo de juego
+	detect_game_mode()
+	
+	# Conectar señales solo si es multiplayer
+	if is_multiplayer and WebSocketManager:
 		WebSocketManager.connect("game_data_received", _on_spell_received)
-		# Conectar también game_ended para manejar cuando el oponente gana
 		WebSocketManager.connect("game_ended", _on_opponent_won)
+		# Conectar también para manejar errores de send-game-data
+
+func detect_game_mode():
+	if WebSocketManager and WebSocketManager.is_in_match():
+		is_multiplayer = true
+		print("🌐 Modo: MULTIPLAYER")
+	else:
+		is_multiplayer = false
+		print("🎮 Modo: SINGLEPLAYER")
+
+func _on_websocket_message(data: Dictionary):
+	# Interceptar mensajes para detectar errores de send-game-data
+	var event = data.get("event", "")
+	var status = data.get("status", "")
+	var msg = data.get("msg", "")
+	
+	if event == "send-game-data" and status == "ERROR":
+		print("⚠️ Error multiplayer detectado: ", msg)
+		multiplayer_errors += 1
+		
+		if multiplayer_errors >= 3:
+			print("🔄 Cambiando a modo SINGLEPLAYER")
+			is_multiplayer = false
+			multiplayer_errors = 0
 
 # Actualización del movimiento y las animaciones
 func _process(delta):
@@ -107,33 +137,46 @@ func try_cast_spell_z():
 		print("❌ Hechizo Z - Puntos insuficientes. Necesitas: ", spell_z_cost, " | Tienes: ", puntaje)
 		return
 	
-	# Restar puntos y enviar hechizo
+	# Restar puntos y enviar hechizo (solo en multiplayer)
 	puntaje -= spell_z_cost
-	send_spell("Z")
-	print("🔥 HECHIZO Z ENVIADO! Costo: ", spell_z_cost, " | Puntos restantes: ", puntaje)
+	
+	if is_multiplayer:
+		send_spell("Z")
+		print("🔥 HECHIZO Z ENVIADO! Costo: ", spell_z_cost, " | Puntos restantes: ", puntaje)
+	else:
+		print("🔥 HECHIZO Z (Singleplayer)! Costo: ", spell_z_cost, " | Puntos restantes: ", puntaje)
 
 func try_cast_spell_x():
 	if puntaje < spell_x_cost:
 		print("❌ Hechizo X - Puntos insuficientes. Necesitas: ", spell_x_cost, " | Tienes: ", puntaje)
 		return
 	
-	# Restar puntos y enviar hechizo
 	puntaje -= spell_x_cost
-	send_spell("X")
-	print("⚡ HECHIZO X ENVIADO! Costo: ", spell_x_cost, " | Puntos restantes: ", puntaje)
+	
+	if is_multiplayer:
+		send_spell("X")
+		print("⚡ HECHIZO X ENVIADO! Costo: ", spell_x_cost, " | Puntos restantes: ", puntaje)
+	else:
+		print("⚡ HECHIZO X (Singleplayer)! Costo: ", spell_x_cost, " | Puntos restantes: ", puntaje)
 
 func try_cast_spell_c():
 	if puntaje < spell_c_cost:
 		print("❌ Hechizo C - Puntos insuficientes. Necesitas: ", spell_c_cost, " | Tienes: ", puntaje)
 		return
 	
-	# Restar puntos y enviar hechizo
 	puntaje -= spell_c_cost
-	send_spell("C")
-	print("💥 HECHIZO C ENVIADO! Costo: ", spell_c_cost, " | Puntos restantes: ", puntaje)
+	
+	if is_multiplayer:
+		send_spell("C")
+		print("💥 HECHIZO C ENVIADO! Costo: ", spell_c_cost, " | Puntos restantes: ", puntaje)
+	else:
+		print("💥 HECHIZO C (Singleplayer)! Costo: ", spell_c_cost, " | Puntos restantes: ", puntaje)
 
 func send_spell(spell_type: String):
-	# Enviar hechizo simple al oponente usando send-game-data
+	# Solo enviar en modo multiplayer
+	if not is_multiplayer:
+		return
+	
 	if WebSocketManager:
 		var spell_data = {
 			"spell": spell_type
@@ -142,7 +185,7 @@ func send_spell(spell_type: String):
 		WebSocketManager.send_game_data(spell_data)
 		print("📡 Hechizo ", spell_type, " enviado: ", spell_data)
 		
-		# Efecto visual local solo para hechizos normales (no death)
+		# Efecto visual local
 		if spell_type != "death":
 			show_spell_cast_effect(spell_type)
 	else:
@@ -166,9 +209,12 @@ func show_spell_cast_effect(spell: String):
 	add_child(timer)
 	timer.start()
 
-# === RECIBIR HECHIZOS DEL OPONENTE ===
+# === RECIBIR HECHIZOS DEL OPONENTE (SOLO MULTIPLAYER) ===
 
 func _on_spell_received(data: Dictionary):
+	if not is_multiplayer:
+		return
+		
 	var spell = data.get("spell", "")
 	
 	if spell != "":
@@ -189,49 +235,49 @@ func apply_spell_effect(spell: String):
 			print("⚠️ Hechizo desconocido: ", spell)
 
 func apply_opponent_death_notification():
-	# El oponente me está avisando que ÉL murió, por lo tanto YO gano
+	# Solo en multiplayer
+	if not is_multiplayer:
+		return
+		
 	print("🎉 El oponente ha muerto - ¡HAS GANADO!")
 	
-	# Marcar que el juego terminó
 	game = true
-	muerto = false  # Asegurar que no estoy muerto
+	muerto = false
 	
-	# Enviar finish-game para declarar mi victoria
 	if WebSocketManager:
 		WebSocketManager.finish_game({
 			"winner_reason": "opponent_died",
 			"final_score": puntaje
 		})
 	
-	# Ir a pantalla de victoria
 	await get_tree().create_timer(1.0).timeout
-	get_tree().change_scene_to_file("res://Escenas/victory_screen.tscn")
+	go_to_victory_scene()
 
 func _on_opponent_won(data: Dictionary):
-	# El oponente envió finish-game (él ganó por alguna razón)
+	# Solo en multiplayer
+	if not is_multiplayer:
+		return
+		
 	print("😵 El oponente ha ganado la partida")
 	
 	muerto = true
 	game = true
 	
-	# Ir a pantalla de derrota
 	await get_tree().create_timer(1.0).timeout
-	get_tree().change_scene_to_file("res://Escenas/defeat_screen.tscn")
+	go_to_defeat_scene()
 
 func apply_spell_z_effect():
-	# Hechizo Z: Ralentizar por 8 segundos
 	print("🐌 Has sido ralentizado por el oponente")
 	
 	var original_speed = speed
-	speed = max(100, speed - 200)  # Reducir velocidad
+	speed = max(100, speed - 200)
 	modulate = Color.CYAN
 	
-	# Timer para restaurar
 	var timer = Timer.new()
 	timer.wait_time = 8.0
 	timer.one_shot = true
 	timer.timeout.connect(func(): 
-		if not muerto:  # Solo restaurar si sigo vivo
+		if not muerto:
 			speed = original_speed
 			modulate = Color.WHITE
 			print("⭐ Efecto de ralentización terminado")
@@ -240,17 +286,15 @@ func apply_spell_z_effect():
 	timer.start()
 
 func apply_spell_x_effect():
-	# Hechizo X: Reducir visibilidad por 12 segundos
 	print("👁️ Tu visibilidad ha sido reducida por el oponente")
 	
-	modulate.a = 0.3  # Más transparente
+	modulate.a = 0.3
 	
-	# Timer para restaurar
 	var timer = Timer.new()
 	timer.wait_time = 12.0
 	timer.one_shot = true
 	timer.timeout.connect(func(): 
-		if not muerto:  # Solo restaurar si sigo vivo
+		if not muerto:
 			modulate.a = 1.0
 			print("⭐ Efecto de visión reducida terminado")
 	)
@@ -260,18 +304,16 @@ func apply_spell_x_effect():
 var controls_confused = false
 
 func apply_spell_c_effect():
-	# Hechizo C: Confundir controles por 10 segundos
 	print("🌀 Tus controles han sido confundidos por el oponente")
 	
 	controls_confused = true
 	modulate = Color.MAGENTA
 	
-	# Timer para restaurar
 	var timer = Timer.new()
 	timer.wait_time = 10.0
 	timer.one_shot = true
 	timer.timeout.connect(func(): 
-		if not muerto:  # Solo restaurar si sigo vivo
+		if not muerto:
 			controls_confused = false
 			modulate = Color.WHITE
 			print("⭐ Efecto de confusión terminado")
@@ -299,7 +341,7 @@ func aumentar_puntaje(cantidad):
 	puntaje += cantidad
 	print("Puntaje actual: ", puntaje)
 	
-	# Mostrar hechizos disponibles (simple)
+	# Mostrar hechizos disponibles
 	if puntaje >= spell_z_cost:
 		print("  ✅ Z disponible (", spell_z_cost, " pts)")
 	if puntaje >= spell_x_cost:
@@ -311,17 +353,16 @@ func aumentar_puntaje(cantidad):
 		game = true
 		print("¡Ganaste por puntaje!")
 		
-		# CORRECCIÓN: Solo envío finish-game, NO envío spell "death"
-		# Porque YO gané por puntaje, no porque el oponente murió
-		if WebSocketManager:
-			WebSocketManager.finish_game({
-				"winner_reason": "reached_target_score",
-				"final_score": puntaje
-			})
+		if is_multiplayer:
+			# Multiplayer: enviar finish-game
+			if WebSocketManager:
+				WebSocketManager.finish_game({
+					"winner_reason": "reached_target_score",
+					"final_score": puntaje
+				})
 		
-		# Ir a pantalla de victoria
 		await get_tree().create_timer(1.0).timeout
-		get_tree().change_scene_to_file("res://Escenas/victory_screen.tscn")
+		go_to_victory_scene()
 
 func perder_salud(cantidad):
 	salud -= cantidad
@@ -331,18 +372,33 @@ func perder_salud(cantidad):
 		muerto = true
 		print("💀 Has muerto!")
 		
-		# Enviar señal de muerte al oponente (YO morí)
-		if WebSocketManager:
-			send_spell("death")
-			print("📡 Señal de muerte enviada al oponente (YO morí)")
+		if is_multiplayer:
+			# Multiplayer: avisar muerte al oponente
+			if WebSocketManager:
+				send_spell("death")
+				print("📡 Señal de muerte enviada al oponente")
 		
-		# NO enviar finish-game aquí porque YO perdí
-		# El oponente recibirá el "death" y él enviará finish-game
-		
-		# Ir a pantalla de derrota después de un momento
 		await get_tree().create_timer(2.0).timeout
+		go_to_defeat_scene()
+
+# === FUNCIONES DE NAVEGACIÓN SEGÚN MODO ===
+
+func go_to_victory_scene():
+	if is_multiplayer:
+		print("🎯 Cargando pantalla de victoria MULTIPLAYER")
+		get_tree().change_scene_to_file("res://GUI/Escenas/win_escene.tscn")
+	else:
+		print("🎯 Cargando pantalla de victoria SINGLEPLAYER")
+		get_tree().change_scene_to_file("res://Escenas/victory_screen.tscn")
+
+func go_to_defeat_scene():
+	if is_multiplayer:
+		print("💀 Cargando pantalla de derrota MULTIPLAYER")
+		get_tree().change_scene_to_file("res://GUI/Escenas/loss_escene.tscn")
+	else:
+		print("💀 Cargando pantalla de derrota SINGLEPLAYER")
 		get_tree().change_scene_to_file("res://Escenas/defeat_screen.tscn")
-	
+
 func aumentar_velocidad(cantidad):
 	if muerto or speed >= velMax:
 		speed = velMax
