@@ -18,11 +18,17 @@ func _on_body_exited(body):
 	if body.name == "Player":
 		player_in_range = false
 
-#Si el jugador esta en rango y presiona "interactuar", se recoge el item
+#Si el jugador esta en rango y presiona "interactuar", se recoge el item, dependiendo de la textura se elige su función.
 func _process(delta):
 	if player_in_range and Input.is_action_just_pressed("interactuar"):
-		potenciar()
-		invisibilizar()
+		match $Sprite2D.texture:
+			preload("res://assets/Imagenes/item_robable_01.png"): #cambiar por monster
+				invisibilizar()
+			preload("res://assets/Imagenes/item_robable_02.png"): #cambiar por poción
+				potenciar()
+			_:
+				print("Sprite potenciador inválido")
+		
 		queue_free()
 
 #Llama a la funcion aumentar puntaje del ladron

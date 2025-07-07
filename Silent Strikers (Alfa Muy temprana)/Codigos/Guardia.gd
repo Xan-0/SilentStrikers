@@ -179,8 +179,11 @@ func _set_next_patrol_point():
 			if Geometry2D.is_point_in_polygon(random_point, polygon_points):
 				var map = navigation_region.get_navigation_map()
 				var closest_valid_point = NavigationServer2D.map_get_closest_point(map, random_point)
+
+				if closest_valid_point == Vector2.ZERO:
+					continue
 				
-				navigation_agent.target_position = closest_valid_point
+				navigation_agent.target_position = closest_valid_point +  navigation_region.global_position #corrige el punto en relación a la posicion de la region de patrulla
 				return
 	print("[Guardia] No se pudo encontrar un punto de patrulla válido después de %d intentos." % MAX_ATTEMPTS)
 
