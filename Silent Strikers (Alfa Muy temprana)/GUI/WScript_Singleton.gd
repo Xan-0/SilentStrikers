@@ -24,12 +24,10 @@ signal match_started(data)
 signal game_data_received(data)
 signal game_ended(data)
 signal rematch_requested(data)
-signal match_quit(data)
+signal match_quit(data)  # Se emite cuando el OPONENTE salió (close-match recibido)
 signal player_list_updated(players)
 signal chat_message_received(sender, message)
-
-
-
+signal message_received(data)
 
 func _ready():
 	print("🔗 WebSocketManager Singleton iniciado")
@@ -115,11 +113,21 @@ func handle_message(message: String):
 		print("⚠️ Mensaje sin evento")
 		return
 	
+	# Emitir señal para interceptar todos los mensajes
+	emit_signal("message_received", data)
+	
 	var event = data.get("event", "")
 	var status = data.get("status", "")
 	var msg = data.get("msg", "")
 	
 	print("📨 Evento: ", event, " | Estado: ", status)
+	
+	# Manejar errores específicos de send-game-data
+	if event == "send-game-data" and status == "ERROR":
+		print("⚠️ Error en send-game-data: ", msg)
+		var player_status = data.get("data", {}).get("playerStatus", "")
+		if player_status == "AVAILABLE":
+			print("🔄 Jugador no está en partida multiplayer")
 	
 	match event:
 		"login":
@@ -143,11 +151,11 @@ func handle_message(message: String):
 		"rematch-request":
 			handle_rematch_request(data.get("data", {}))
 		"close-match":
-			handle_match_quit(data.get("data", {}))
+			handle_close_match()
+		"quit-match":
+			handle_quit_match_response(data.get("data", {}))  # ✅ Confirmación de MI salida
 		"error":
 			handle_error(data.get("data", {}))
-		"game-ended":
-			handle_game_ended(data.get("data", {}))
 		
 func handle_login(data: Dictionary):
 	player_data = data
@@ -180,13 +188,14 @@ func handle_match_accepted(data: Dictionary):
 	emit_signal("match_accepted", data)
 
 func handle_players_ready(data: Dictionary):
-	print("🎯 Jugadores listos")
+	print("🎯 Jugadores listos (puede ser revancha)")
+	match_status = "WAITING_SYNC"
 	emit_signal("match_ready", data)
 
 func handle_match_start(data: Dictionary):
 	print("🎮 PARTIDA INICIADA")
 	current_match_id = data.get("matchId", current_match_id)
-	game_state = "MAP_SELECTION"
+	game_state = "IN_GAME"
 	
 	emit_signal("match_started", data)
 
@@ -200,16 +209,18 @@ func handle_game_ended(data: Dictionary):
 	emit_signal("game_ended", data)
 
 func handle_rematch_request(data: Dictionary):
-	print("🔄 Solicitud de revancha")
+	print("🔄 Solicitud de revancha recibida del oponente")
 	emit_signal("rematch_requested", data)
 
-func handle_match_quit(data: Dictionary):
-	print("🚪 Partida abandonada")
-	game_state = "LOBBY"
-	current_match_id = ""
-	match_status = ""
-	emit_signal("match_quit", data)
+func handle_close_match():
+	print("🚪 CLOSE-MATCH: El oponente salió de la partida")
+	print("📝 Cualquier solicitud de revancha ha sido cancelada automáticamente")
+	emit_signal("match_quit")
 
+func handle_quit_match_response(data: Dictionary):
+	print("✅ QUIT-MATCH: Confirmación de que salí de la partida")
+	emit_signal("match_quit")
+	
 func handle_error(data: Dictionary):
 	print("❌ Error del servidor: ", data.get("message", ""))
 
@@ -266,16 +277,13 @@ func finish_game(result_data: Dictionary = {}):
 	game_state = "POST_GAME"
 	send_message(message)
 
-
 func send_rematch_request():
 	var message = {"event": "send-rematch-request"}
 	send_message(message)
 
 func quit_match():
+	print("🚪 Enviando QUIT-MATCH...")
 	var message = {"event": "quit-match"}
-	game_state = "LOBBY"
-	current_match_id = ""
-	match_status = ""
 	send_message(message)
 
 func request_online_players():

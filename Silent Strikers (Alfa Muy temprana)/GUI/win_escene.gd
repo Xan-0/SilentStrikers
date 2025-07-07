@@ -148,12 +148,8 @@ func _on_quit_button_pressed():
 	print("🚪 Saliendo de la partida...")
 	
 	if WebSocketManager:
-		# Enviar quit-match según la documentación
 		WebSocketManager.quit_match()
 	
-	update_status("🚪 Saliendo de la partida...", Color.GRAY)
-	
-	# Notificar en el chat
 	if chat_system and chat_system.has_method("add_chat_message"):
 		chat_system.add_chat_message("Sistema", "🚪 Saliendo de la partida...")
 

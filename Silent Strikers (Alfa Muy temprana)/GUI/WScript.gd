@@ -13,10 +13,19 @@ func _ready():
 	WebSocketManager.connect("match_accepted", _on_match_accepted)
 	WebSocketManager.connect("match_ready", _on_match_ready)
 	WebSocketManager.connect("match_started", _on_match_started)
+	WebSocketManager.connect("match_quit", _on_close_match)
 	WebSocketManager.connect("player_list_updated", _on_player_list_updated)
 	WebSocketManager.connect("chat_message_received", _on_chat_message_received)
 	WebSocketManager.connect("game_ended", _on_game_ended)
 	
+func _on_close_match():
+	WebSocketManager.quit_match()
+	var main_menu = load("res://Escenas/main_menu.tscn")
+	if main_menu:
+		get_tree().change_scene_to_packed(main_menu)
+	else:
+		print("No se encontro la escena de menu")
+
 
 func _on_game_ended(data: Dictionary):
 	var loss_screen = load("res://GUI/Escenas/loss_escene.tscn")

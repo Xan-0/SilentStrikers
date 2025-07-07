@@ -147,7 +147,6 @@ func _on_quit_button_pressed():
 	if WebSocketManager:
 		WebSocketManager.quit_match()
 	
-	# Notificar en el chat
 	if chat_system and chat_system.has_method("add_chat_message"):
 		chat_system.add_chat_message("Sistema", "🚪 Saliendo de la partida...")
 
