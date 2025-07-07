@@ -1,9 +1,5 @@
 extends CharacterBody2D
 
-#Hay spawns diferentes para los items y potenciadores, con posiciones por defecto pero aleatorias
-#no deberían de poder spawnear 2 veces en el mismo lugar
-#en el código del guardia se puso un hit_cooldown, se reinicia cada vez que el jugador pierde vida
-
 var puntaje
 var speed = 500
 var initial_speed = 500
@@ -30,7 +26,7 @@ var spell_c_cost = 800      # Costo hechizo C
 #colocar manuealmente los puntos posibles de spawn
 @export var spawn_points_it: Array[NodePath] = []
 @export var spawn_points_pd: Array[NodePath] = []
-#paths para sprites (editable)
+#paths para sprites (editable), se podría establecer el efecto/puntaje del potenciador/item en base a su .texture
 @export var sprites_it = ["res://assets/Imagenes/item_robable_01.png","res://assets/Imagenes/item_robable_02.png","res://assets/Imagenes/item_robable_03.png","res://assets/Imagenes/item_robable_04.png"]
 @export var sprites_pd = ["res://assets/Imagenes/item_robable_01.png"]
 var spawn_index = 0
