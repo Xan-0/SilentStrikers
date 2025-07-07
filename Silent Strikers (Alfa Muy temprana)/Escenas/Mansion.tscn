@@ -11,11 +11,11 @@
 [ext_resource type="Script" uid="uid://bmb10fy424788" path="res://Codigos/node_2d.gd" id="7_k1w2r"]
 [ext_resource type="Texture2D" uid="uid://cq0m31wscfdjr" path="res://assets/icon.svg" id="8_5jo1w"]
 [ext_resource type="Texture2D" uid="uid://bjddy0l26f2h5" path="res://assets/Sprites/UIs/marco_minimapa.png" id="8_e5jov"]
-[ext_resource type="Texture2D" uid="uid://ix61llfpdhxk" path="res://assets/Sprites/sprits de prueba/New Piskel (14).png" id="10_8kqfa"]
-[ext_resource type="Texture2D" uid="uid://xo0sm7rqhs87" path="res://assets/Sprites/sprits de prueba/New Piskel (13).png" id="11_5hwbx"]
 [ext_resource type="Texture2D" uid="uid://b1rlteqk18guf" path="res://assets/Sprites/sprits de prueba/New Piskel (11).png" id="12_nofbg"]
 [ext_resource type="Texture2D" uid="uid://nlpgntvqo06s" path="res://assets/Sprites/sprits de prueba/New Piskel (9).png" id="13_u1ko5"]
 [ext_resource type="Texture2D" uid="uid://c1d04k1ykdmrx" path="res://assets/Sprites/sprits de prueba/New Piskel (10).png" id="14_2y381"]
+[ext_resource type="Texture2D" uid="uid://3v2beybe0ji6" path="res://assets/Sprites/UIs/vida_perdida.png" id="15_e5jov"]
+[ext_resource type="Texture2D" uid="uid://cupu8hi6ix3lq" path="res://assets/Sprites/UIs/vida.png" id="16_8kqfa"]
 [ext_resource type="PackedScene" uid="uid://b2d1lacrstmpj" path="res://Escenas/item.tscn" id="16_k1w2r"]
 [ext_resource type="PackedScene" uid="uid://jyu2vbo07tku" path="res://Escenas/potenciador.tscn" id="17_5jo1w"]
 
@@ -2635,48 +2635,6 @@ script = ExtResource("7_k1w2r")
 [node name="jugador_icono" type="Sprite2D" parent="HUD/Minimapa/SubViewport/Node2D"]
 texture = ExtResource("8_5jo1w")
 
-[node name="oportunidad_1" type="TextureProgressBar" parent="HUD"]
-anchors_preset = -1
-anchor_right = 0.747
-anchor_bottom = 0.564
-offset_left = 43.0
-offset_top = 49.0
-offset_right = -753.544
-offset_bottom = -252.472
-max_value = 1.0
-nine_patch_stretch = true
-texture_under = ExtResource("10_8kqfa")
-texture_progress = ExtResource("11_5hwbx")
-metadata/_edit_use_anchors_ = true
-
-[node name="oportunidad_2" type="TextureProgressBar" parent="HUD"]
-anchors_preset = -1
-anchor_right = 0.747
-anchor_bottom = 0.564
-offset_left = 118.0
-offset_top = 50.0
-offset_right = -678.544
-offset_bottom = -251.472
-max_value = 1.0
-nine_patch_stretch = true
-texture_under = ExtResource("10_8kqfa")
-texture_progress = ExtResource("11_5hwbx")
-metadata/_edit_use_anchors_ = true
-
-[node name="oportunidad_3" type="TextureProgressBar" parent="HUD"]
-anchors_preset = -1
-anchor_right = 0.747
-anchor_bottom = 0.564
-offset_left = 191.0
-offset_top = 51.0
-offset_right = -605.544
-offset_bottom = -250.472
-max_value = 1.0
-nine_patch_stretch = true
-texture_under = ExtResource("10_8kqfa")
-texture_progress = ExtResource("11_5hwbx")
-metadata/_edit_use_anchors_ = true
-
 [node name="barra_de_puntaje_1" type="TextureProgressBar" parent="HUD"]
 offset_left = 30.0
 offset_top = 550.0
@@ -2711,6 +2669,48 @@ max_value = 550.0
 texture_under = ExtResource("12_nofbg")
 texture_over = ExtResource("13_u1ko5")
 texture_progress = ExtResource("14_2y381")
+metadata/_edit_use_anchors_ = true
+
+[node name="oportunidad_1" type="TextureProgressBar" parent="HUD"]
+anchors_preset = -1
+anchor_right = 0.747
+anchor_bottom = 0.564
+offset_left = 43.0
+offset_top = 49.0
+offset_right = -753.544
+offset_bottom = -252.472
+max_value = 1.0
+nine_patch_stretch = true
+texture_under = ExtResource("15_e5jov")
+texture_progress = ExtResource("16_8kqfa")
+metadata/_edit_use_anchors_ = true
+
+[node name="oportunidad_2" type="TextureProgressBar" parent="HUD"]
+anchors_preset = -1
+anchor_right = 0.747
+anchor_bottom = 0.564
+offset_left = 118.0
+offset_top = 50.0
+offset_right = -678.544
+offset_bottom = -251.472
+max_value = 1.0
+nine_patch_stretch = true
+texture_under = ExtResource("15_e5jov")
+texture_progress = ExtResource("16_8kqfa")
+metadata/_edit_use_anchors_ = true
+
+[node name="oportunidad_3" type="TextureProgressBar" parent="HUD"]
+anchors_preset = -1
+anchor_right = 0.747
+anchor_bottom = 0.564
+offset_left = 191.0
+offset_top = 51.0
+offset_right = -605.544
+offset_bottom = -250.472
+max_value = 1.0
+nine_patch_stretch = true
+texture_under = ExtResource("15_e5jov")
+texture_progress = ExtResource("16_8kqfa")
 metadata/_edit_use_anchors_ = true
 
 [node name="item" parent="." instance=ExtResource("16_k1w2r")]
