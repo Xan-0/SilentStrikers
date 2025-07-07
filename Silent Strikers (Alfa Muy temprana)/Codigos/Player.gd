@@ -28,7 +28,7 @@ var spell_c_cost = 1000      # Costo hechizo C
 @export var spawn_points_pd: Array[NodePath] = []
 #paths para sprites (editable), se podría establecer el efecto/puntaje del potenciador/item en base a su .texture
 @export var sprites_it = ["res://assets/Imagenes/item_robable_01.png","res://assets/Imagenes/item_robable_02.png","res://assets/Imagenes/item_robable_03.png","res://assets/Imagenes/item_robable_04.png"]
-@export var sprites_pd = ["res://assets/Imagenes/item_robable_01.png"]
+@export var sprites_pd = ["res://assets/Imagenes/item_robable_01.png","res://assets/Imagenes/item_robable_02.png"]
 var spawn_index = 0
 var invisibilidad_usada = false #para que el cooldown empiece a correr sólo cuando se usó
 var item_recogido = false #para que se cambie la posicion del item robable
@@ -99,6 +99,19 @@ func _process(delta):
 		item_duplicado = preload("res://Escenas/item.tscn").instantiate()
 		mapa.add_child(item_duplicado)
 		item_duplicado.get_child(1).texture = get_sprite_it()
+
+		match item_duplicado.get_child(1).texture:
+			preload("res://assets/Imagenes/item_robable_01.png"):
+				item_duplicado.puntos = 200
+			preload("res://assets/Imagenes/item_robable_02.png"):
+				item_duplicado.puntos = 100
+			preload("res://assets/Imagenes/item_robable_03.png"):
+				item_duplicado.puntos = 150
+			preload("res://assets/Imagenes/item_robable_04.png"):
+				item_duplicado.puntos = 150
+			_:
+				print("Sprite item inválido")
+		
 		item_duplicado.scale = Vector2(0.2, 0.2)
 		_set_next_spawn_point_it()
 
