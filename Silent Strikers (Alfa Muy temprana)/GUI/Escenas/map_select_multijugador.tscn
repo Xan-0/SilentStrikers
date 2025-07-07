@@ -329,24 +329,24 @@ stretch_mode = 5
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 0
-offset_left = 120.0
-offset_top = -112.0
-offset_right = 1033.0
-offset_bottom = 943.0
+offset_left = -5.0
+offset_top = 7.0
+offset_right = 1919.0
+offset_bottom = 1132.0
 scale = Vector2(0.995838, 0.952969)
 
 [node name="Panel" type="Panel" parent="CenterContainer"]
-custom_minimum_size = Vector2(700, 450)
+custom_minimum_size = Vector2(1000, 600)
 layout_mode = 2
 size_flags_stretch_ratio = 0.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_e44k6")
 
 [node name="Botonera" type="VBoxContainer" parent="CenterContainer/Panel"]
 layout_mode = 0
-offset_left = 108.894
-offset_top = 60.0263
-offset_right = 593.894
-offset_bottom = 402.026
+offset_left = 101.345
+offset_top = 60.1511
+offset_right = 932.345
+offset_bottom = 541.151
 theme_override_constants/separation = 24
 
 [node name="Mapa_1" type="Button" parent="CenterContainer/Panel/Botonera"]
@@ -394,10 +394,10 @@ text = "Banco"
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 386.0
-offset_top = 16.0
-offset_right = 776.0
-offset_bottom = 176.0
+offset_left = 768.0
+offset_top = 86.0
+offset_right = 1158.0
+offset_bottom = 246.0
 texture = ExtResource("3_2jvok")
 expand_mode = 2
 
