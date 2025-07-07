@@ -5,6 +5,8 @@ var player_list_ui: Control
 var player_list_container: VBoxContainer
 var refresh_button: Button
 var title_label: Label
+var name_input: LineEdit
+var change_name_button: Button
 
 # Datos
 var my_player_data = {}
@@ -43,10 +45,10 @@ func create_player_list_ui():
 		get_tree().current_scene.add_child(ui_layer)
 		await get_tree().process_frame
 	
-	# Contenedor principal (lado derecho de la pantalla)
+	# Contenedor principal (lado derecho de la pantalla) - Aumentado altura para incluir input
 	player_list_ui = Control.new()
 	player_list_ui.name = "PlayerListUI"
-	player_list_ui.size = Vector2(300, 400)
+	player_list_ui.size = Vector2(300, 450)  # Incrementado de 400 a 450
 	player_list_ui.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	player_list_ui.position = Vector2(-450, 120)
 	ui_layer.add_child(player_list_ui)
@@ -75,10 +77,10 @@ func create_player_list_ui():
 	refresh_button.pressed.connect(_on_refresh_pressed)
 	player_list_ui.add_child(refresh_button)
 	
-	# Área de scroll para la lista
+	# Área de scroll para la lista - Reducido altura para dejar espacio al input
 	var scroll_container = ScrollContainer.new()
 	scroll_container.position = Vector2(5, 35)
-	scroll_container.size = Vector2(290, 360)
+	scroll_container.size = Vector2(290, 320)  # Reducido de 360 a 320
 	player_list_ui.add_child(scroll_container)
 	
 	# Contenedor de jugadores
@@ -87,7 +89,126 @@ func create_player_list_ui():
 	player_list_container.add_theme_constant_override("separation", 5)
 	scroll_container.add_child(player_list_container)
 	
-	print("✅ UI de lista de jugadores creada")
+	# --- NUEVA SECCIÓN: Input para cambiar nombre ---
+	
+	# Separador visual
+	var separator = HSeparator.new()
+	separator.position = Vector2(5, 360)
+	separator.size = Vector2(290, 5)
+	separator.modulate = Color.GRAY
+	player_list_ui.add_child(separator)
+	
+	# Label para el input
+	var input_label = Label.new()
+	input_label.text = "✏️ Cambiar nombre:"
+	input_label.position = Vector2(10, 370)
+	input_label.size = Vector2(150, 20)
+	input_label.add_theme_font_size_override("font_size", 12)
+	input_label.modulate = Color.LIGHT_GRAY
+	player_list_ui.add_child(input_label)
+	
+	# Input de texto para el nombre
+	name_input = LineEdit.new()
+	name_input.placeholder_text = "Nuevo nombre..."
+	name_input.position = Vector2(10, 395)
+	name_input.size = Vector2(200, 30)
+	name_input.add_theme_font_size_override("font_size", 12)
+	name_input.max_length = 20  # Limitar caracteres
+	
+	# Estilo del input
+	var input_style = StyleBoxFlat.new()
+	input_style.bg_color = Color(0.1, 0.1, 0.1, 0.8)
+	input_style.border_color = Color.GRAY
+	input_style.border_width_bottom = 2
+	input_style.border_width_top = 2
+	input_style.border_width_left = 2
+	input_style.border_width_right = 2
+	input_style.corner_radius_top_left = 5
+	input_style.corner_radius_top_right = 5
+	input_style.corner_radius_bottom_left = 5
+	input_style.corner_radius_bottom_right = 5
+	name_input.add_theme_stylebox_override("normal", input_style)
+	
+	# Estilo cuando está enfocado
+	var input_style_focus = StyleBoxFlat.new()
+	input_style_focus.bg_color = Color(0.15, 0.15, 0.15, 0.9)
+	input_style_focus.border_color = Color.CYAN
+	input_style_focus.border_width_bottom = 2
+	input_style_focus.border_width_top = 2
+	input_style_focus.border_width_left = 2
+	input_style_focus.border_width_right = 2
+	input_style_focus.corner_radius_top_left = 5
+	input_style_focus.corner_radius_top_right = 5
+	input_style_focus.corner_radius_bottom_left = 5
+	input_style_focus.corner_radius_bottom_right = 5
+	name_input.add_theme_stylebox_override("focus", input_style_focus)
+	
+	player_list_ui.add_child(name_input)
+	
+	# Botón para cambiar nombre
+	change_name_button = Button.new()
+	change_name_button.text = "✓"
+	change_name_button.position = Vector2(220, 395)
+	change_name_button.size = Vector2(70, 30)
+	change_name_button.add_theme_font_size_override("font_size", 14)
+	
+	# Estilo del botón
+	var button_style = StyleBoxFlat.new()
+	button_style.bg_color = Color(0.2, 0.6, 0.2, 0.8)  # Verde
+	button_style.corner_radius_top_left = 5
+	button_style.corner_radius_top_right = 5
+	button_style.corner_radius_bottom_left = 5
+	button_style.corner_radius_bottom_right = 5
+	change_name_button.add_theme_stylebox_override("normal", button_style)
+	
+	# Estilo cuando se presiona
+	var button_style_pressed = StyleBoxFlat.new()
+	button_style_pressed.bg_color = Color(0.1, 0.4, 0.1, 0.8)
+	button_style_pressed.corner_radius_top_left = 5
+	button_style_pressed.corner_radius_top_right = 5
+	button_style_pressed.corner_radius_bottom_left = 5
+	button_style_pressed.corner_radius_bottom_right = 5
+	change_name_button.add_theme_stylebox_override("pressed", button_style_pressed)
+	change_name_button.pressed.connect(_on_change_name_button_pressed)
+	player_list_ui.add_child(change_name_button)
+	
+	name_input.text_submitted.connect(_on_name_input_submitted)
+	
+	print("✅ UI de lista de jugadores creada con input para cambiar nombre")
+
+func _on_name_input_submitted(new_text: String):
+	_on_change_name_button_pressed()
+
+func _on_change_name_button_pressed():
+	var new_name = name_input.text.strip_edges()
+	
+	if new_name.length() == 0:
+		print("⚠️ El nombre no puede estar vacío")
+		return
+	
+	if new_name.length() < 2:
+		print("⚠️ El nombre debe tener al menos 2 caracteres")
+		return
+	
+	print("✏️ Cambiando nombre a: ", new_name)
+	
+	WebSocketManager.change_player_name(new_name)
+	
+	name_input.text = ""
+	name_input.placeholder_text = "Nombre cambiado..."
+	
+	# Restaurar placeholder después de un tiempo
+	await get_tree().create_timer(2.0).timeout
+	name_input.placeholder_text = "Nuevo nombre..."
+
+func update_current_player_name(new_name: String):
+	"""Función para actualizar el nombre mostrado cuando se recibe confirmación del servidor"""
+	if my_player_data.has("name"):
+		my_player_data["name"] = new_name
+		print("✅ Nombre actualizado localmente a: ", new_name)
+		
+		# Actualizar la lista para reflejar el cambio
+		call_deferred("request_online_players")
 
 func _on_refresh_pressed():
 	print("🔄 Actualizando lista de jugadores manualmente...")
